@@ -1,0 +1,10 @@
+# Secrets and tokens — never commit these
+.env
+.secrets/
+
+# Business data pulled from eBay/Shopify (orders, matches, sync state)
+data/
+
+__pycache__/
+*.pyc
+.venv/
