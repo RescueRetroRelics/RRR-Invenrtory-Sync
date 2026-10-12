@@ -17,11 +17,12 @@ import time
 import urllib.parse
 
 from . import http
-from .config import SECRETS_DIR
+from .config import ROOT, SECRETS_DIR
 
 AUTH_ENDPOINT = "https://auth.ebay.com/oauth2/authorize"
 TOKEN_ENDPOINT = "https://api.ebay.com/identity/v1/oauth2/token"
 TOKEN_FILE = SECRETS_DIR / "ebay_tokens.json"
+LEGACY_TOKEN_FILE = ROOT / ".tokens.json"   # written by the older rrr-ebay-tools scripts
 
 
 def auth_url(cfg, state=None):
@@ -76,6 +77,14 @@ def _save(tokens):
 def _load():
     if TOKEN_FILE.exists():
         return json.loads(TOKEN_FILE.read_text())
+    if LEGACY_TOKEN_FILE.exists():
+        old = json.loads(LEGACY_TOKEN_FILE.read_text())
+        return {
+            "access_token": old.get("access_token"),
+            "access_expires_at": old.get("access_expires_at") or old.get("expires_at") or 0,
+            "refresh_token": old.get("refresh_token"),
+            "refresh_expires_at": old.get("refresh_expires_at") or old.get("refresh_token_expires_at"),
+        }
     return {}
 
 
@@ -104,7 +113,8 @@ def get_access_token(cfg):
     refresh = tokens.get("refresh_token") or cfg.ebay_refresh_token_env
     if not refresh:
         raise RuntimeError(
-            "No eBay refresh token yet. Run `python -m rrr_sync ebay-auth-url`, "
+            "No eBay refresh token yet. Copy your old .tokens.json next to rrr_ebay_mcp.py, "
+            "or run `python -m rrr_sync ebay-auth-url`, "
             "approve access, then `python -m rrr_sync ebay-auth-exchange '<redirect URL>'`."
         )
     resp = _post_token(cfg, {

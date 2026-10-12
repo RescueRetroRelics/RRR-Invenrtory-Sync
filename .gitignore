@@ -1,6 +1,7 @@
 # Secrets and tokens — never commit these
 .env
 .secrets/
+.tokens.json
 
 # Business data pulled from eBay/Shopify (orders, matches, sync state)
 data/

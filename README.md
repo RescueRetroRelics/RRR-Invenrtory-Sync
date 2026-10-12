@@ -95,11 +95,56 @@ refused rather than overwriting it; the next run picks it up.
 - Only the store's one location (13252 Leech Dr) is synced; set `SHOPIFY_LOCATION_ID` to change it.
 - Products with inventory tracking turned off in Shopify are skipped.
 
+## Claude Desktop: eBay listing tools (MCP server)
+
+`rrr_ebay_mcp.py` lets Claude create, finish and publish eBay listings straight from Shopify.
+Needs Python 3.10+ and `pip install mcp` (1.x or 2.x both work).
+
+| Tool                       | What it does |
+|----------------------------|--------------|
+| `ebay_check_auth`          | refreshes the token and makes a real eBay call |
+| `ebay_get_active_offers`   | every offer, published or not (loops SKU by SKU; eBay has no list-all) |
+| `ebay_create_draft`        | Shopify product → eBay inventory item + unpublished offer |
+| `ebay_publish_offer`       | attaches photos + RRR policies, then publishes. Photos default to the Shopify product's |
+| `ebay_get_active_listings` | all live listings, including Seller Hub ones |
+| `ebay_get_orders`          | orders since a date |
+
+Built-in rules: price = Shopify + $2.00, Best Offer on (no floor), condition NEW, SKU = Shopify
+product number, policies 284028239015 / 283965435015 / 291780816015 (override with
+`EBAY_FULFILLMENT_POLICY_ID` / `EBAY_PAYMENT_POLICY_ID` / `EBAY_RETURN_POLICY_ID`).
+eBay needs an inventory location to publish. The first enabled one is used, or set
+`EBAY_MERCHANT_LOCATION_KEY`.
+
+Tokens: an old `.tokens.json` next to `rrr_ebay_mcp.py` is picked up automatically, so there's no
+need to re-authorize.
+
+Smoke test from a terminal (real eBay calls, nothing changed):
+
+```bash
+python rrr_ebay_mcp.py --check
+```
+
+Add to `%APPDATA%\Claude\claude_desktop_config.json`, then restart Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "rrr-ebay": {
+      "command": "python",
+      "args": ["C:\\Users\\Steph\\OneDrive\\Desktop\\rrr-ebay-tools\\rrr-ebay-tools\\rrr_ebay_mcp.py"]
+    }
+  }
+}
+```
+
 ## Files
 
 ```
 rrr_sync/ebay_auth.py   eBay OAuth: consent link, code exchange, auto-refresh
 rrr_sync/ebay.py        active listings + quantity updates (Trading API), orders (Fulfillment API)
+rrr_sync/ebay_inventory.py  eBay Inventory API: items, offers (per SKU), publish
+rrr_sync/ebay_listings.py   draft/publish logic + RRR pricing and policy rules
+rrr_ebay_mcp.py         MCP server for Claude Desktop
 rrr_sync/shopify.py     Shopify Admin GraphQL: variants, quantities
 rrr_sync/matching.py    eBay ↔ Shopify matching and data/matches.csv
 rrr_sync/sync.py        two-way quantity reconciliation
