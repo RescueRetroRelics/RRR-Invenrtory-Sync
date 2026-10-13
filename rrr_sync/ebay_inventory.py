@@ -160,3 +160,25 @@ def publish_offer(cfg, offer_id):
 
 def locations(cfg):
     return call(cfg, "GET", "/location", {"limit": 100}).get("locations", [])
+
+
+# --- categories ----------------------------------------------------------------
+
+TAXONOMY_API = "https://api.ebay.com/commerce/taxonomy/v1/category_tree/0"  # 0 = eBay US
+
+
+def category_suggestions(cfg, query, limit=5):
+    """Leaf categories eBay suggests for a product description, best match first."""
+    url = TAXONOMY_API + "/get_category_suggestions?" + urllib.parse.urlencode({"q": query})
+    try:
+        _, text = http.request("GET", url, headers=headers(get_access_token(cfg)))
+    except http.HttpError as e:
+        raise EbayApiError(e.status, [{"message": e.body[:500]}], url) from None
+    out = []
+    for s in json.loads(text).get("categorySuggestions", [])[:limit]:
+        ancestors = [a["categoryName"] for a in reversed(s.get("categoryTreeNodeAncestors", []))]
+        out.append({
+            "category_id": s["category"]["categoryId"],
+            "path": " > ".join(ancestors + [s["category"]["categoryName"]]),
+        })
+    return out

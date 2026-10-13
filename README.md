@@ -106,6 +106,7 @@ Needs Python 3.10+ and `pip install mcp` (1.x or 2.x both work).
 | `ebay_get_active_offers`   | every offer, published or not (loops SKU by SKU; eBay has no list-all) |
 | `ebay_create_draft`        | Shopify product → eBay inventory item + unpublished offer |
 | `ebay_publish_offer`       | attaches photos + RRR policies, then publishes. Photos default to the Shopify product's |
+| `ebay_suggest_category`    | eBay's suggested leaf categories for a product (fixes "not a leaf category") |
 | `ebay_get_active_listings` | all live listings, including Seller Hub ones |
 | `ebay_get_orders`          | orders since a date |
 

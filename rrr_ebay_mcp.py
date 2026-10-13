@@ -109,6 +109,10 @@ def ebay_publish_offer(
     aspects: item specifics to add if eBay says one is missing, e.g. {"Brand": "Funko"}.
     category_id: set/override the eBay category if the offer has none.
     Also enforces price = Shopify + $2 and Best Offer on.
+
+    If eBay rejects it, nothing goes live. Common fixes:
+      "not a leaf category"           -> ebay_suggest_category, then retry with category_id
+      "The item specific X is missing" -> retry with aspects={"X": "value"}
     """
     try:
         result = ebay_listings.publish(
@@ -117,6 +121,18 @@ def ebay_publish_offer(
         return {"ok": True, **result}
     except Exception as e:
         return _fail("ebay_publish_offer", e)
+
+
+@mcp.tool()
+def ebay_suggest_category(query: str) -> dict:
+    """eBay's suggested leaf categories for a product, e.g. "Chucky lip gloss keychain set".
+
+    Use when publishing fails with "not a leaf category". Returns category_id + full path.
+    """
+    try:
+        return {"ok": True, "suggestions": ebay_inventory.category_suggestions(_cfg(), query)}
+    except Exception as e:
+        return _fail("ebay_suggest_category", e)
 
 
 @mcp.tool()

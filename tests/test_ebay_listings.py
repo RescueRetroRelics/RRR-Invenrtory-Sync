@@ -133,6 +133,39 @@ class InventoryApiTest(unittest.TestCase):
         self.assertFalse(self.fake.bodies("PUT", "/offer/"))
 
 
+class CategoryAndConfigTest(unittest.TestCase):
+    def test_category_suggestions_returns_ids_and_paths(self):
+        body = {"categorySuggestions": [{
+            "category": {"categoryId": "31802", "categoryName": "Lip Gloss"},
+            "categoryTreeNodeAncestors": [{"categoryName": "Lips"}, {"categoryName": "Makeup"},
+                                          {"categoryName": "Health & Beauty"}],
+        }]}
+        calls = []
+        def fake(method, url, headers=None, body_=None, **kw):
+            calls.append((url, headers))
+            return 200, json.dumps(body)
+        with mock.patch.object(http, "request", fake), \
+             mock.patch.object(inv, "get_access_token", lambda c: "TOKEN"):
+            got = inv.category_suggestions(cfg(), "Chucky lip gloss")
+        self.assertEqual(got, [{"category_id": "31802", "path": "Health & Beauty > Makeup > Lips > Lip Gloss"}])
+        self.assertIn("q=Chucky+lip+gloss", calls[0][0])
+
+    def test_missing_settings_use_real_env_names(self):
+        from rrr_sync.config import ConfigError
+        with self.assertRaisesRegex(ConfigError, "SHOPIFY_STORE_DOMAIN, SHOPIFY_LOCATION_ID"):
+            cfg().require("shopify_domain", "shopify_location_id")
+
+    def test_dotenv_reads_notepad_txt_and_bom(self):
+        import os, tempfile
+        from pathlib import Path
+        from rrr_sync.config import load_dotenv
+        with tempfile.TemporaryDirectory() as d, mock.patch.dict(os.environ, {}, clear=True):
+            Path(d, ".env.txt").write_text("\ufeffEBAY_CLIENT_ID=abc\nSHOPIFY_STORE_DOMAIN=x.myshopify.com\n", encoding="utf-8")
+            load_dotenv(Path(d, ".env"))
+            self.assertEqual(os.environ["EBAY_CLIENT_ID"], "abc")
+            self.assertEqual(os.environ["SHOPIFY_STORE_DOMAIN"], "x.myshopify.com")
+
+
 class HelpersTest(unittest.TestCase):
     def test_price_is_shopify_plus_two(self):
         self.assertEqual(el.ebay_price("8.99"), "10.99")

@@ -17,10 +17,15 @@ DEFAULT_EBAY_SCOPES = " ".join([
 
 
 def load_dotenv(path=ROOT / ".env"):
-    """Minimal .env reader: KEY=VALUE lines; real environment variables win."""
+    """Minimal .env reader: KEY=VALUE lines; real environment variables win.
+
+    Also accepts .env.txt, which Windows Notepad quietly creates.
+    """
     if not path.exists():
-        return
-    for line in path.read_text().splitlines():
+        path = path.with_name(path.name + ".txt")
+        if not path.exists():
+            return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -28,6 +33,13 @@ def load_dotenv(path=ROOT / ".env"):
         value = value.strip().strip('"').strip("'")
         if value:
             os.environ.setdefault(key.strip(), value)
+
+
+# Config fields whose .env name isn't just the field name in capitals.
+ENV_NAMES = {
+    "shopify_domain": "SHOPIFY_STORE_DOMAIN",
+    "ebay_refresh_token_env": "EBAY_REFRESH_TOKEN",
+}
 
 
 class ConfigError(RuntimeError):
@@ -72,5 +84,5 @@ class Config:
         missing = [n for n in names if not getattr(self, n)]
         if missing:
             raise ConfigError(
-                "Missing settings in .env: " + ", ".join(n.upper() for n in missing)
+                "Missing settings in .env: " + ", ".join(ENV_NAMES.get(n, n.upper()) for n in missing)
             )
