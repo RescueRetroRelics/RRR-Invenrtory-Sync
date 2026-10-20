@@ -60,6 +60,7 @@ class Config:
     shopify_admin_token: str
     shopify_location_id: str
     shopify_api_version: str
+    ntfy_topic: str = ""
 
     @classmethod
     def load(cls):
@@ -78,6 +79,7 @@ class Config:
             shopify_admin_token=env("SHOPIFY_ADMIN_TOKEN", ""),
             shopify_location_id=env("SHOPIFY_LOCATION_ID", ""),
             shopify_api_version=env("SHOPIFY_API_VERSION", "2026-07"),
+            ntfy_topic=env("NTFY_TOPIC", ""),
         )
 
     def require(self, *names):

@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from . import ebay, ebay_auth, matching, orders, sync
+from . import ebay, ebay_auth, matching, notify, orders, sync
 from .config import Config
 from .shopify import Shopify
 
@@ -57,18 +57,30 @@ def cmd_match(cfg, args):
 
 
 def cmd_sync(cfg, args):
-    report = sync.run(cfg, Shopify(cfg), apply=args.apply, initial=args.initial)
-    verb = "Updated" if args.apply else "Would update"
-    for title, e_old, s_old, new in report.changes:
-        print(f"{verb}: {title[:70]:70}  eBay {e_old} / Shopify {s_old} -> {new}")
-    for what, why in report.skipped:
-        print(f"Skipped: {what[:70]:70}  ({why})")
-    for title, err in report.errors:
-        print(f"ERROR:   {title[:70]:70}  {err}")
-    print(f"\n{len(report.changes)} to change, {len(report.skipped)} skipped, {len(report.errors)} errors.")
-    if not args.apply and report.changes:
-        print("Dry run only. Re-run with --apply to make these changes.")
+    report = sync.run(cfg, Shopify(cfg), apply=args.apply)
+    for line in report.events + report.changes:
+        print(line)
+    if args.verbose:
+        for what, why in report.skipped:
+            print(f"Skipped: {what}  ({why})")
+    if not report.events and not report.changes:
+        print("Nothing to do: eBay and Shopify already agree.")
+    if args.apply:
+        push_error = notify.send(cfg, report.events)
+        if push_error:
+            print(f"(Phone notification failed: {push_error})")
+    elif report.events or report.changes:
+        print("\nDry run only. Re-run with --apply to make these changes.")
     return 1 if report.errors else 0
+
+
+def cmd_notify_test(cfg, args):
+    if not cfg.ntfy_topic:
+        print("Set NTFY_TOPIC in .env first.")
+        return 1
+    err = notify.send(cfg, ["Test from the RRR inventory sync. If you see this, notifications work! 🐶"])
+    print(f"Failed: {err}" if err else "Sent. Check your phone.")
+    return 1 if err else 0
 
 
 def cmd_orders(cfg, args):
@@ -87,10 +99,10 @@ def main(argv=None):
     ex.add_argument("redirect", help="the full address eBay sent you to, or just the code")
     sub.add_parser("check", help="test the eBay and Shopify connections")
     sub.add_parser("match", help="match eBay listings to Shopify products -> data/matches.csv")
-    sy = sub.add_parser("sync", help="sync quantities for approved matches (dry run by default)")
+    sy = sub.add_parser("sync", help="count eBay sales on Shopify, keep eBay at 1 (dry run by default)")
     sy.add_argument("--apply", action="store_true", help="actually change quantities")
-    sy.add_argument("--initial", choices=["min", "ebay", "shopify"], default="min",
-                    help="first-sync starting quantity: lower of the two (default), or one side's")
+    sy.add_argument("--verbose", action="store_true", help="also list skipped pairs")
+    sub.add_parser("notify-test", help="send a test phone notification")
     od = sub.add_parser("orders", help="export eBay orders to data/")
     od.add_argument("--since", default="2026-01-01", help="YYYY-MM-DD (default 2026-01-01)")
 

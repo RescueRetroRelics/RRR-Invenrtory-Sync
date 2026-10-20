@@ -18,12 +18,21 @@ query Variants($cursor: String, $loc: ID!) {
     pageInfo { hasNextPage endCursor }
     nodes {
       id sku title barcode
-      product { id title status }
+      product { id title status variantsCount { count } }
       inventoryItem {
         id tracked
         inventoryLevel(locationId: $loc) { quantities(names: ["available"]) { name quantity } }
       }
     }
+  }
+}
+"""
+
+ADJUST_QTY_MUTATION = """
+mutation Adjust($input: InventoryAdjustQuantitiesInput!, $key: String!) {
+  inventoryAdjustQuantities(input: $input) @idempotent(key: $key) {
+    inventoryAdjustmentGroup { changes { name delta quantityAfterChange } }
+    userErrors { field message code }
   }
 }
 """
@@ -41,6 +50,8 @@ mutation SetQty($input: InventorySetQuantitiesInput!, $key: String!) {
 @dataclass
 class ShopifyVariant:
     variant_id: str
+    product_id: str     # numeric part of the product GID, e.g. "15420259402024"
+    only_variant: bool  # True when the product has just this one variant
     inventory_item_id: str
     sku: str
     title: str          # product title, plus variant title when not "Default Title"
@@ -122,6 +133,8 @@ class Shopify:
                     qty = next((q["quantity"] for q in level["quantities"] if q["name"] == "available"), None)
                 out.append(ShopifyVariant(
                     variant_id=n["id"],
+                    product_id=n["product"]["id"].rsplit("/", 1)[-1],
+                    only_variant=n["product"]["variantsCount"]["count"] == 1,
                     inventory_item_id=n["inventoryItem"]["id"],
                     sku=(n["sku"] or "").strip(),
                     title=title,
@@ -151,3 +164,28 @@ class Shopify:
             },
         })
         return [e["message"] for e in data["inventorySetQuantities"]["userErrors"]]
+
+    def adjust_available(self, variant, delta, reference, key):
+        """Add delta (negative for a sale) to a variant's available count.
+
+        key makes the change idempotent: retrying with the same key never
+        applies it twice. Returns (errors, quantity_after)."""
+        data = self.graphql(ADJUST_QTY_MUTATION, {
+            "key": key,
+            "input": {
+                "name": "available",
+                "reason": "correction",
+                "referenceDocumentUri": reference,
+                "changes": [{
+                    "inventoryItemId": variant.inventory_item_id,
+                    "locationId": self.cfg.shopify_location_id,
+                    "delta": int(delta),
+                    "changeFromQuantity": None,
+                }],
+            },
+        })
+        result = data["inventoryAdjustQuantities"]
+        errors = [e["message"] for e in result["userErrors"]]
+        changes = (result.get("inventoryAdjustmentGroup") or {}).get("changes") or []
+        after = next((c["quantityAfterChange"] for c in changes if c["name"] == "available"), None)
+        return errors, after

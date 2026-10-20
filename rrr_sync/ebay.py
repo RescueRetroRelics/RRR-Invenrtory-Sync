@@ -9,7 +9,7 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 
-from . import http
+from . import ebay_inventory, http
 from .ebay_auth import get_access_token
 
 TRADING_ENDPOINT = "https://api.ebay.com/ws/api.dll"
@@ -115,12 +115,41 @@ def active_listings(cfg):
 
 
 def set_quantity(cfg, listing, qty):
-    """Set the quantity a buyer can purchase on one listing (or one variation)."""
+    """Set how many a buyer can purchase on one listing (or one variation).
+
+    Listings made with the Inventory API (e.g. by the Claude Desktop listing
+    tool) refuse Trading API revisions, so those are updated through their
+    inventory item and offer instead.
+    """
+    offers = _inventory_offers(cfg, listing)
+    if offers:
+        resp = ebay_inventory.call(cfg, "POST", "/bulk_update_price_quantity", payload={"requests": [{
+            "sku": listing.sku,
+            "shipToLocationAvailability": {"quantity": int(qty)},
+            "offers": [{"offerId": o["offerId"], "availableQuantity": int(qty)} for o in offers],
+        }]})
+        # Per-item failures come back inside a 200 response.
+        bad = [r for r in resp.get("responses", []) if r.get("statusCode") != 200]
+        if bad:
+            msgs = [e.get("longMessage") or e.get("message", "") for r in bad for e in r.get("errors", [])]
+            raise RuntimeError("eBay quantity update failed: " + " | ".join(msgs or [str(bad)]))
+        return
     sku = f"<SKU>{_xml_escape(listing.sku)}</SKU>" if listing.variation else ""
     _trading_call(cfg, "ReviseInventoryStatus", (
         f"<InventoryStatus><ItemID>{listing.item_id}</ItemID>{sku}"
         f"<Quantity>{int(qty)}</Quantity></InventoryStatus>"
     ))
+
+
+def _inventory_offers(cfg, listing):
+    """The Inventory API offers behind this listing, or [] for a Trading/Seller Hub listing."""
+    if not listing.sku:
+        return []
+    try:
+        offers = ebay_inventory.offers_for_sku(cfg, listing.sku)
+    except ebay_inventory.EbayApiError:
+        return []  # SKU unknown to the Inventory API
+    return [o for o in offers if o.get("listing", {}).get("listingId") == listing.item_id]
 
 
 def _xml_escape(s):

@@ -3,7 +3,9 @@
 Keeps stock counts for **Rescue Retro Relics** the same on eBay and Shopify, and exports eBay orders.
 
 - Pulls every active eBay listing (including variations) and matches it to a Shopify product/variant.
-- Two-way sync: a sale on either side comes off the shared count on both.
+- Shopify holds the real count; eBay always shows 1. An eBay sale comes off Shopify and eBay goes
+  back to 1 if there's more; Shopify selling out hides the eBay listing.
+- Runs by itself every 15 minutes and can push a notification to your phone.
 - Exports eBay orders since 2026-01-01 (or any date up to two years back) to CSV + JSON.
 - Pure Python 3.10+ standard library. Nothing to `pip install`.
 
@@ -57,7 +59,8 @@ python -m rrr_sync check
 ```bash
 python -m rrr_sync match          # build/refresh data/matches.csv
 python -m rrr_sync sync           # dry run: shows what would change
-python -m rrr_sync sync --apply   # make the changes
+python -m rrr_sync sync --apply   # make the changes (this is what the scheduler runs)
+python -m rrr_sync notify-test    # send a test notification to your phone
 python -m rrr_sync orders         # eBay orders since 2026-01-01 -> data/
 ```
 
@@ -69,6 +72,7 @@ one row per eBay listing:
 | `method`      | meaning                                    | `approved` starts as |
 |---------------|--------------------------------------------|----------------------|
 | `sku`         | same SKU on both sides                     | `Y`                  |
+| `shopify_id`  | eBay SKU is the Shopify product number (listings from the Claude Desktop tool) | `Y` |
 | `exact_title` | identical title (ignoring case/punctuation) | `Y`                  |
 | `fuzzy`       | close title — **check it**                 | blank                |
 | `unmatched`   | nothing close on Shopify                   | blank                |
@@ -78,20 +82,61 @@ again keeps your Y/N choices. Rows that need review are listed first.
 
 Tip: giving products the same SKU on both sides makes matching exact.
 
-### How the sync decides the number
+### The rule: eBay shows 1, Shopify holds the count
 
-The tool remembers the count after the last sync. Next time, whatever sold on eBay **and**
-whatever sold on Shopify both come off it, and both sides are set to the result. Restocks
-work the same way in reverse. The first sync of a pair uses the **lower** of the two counts
-so nothing oversells (`--initial ebay` or `--initial shopify` to pick a side instead).
+Every run, for each matched pair:
 
-Shopify updates use a compare-and-swap check, so if a sale lands mid-sync the update is
-refused rather than overwriting it; the next run picks it up.
+| What happened                         | What the tool does                                   |
+|---------------------------------------|------------------------------------------------------|
+| Sold 1 on eBay, Shopify had 4         | Shopify 4 → 3, eBay back to 1                        |
+| Sold the last one on eBay             | Shopify → 0, eBay stays at 0                         |
+| Shopify sold its last one             | eBay set to 0 (hidden, not deleted)                  |
+| Restocked on Shopify                  | eBay comes back at 1                                 |
+| An eBay listing shows more than 1     | trimmed to 1                                         |
+
+eBay sales are counted from eBay's **orders**, once each, only after they're paid. Cancelled
+orders are skipped. On the very first run, sales from before that run are treated as already
+taken off Shopify by hand, so nothing gets counted twice.
+
+### Turn on eBay's Out-of-stock control (required)
+
+In eBay, go to **Account settings → Selling preferences** and turn on **Out-of-stock control** (eBay calls it "use the out-of-stock option"; if they've moved it again, search that phrase in eBay Help).
+
+With it on, a listing at 0 is just hidden. It keeps its item number, watchers and sales history,
+and "relisting" is simply setting it back to 1, which the tool does by itself. With it off, eBay
+**ends** the listing at 0, and the tool can only tell you to relist it by hand.
+
+### Run it automatically (Windows)
+
+1. Open **Task Scheduler** → **Create Basic Task** → name it `RRR inventory sync`.
+2. Trigger: **Daily**, then in the task's **Properties → Triggers → Edit**, tick
+   **Repeat task every 15 minutes** for a duration of **Indefinitely**.
+3. Action: **Start a program** → browse to `run_sync.bat` in this folder.
+4. In **Properties → General**, tick **Run whether user is logged on or not**.
+
+Each run's output goes to `data\sync_runs.log`.
+
+### Notifications
+
+Everything the sync does is written to `data/activity.log`. To also get it on your phone:
+
+1. Install the free **ntfy** app (iPhone or Android).
+2. Subscribe to a long, hard-to-guess topic name, e.g. `rrr-sync-` plus random letters.
+   Anyone who knows the name can read the messages, so don't use something obvious.
+3. Put that name in `.env` as `NTFY_TOPIC=...`, then run `python -m rrr_sync notify-test`.
+
+You'll get one message per run that did something: sales counted, items sold out or relisted.
+These come through as urgent:
+
+- **OVERSOLD**: eBay sold something Shopify already had at 0.
+- **NOT MATCHED**: an eBay sale for a listing with no approved Shopify match. Take it off Shopify by hand.
+- **ENDED**: an eBay listing ended while Shopify still has stock (Out-of-stock control is probably off).
+- **ERROR**: an update failed. The next run tries again.
 
 ### Things to know
 
-- If an eBay listing hits 0 and **Out-of-stock control** is off in eBay's selling
-  preferences, eBay ends the listing. Turn that setting on to keep listings alive at 0.
+- Sales are checked every 15 minutes, so if the last unit sells on Shopify and eBay in the same
+  15 minutes, you can still oversell. You'll get an OVERSOLD alert if it happens.
 - Only the store's one location (13252 Leech Dr) is synced; set `SHOPIFY_LOCATION_ID` to change it.
 - Products with inventory tracking turned off in Shopify are skipped.
 
@@ -148,7 +193,9 @@ rrr_sync/ebay_listings.py   draft/publish logic + RRR pricing and policy rules
 rrr_ebay_mcp.py         MCP server for Claude Desktop
 rrr_sync/shopify.py     Shopify Admin GraphQL: variants, quantities
 rrr_sync/matching.py    eBay ↔ Shopify matching and data/matches.csv
-rrr_sync/sync.py        two-way quantity reconciliation
+rrr_sync/sync.py        eBay-shows-1 rule: count eBay sales on Shopify, set eBay to 1 or 0
+rrr_sync/notify.py      activity log + ntfy phone notifications
+run_sync.bat            what Windows Task Scheduler runs
 rrr_sync/orders.py      order CSV/JSON export
 ```
 

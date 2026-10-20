@@ -2,8 +2,10 @@
 
 Matches are found in this order:
   1. same SKU on both sides                  -> auto-approved
-  2. identical title after normalising       -> auto-approved
-  3. close title (fuzzy score >= FUZZY_MIN)  -> left for you to approve
+  2. eBay SKU is the Shopify product number  -> auto-approved
+     (listings made by the Claude Desktop listing tool)
+  3. identical title after normalising       -> auto-approved
+  4. close title (fuzzy score >= FUZZY_MIN)  -> left for you to approve
 
 Edit the `approved` column of data/matches.csv (Y or N). Only rows marked Y
 are synced. Re-running `match` keeps every Y/N decision you already made.
@@ -42,6 +44,7 @@ def find_matches(listings, variants, previous=None):
     previous = previous or {}
     by_id = {v.variant_id: v for v in variants}
     by_sku, by_title = {}, {}
+    by_product = {v.product_id: v for v in variants if v.only_variant}
     for v in variants:
         if v.sku:
             by_sku.setdefault(v.sku.lower(), []).append(v)
@@ -69,6 +72,8 @@ def find_matches(listings, variants, previous=None):
         title_hits = by_title.get(normalize(listing.title), [])
         if len(sku_hits) == 1:
             match, method, score = sku_hits[0], "sku", 1.0
+        elif listing.sku in by_product:
+            match, method, score = by_product[listing.sku], "shopify_id", 1.0
         elif len(title_hits) == 1:
             match, method, score = title_hits[0], "exact_title", 1.0
         else:
@@ -85,7 +90,7 @@ def find_matches(listings, variants, previous=None):
         if match is None:
             rows.append(_row(listing, None, "unmatched", "", ""))
             continue
-        auto_ok = method in ("sku", "exact_title") and match.variant_id not in taken
+        auto_ok = method in ("sku", "shopify_id", "exact_title") and match.variant_id not in taken
         if auto_ok:
             taken.add(match.variant_id)
         rows.append(_row(listing, match, method, score, "Y" if auto_ok else ""))
