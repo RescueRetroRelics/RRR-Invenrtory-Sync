@@ -1,7 +1,9 @@
 """Create, finish and publish eBay listings from Shopify products.
 
 RRR business rules (keep these):
-  * eBay price = Shopify price + $2.00, always.
+  * eBay price is whatever Stephanie says. Never calculated from Shopify
+    (eBay's fees are far more than a flat markup covers).
+  * eBay shows quantity 1; the inventory sync keeps it there while Shopify has stock.
   * Best Offer on every listing, no auto-decline floor (lowballers get blocked by hand).
   * Condition NEW unless told otherwise.
   * eBay SKU = the numeric ID from the Shopify product GID, so the two stay in sync.
@@ -10,12 +12,11 @@ RRR business rules (keep these):
 
 import os
 import re
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 from . import ebay_inventory as inv
 from .shopify import Shopify
 
-PRICE_MARKUP = Decimal("2.00")
 DEFAULT_CONDITION = "NEW"
 MAX_IMAGES = 24          # eBay's limit per listing
 MAX_TITLE = 80           # eBay's title limit
@@ -64,9 +65,15 @@ def shopify_id_from_sku(sku):
     return m.group(1) if m else None
 
 
-def ebay_price(shopify_price):
-    total = (Decimal(str(shopify_price)) + PRICE_MARKUP).quantize(Decimal("0.01"), ROUND_HALF_UP)
-    return str(total)
+def ebay_price(price):
+    """'$24.5' / 24.5 / '24.50' -> '24.50'. Refuses blanks, zero and nonsense."""
+    try:
+        value = Decimal(str(price).replace("$", "").replace(",", "").strip())
+    except (InvalidOperation, ValueError):
+        raise ValueError(f"{price!r} isn't a price") from None
+    if value <= 0:
+        raise ValueError(f"eBay price must be more than $0 (got {price!r})")
+    return str(value.quantize(Decimal("0.01"), ROUND_HALF_UP))
 
 
 def standard_policies(existing=None):
@@ -160,19 +167,24 @@ def merchant_location_key(cfg):
     return enabled[0]["merchantLocationKey"]
 
 
-def create_draft(cfg, shopify_product_id, category_id=None, quantity=None,
+def create_draft(cfg, shopify_product_id, price, category_id=None, quantity=None,
                  condition=DEFAULT_CONDITION, title=None, aspects=None, image_urls=None):
-    """Build an eBay inventory item + unpublished offer from a Shopify product."""
+    """Build an eBay inventory item + unpublished offer from a Shopify product.
+
+    price: the eBay price Stephanie gives. Required; nothing is worked out from Shopify.
+    quantity: defaults to 1 (eBay always shows 1; the sync relists as Shopify sells down).
+    """
+    if price in (None, ""):
+        raise RuntimeError("No eBay price given. Ask Stephanie what the eBay price is.")
+    price = ebay_price(price)
     product = shopify_product(cfg, shopify_product_id)
     if not product:
         raise RuntimeError(f"Shopify product {shopify_product_id} not found")
     sku = product["number"]
     images = clean_image_urls(image_urls) or product["images"]
-    qty = int(quantity) if quantity is not None else int(product["quantity"] or 0)
-    if qty < 1:
+    if quantity is None and int(product["quantity"] or 0) < 1:
         raise RuntimeError(f"{product['title']} has 0 in stock on Shopify; pass quantity to override")
-    if product["price"] is None:
-        raise RuntimeError(f"{product['title']} has no price on Shopify")
+    qty = int(quantity) if quantity is not None else 1
 
     item = {
         "availability": {"shipToLocationAvailability": {"quantity": qty}},
@@ -196,7 +208,7 @@ def create_draft(cfg, shopify_product_id, category_id=None, quantity=None,
         "listingDuration": "GTC",
         "listingPolicies": standard_policies(),
         "merchantLocationKey": merchant_location_key(cfg),
-        "pricingSummary": {"price": {"value": ebay_price(product["price"]), "currency": "USD"}},
+        "pricingSummary": {"price": {"value": price, "currency": "USD"}},
     }
     if category_id:
         offer["categoryId"] = str(category_id)
@@ -227,8 +239,10 @@ def _aspects(aspects):
     return {k: (v if isinstance(v, list) else [v]) for k, v in dict(aspects).items()}
 
 
-def publish(cfg, offer_id, image_urls=None, aspects=None, category_id=None):
+def publish(cfg, offer_id, image_urls=None, aspects=None, category_id=None, price=None):
     """Attach photos + RRR's standard policies to an offer and publish it.
+
+    price: optional new eBay price. Left out, the offer keeps the price it has.
 
     image_urls: list of HTTPS photo URLs. If empty, the photos are pulled from the
     Shopify product whose ID is the offer's SKU.
@@ -260,10 +274,10 @@ def publish(cfg, offer_id, image_urls=None, aspects=None, category_id=None):
 
     # 2. Policies, Best Offer, price, location on the offer.
     old_price = offer.get("pricingSummary", {}).get("price", {}).get("value")
-    if product and product["price"] is not None:
-        offer["pricingSummary"] = {"price": {"value": ebay_price(product["price"]), "currency": "USD"}}
+    if price not in (None, ""):
+        offer["pricingSummary"] = {"price": {"value": ebay_price(price), "currency": "USD"}}
     elif not old_price:
-        raise RuntimeError(f"Offer {offer_id} has no price and Shopify price is unavailable")
+        raise RuntimeError(f"Offer {offer_id} has no price. Ask Stephanie what the eBay price is.")
     offer["listingPolicies"] = standard_policies(offer.get("listingPolicies"))
     if category_id:
         offer["categoryId"] = str(category_id)
@@ -281,7 +295,7 @@ def publish(cfg, offer_id, image_urls=None, aspects=None, category_id=None):
     listing_id = resp.get("listingId")
     new_price = offer["pricingSummary"]["price"]["value"]
     if old_price and old_price != new_price:
-        notes.append(f"Price changed {old_price} -> {new_price} (Shopify {product['price']} + $2)")
+        notes.append(f"Price changed {old_price} -> {new_price}")
     notes.extend(w.get("longMessage") or w.get("message", "") for w in resp.get("warnings", []))
     return {
         "offer_id": offer_id,
@@ -291,4 +305,25 @@ def publish(cfg, offer_id, image_urls=None, aspects=None, category_id=None):
         "price": new_price,
         "images": len(item["product"]["imageUrls"]),
         "notes": notes,
+    }
+
+
+def update_price(cfg, offer_id, price):
+    """Change the price on an offer. A live listing is revised right away."""
+    new_price = ebay_price(price)
+    offer = inv.get_offer(cfg, offer_id)
+    old_price = offer.get("pricingSummary", {}).get("price", {}).get("value")
+    offer["pricingSummary"] = {"price": {"value": new_price, "currency": "USD"}}
+    inv.update_offer(cfg, offer_id, offer)
+    live = offer.get("status") == "PUBLISHED"
+    if live:
+        inv.publish_offer(cfg, offer_id)   # re-publishing revises the live listing
+    listing_id = offer.get("listing", {}).get("listingId")
+    return {
+        "offer_id": offer_id,
+        "sku": offer.get("sku"),
+        "old_price": old_price,
+        "price": new_price,
+        "live_listing_updated": live,
+        "url": f"https://www.ebay.com/itm/{listing_id}" if listing_id else None,
     }

@@ -68,6 +68,7 @@ def ebay_get_active_offers(status: str = "") -> dict:
 @mcp.tool()
 def ebay_create_draft(
     shopify_product_id: str,
+    price: str,
     category_id: str = "",
     quantity: Optional[int] = None,
     condition: str = "NEW",
@@ -78,15 +79,17 @@ def ebay_create_draft(
     """Create (or refresh) an unpublished eBay offer from a Shopify product.
 
     shopify_product_id: Shopify product GID or its number; the number becomes the eBay SKU.
+    price: the eBay price, exactly as Stephanie gives it (e.g. "24.99"). REQUIRED.
+      Never work it out from the Shopify price. If she hasn't said, ask her.
     category_id: eBay leaf category ID (needed before publishing).
-    quantity: defaults to Shopify's stock count.
+    quantity: defaults to 1. eBay always shows 1; the inventory sync relists as Shopify sells down.
     aspects: item specifics, e.g. {"Brand": "Funko", "Character": "Mickey Mouse"}.
     image_urls: photo URLs; defaults to the Shopify product's photos.
-    Price is Shopify + $2, Best Offer on, RRR's standard policies.
+    Best Offer on, RRR's standard policies.
     """
     try:
         result = ebay_listings.create_draft(
-            _cfg(), shopify_product_id, category_id=category_id or None, quantity=quantity,
+            _cfg(), shopify_product_id, price, category_id=category_id or None, quantity=quantity,
             condition=condition or "NEW", title=title or None, aspects=aspects, image_urls=image_urls,
         )
         return {"ok": True, **result}
@@ -100,6 +103,7 @@ def ebay_publish_offer(
     image_urls: Optional[list] = None,
     aspects: Optional[dict] = None,
     category_id: str = "",
+    price: str = "",
 ) -> dict:
     """Attach photos and RRR's standard listing policies to an offer, then publish it live.
 
@@ -108,7 +112,9 @@ def ebay_publish_offer(
       product whose ID matches the offer's SKU.
     aspects: item specifics to add if eBay says one is missing, e.g. {"Brand": "Funko"}.
     category_id: set/override the eBay category if the offer has none.
-    Also enforces price = Shopify + $2 and Best Offer on.
+    price: optional new eBay price from Stephanie. Leave empty to keep the offer's price.
+      Never work a price out from Shopify.
+    Also turns Best Offer on.
 
     If eBay rejects it, nothing goes live. Common fixes:
       "not a leaf category"           -> ebay_suggest_category, then retry with category_id
@@ -117,10 +123,23 @@ def ebay_publish_offer(
     try:
         result = ebay_listings.publish(
             _cfg(), offer_id, image_urls=image_urls, aspects=aspects, category_id=category_id or None,
+            price=price or None,
         )
         return {"ok": True, **result}
     except Exception as e:
         return _fail("ebay_publish_offer", e)
+
+
+@mcp.tool()
+def ebay_update_price(offer_id: str, price: str) -> dict:
+    """Change an eBay offer's price to what Stephanie says. A live listing updates right away.
+
+    offer_id: from ebay_get_active_offers. price: e.g. "24.99".
+    """
+    try:
+        return {"ok": True, **ebay_listings.update_price(_cfg(), offer_id, price)}
+    except Exception as e:
+        return _fail("ebay_update_price", e)
 
 
 @mcp.tool()

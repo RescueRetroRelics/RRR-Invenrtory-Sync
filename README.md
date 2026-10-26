@@ -151,11 +151,13 @@ Needs Python 3.10+ and `pip install mcp` (1.x or 2.x both work).
 | `ebay_get_active_offers`   | every offer, published or not (loops SKU by SKU; eBay has no list-all) |
 | `ebay_create_draft`        | Shopify product → eBay inventory item + unpublished offer |
 | `ebay_publish_offer`       | attaches photos + RRR policies, then publishes. Photos default to the Shopify product's |
+| `ebay_update_price`        | change a listing's price to what you say; live listings update right away |
 | `ebay_suggest_category`    | eBay's suggested leaf categories for a product (fixes "not a leaf category") |
 | `ebay_get_active_listings` | all live listings, including Seller Hub ones |
 | `ebay_get_orders`          | orders since a date |
 
-Built-in rules: price = Shopify + $2.00, Best Offer on (no floor), condition NEW, SKU = Shopify
+Built-in rules: **price is whatever you tell Claude**. Nothing is calculated from Shopify, and
+Claude asks if you haven't said. Quantity 1, Best Offer on (no floor), condition NEW, SKU = Shopify
 product number, policies 284028239015 / 283965435015 / 291780816015 (override with
 `EBAY_FULFILLMENT_POLICY_ID` / `EBAY_PAYMENT_POLICY_ID` / `EBAY_RETURN_POLICY_ID`).
 eBay needs an inventory location to publish. The first enabled one is used, or set

@@ -109,7 +109,8 @@ class InventoryApiTest(unittest.TestCase):
         self.assertNotIn("locale", item)
 
         offer = self.fake.bodies("PUT", "/offer/308888822011")[0]
-        self.assertEqual(offer["pricingSummary"]["price"]["value"], "10.99")
+        # Keeps the price already on the offer; never Shopify-based.
+        self.assertEqual(offer["pricingSummary"]["price"]["value"], "9.99")
         pol = offer["listingPolicies"]
         self.assertEqual(pol["fulfillmentPolicyId"], "284028239015")
         self.assertEqual(pol["paymentPolicyId"], "283965435015")
@@ -119,6 +120,36 @@ class InventoryApiTest(unittest.TestCase):
         for read_only in ("offerId", "sku", "status", "marketplaceId", "format"):
             self.assertNotIn(read_only, offer)
         self.assertEqual(offer["listingDescription"], "desc")
+
+    def test_publish_with_new_price_uses_it(self):
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            result = el.publish(cfg(), "308888822011", price="$24.5")
+        offer = self.fake.bodies("PUT", "/offer/308888822011")[0]
+        self.assertEqual(offer["pricingSummary"]["price"]["value"], "24.50")
+        self.assertIn("Price changed 9.99 -> 24.50", result["notes"])
+
+    def test_create_draft_requires_a_price(self):
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            with self.assertRaisesRegex(RuntimeError, "Ask Stephanie"):
+                el.create_draft(cfg(), "15420259402024", price=None)
+        self.assertEqual(self.fake.calls, [])
+
+    def test_create_draft_uses_given_price_and_quantity_one(self):
+        shopify = {**SHOPIFY, "quantity": 4}
+        with mock.patch.object(el, "shopify_product", return_value=shopify), \
+             mock.patch.object(el, "merchant_location_key", return_value="RRR"):
+            result = el.create_draft(cfg(), "15420259402024", price="31.99", category_id="149372")
+        self.assertEqual((result["price"], result["quantity"]), ("31.99", 1))
+        offer = self.fake.bodies("PUT", "/offer/308888822011")[0]
+        self.assertEqual(offer["pricingSummary"]["price"]["value"], "31.99")
+        self.assertEqual(offer["availableQuantity"], 1)
+
+    def test_update_price_on_live_listing_republishes(self):
+        self.fake.offers["308888822011"]["status"] = "PUBLISHED"
+        result = el.update_price(cfg(), "308888822011", "19.99")
+        self.assertEqual((result["old_price"], result["price"], result["live_listing_updated"]),
+                         ("9.99", "19.99", True))
+        self.assertEqual(self.fake.calls[-1][0:1], ("POST",))
 
     def test_explicit_image_urls_win_over_shopify(self):
         with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
@@ -167,10 +198,13 @@ class CategoryAndConfigTest(unittest.TestCase):
 
 
 class HelpersTest(unittest.TestCase):
-    def test_price_is_shopify_plus_two(self):
-        self.assertEqual(el.ebay_price("8.99"), "10.99")
-        self.assertEqual(el.ebay_price("43.99"), "45.99")
-        self.assertEqual(el.ebay_price(15), "17.00")
+    def test_price_is_taken_as_given(self):
+        self.assertEqual(el.ebay_price("8.99"), "8.99")
+        self.assertEqual(el.ebay_price("$1,043.5"), "1043.50")
+        self.assertEqual(el.ebay_price(15), "15.00")
+        for bad in ("", "abc", "0", "-3"):
+            with self.assertRaises(ValueError):
+                el.ebay_price(bad)
 
     def test_sku_from_gid(self):
         self.assertEqual(el.sku_from_shopify_id("gid://shopify/Product/15420259402024"), "15420259402024")
