@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RRR Sale Tier Report</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:#faf8f5;color:#222;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{margin:.2em 0} h2{margin-top:1.8em;border-bottom:2px solid #e5ded3;padding-bottom:4px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.card{background:#fff;border:1px solid #e5ded3;border-radius:10px;padding:12px}
+.card b{display:block;font-size:1.6em}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:.92em;display:block;overflow-x:auto}
+th,td{border-bottom:1px solid #eee;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f2ede6}
+.tag{font-size:.7em;font-weight:700;padding:2px 6px;border-radius:4px;vertical-align:middle}
+.v{background:#dff3e3;color:#17602a} .h{background:#fff1d6;color:#7a4b00}
+.note{background:#fff;border-left:4px solid #c9a96e;padding:8px 12px;margin:10px 0}
+small{color:#666}
+</style></head><body><main>
+<h1>Sale Tier Report</h1>
+<small>Rescue Retro Relics · data as of 2026-11-02 · read-only, nothing on the store was changed</small>
+
+<div class="cards">
+<div class="card"><b>34</b>units sold in this window</div>
+<div class="card"><b>80</b>active items in stock</div>
+<div class="card"><b>25</b>items suggested for a sale</div>
+<div class="card"><b>14.3%</b>store sell-through</div>
+</div>
+
+<h2>Suggested sale tiers <span class="tag h">HYPOTHESIS</span></h2>
+<p>An item's clock is <b>days without a sale</b>: days since it was listed, or since its last sale if it has sold before.
+Tier start days: <b>109 / 134 / 201</b> (learned from your sales (75th / 90th percentile of days-to-sell)). Of 34 sales where we know both the listing date and the sale date, half sold within <b>58 days</b>, 75% within <b>109</b>, 90% within <b>134</b>. <span class="tag v">VERIFIED</span></p>
+<table><thead><tr><th>Tier</th><th>Days without a sale</th><th>Discount</th><th>Items</th><th>Units</th><th>Stock value now</th><th>After discount</th></tr></thead><tbody><tr><td>Tier 3: clearance</td><td>201+ days</td><td>30%</td><td>0</td><td>0</td><td>$0.00</td><td>$0.00</td></tr><tr><td>Tier 2: sale</td><td>134-200 days</td><td>20%</td><td>14</td><td>33</td><td>$729.67</td><td>$583.67</td></tr><tr><td>Tier 1: nudge</td><td>109-133 days</td><td>10%</td><td>11</td><td>25</td><td>$496.83</td><td>$448.75</td></tr><tr><td>Fresh (leave it)</td><td>under 109 days without a sale</td><td>0%</td><td>55</td><td>145</td><td>$2,862.91</td><td>$2,862.91</td></tr></tbody></table>
+<p class="note">These tiers are a starting rule to test, not a prediction. Try one tier for 2-3 weeks, re-run this report,
+and see if those items sold. Full list: <b>sale_tier_suggestions.csv</b>. Price floor: never below cost + $3.00
+(when cost is filled in) or $4.99.</p>
+
+<h2>Items to put on sale first <span class="tag h">HYPOTHESIS</span></h2>
+<small>Highest tier first, then most money tied up. Top 40 shown.</small>
+<table><thead><tr><th>Tier</th><th>Item</th><th>Qty</th><th>Price now</th><th>Suggested</th><th>Days w/o sale</th><th>Why</th></tr></thead><tbody><tr><td>Tier 2</td><td>Sample Figure #10</td><td>4</td><td>$29.99</td><td>$23.99</td><td>152</td><td>152 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #65</td><td>4</td><td>$29.99</td><td>$23.99</td><td>150</td><td>150 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #70</td><td>4</td><td>$29.99</td><td>$23.99</td><td>146</td><td>146 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #75</td><td>4</td><td>$29.99</td><td>$23.99</td><td>137</td><td>137 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Plush Keychain #44</td><td>2</td><td>$19.99</td><td>$15.99</td><td>171</td><td>171 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #58</td><td>4</td><td>$9.99</td><td>$7.99</td><td>168</td><td>168 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #20</td><td>1</td><td>$29.99</td><td>$23.99</td><td>176</td><td>176 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #30</td><td>1</td><td>$29.99</td><td>$23.99</td><td>147</td><td>147 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Figure #45</td><td>1</td><td>$29.99</td><td>$23.99</td><td>179</td><td>179 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #63</td><td>3</td><td>$9.99</td><td>$7.99</td><td>155</td><td>155 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #68</td><td>2</td><td>$9.99</td><td>$7.99</td><td>148</td><td>148 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #33</td><td>1</td><td>$9.99</td><td>$7.99</td><td>172</td><td>172 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #38</td><td>1</td><td>$9.99</td><td>$7.99</td><td>185</td><td>185 days without a sale</td></tr><tr><td>Tier 2</td><td>Sample Sticker Pack #73</td><td>1</td><td>$9.99</td><td>$7.99</td><td>149</td><td>149 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Mini Scene #6</td><td>4</td><td>$24.00</td><td>$21.99</td><td>126</td><td>126 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Figure #50</td><td>3</td><td>$29.99</td><td>$26.99</td><td>127</td><td>127 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Mini Scene #1</td><td>3</td><td>$24.00</td><td>$21.99</td><td>119</td><td>119 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Plush Keychain #39</td><td>3</td><td>$19.99</td><td>$17.99</td><td>122</td><td>122 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Figure #55</td><td>1</td><td>$29.99</td><td>$26.99</td><td>109</td><td>109 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Pin Set #2</td><td>2</td><td>$14.99</td><td>$12.99</td><td>138</td><td>138 days without a sale; &#x27;Enamel Pin Set&#x27; sells fast, held back one tier</td></tr><tr><td>Tier 1</td><td>Sample Sticker Pack #13</td><td>3</td><td>$9.99</td><td>$8.99</td><td>121</td><td>121 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Sticker Pack #23</td><td>3</td><td>$9.99</td><td>$8.99</td><td>123</td><td>123 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Mini Scene #31</td><td>1</td><td>$24.00</td><td>$21.99</td><td>131</td><td>131 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Plush Keychain #19</td><td>1</td><td>$19.99</td><td>$17.99</td><td>117</td><td>117 days without a sale</td></tr><tr><td>Tier 1</td><td>Sample Pin Set #42</td><td>1</td><td>$14.99</td><td>$12.99</td><td>174</td><td>174 days without a sale; last sold 2026-05-12; &#x27;Enamel Pin Set&#x27; sells fast, held back one tier</td></tr></tbody></table>
+
+<h2>What sells, by price <span class="tag v">VERIFIED</span></h2>
+<small>Sell-through = units sold ÷ (units sold + units still in stock). Higher = moves faster.</small>
+<table><thead><tr><th>Price</th><th>Items in stock</th><th>Units sold</th><th>Sell-through</th><th>Median days to sell</th><th>Sales with dates</th></tr></thead><tbody><tr><td>$0-10</td><td>16</td><td>1</td><td>2.7%</td><td>57</td><td>1</td></tr><tr><td>$10-15</td><td>16</td><td>12</td><td>21.8%</td><td>50</td><td>12</td></tr><tr><td>$15-20</td><td>16</td><td>7</td><td>15.9%</td><td>81</td><td>7</td></tr><tr><td>$20-30</td><td>32</td><td>14</td><td>13.9%</td><td>46</td><td>14</td></tr></tbody></table>
+
+<h2>What sells, by product type <span class="tag v">VERIFIED</span></h2>
+<small>Top 25 by volume. 🔥 = sells at least 1.5x the store average, so it waits one tier longer.</small>
+<table><thead><tr><th>Product type</th><th>Items in stock</th><th>Units in stock</th><th>Units sold</th><th>Sell-through</th><th>Median days</th><th>Stock value</th></tr></thead><tbody><tr><td>Enamel Pin Set 🔥</td><td>16</td><td>43</td><td>12</td><td>21.8%</td><td>50</td><td>$644.57</td></tr><tr><td>Collectible Miniature Scene</td><td>16</td><td>44</td><td>9</td><td>17.0%</td><td>45</td><td>$1,056.00</td></tr><tr><td>Collectible Figure</td><td>16</td><td>43</td><td>5</td><td>10.4%</td><td>128</td><td>$1,289.57</td></tr><tr><td>Plush Keychain</td><td>16</td><td>37</td><td>7</td><td>15.9%</td><td>81</td><td>$739.63</td></tr><tr><td>Sticker Pack</td><td>16</td><td>36</td><td>1</td><td>2.7%</td><td>57</td><td>$359.64</td></tr></tbody></table>
+
+<h2>How old is the stock <span class="tag v">VERIFIED</span></h2>
+<small>Days since the product was added to Shopify.</small>
+<table><thead><tr><th>Age</th><th>Items</th><th>Units</th><th>Value at list price</th></tr></thead><tbody><tr><td>0-30 days</td><td>6</td><td>12</td><td>$238.94</td></tr><tr><td>31-60 days</td><td>12</td><td>33</td><td>$653.78</td></tr><tr><td>61-90 days</td><td>11</td><td>32</td><td>$660.72</td></tr><tr><td>91-180 days</td><td>49</td><td>121</td><td>$2,429.98</td></tr><tr><td>181+ days</td><td>2</td><td>5</td><td>$105.99</td></tr></tbody></table>
+
+<h2>Units sold per month <span class="tag v">VERIFIED</span></h2>
+<table><thead><tr><th>Month</th><th>Shopify</th><th>eBay</th></tr></thead><tbody><tr><td>2026-05</td><td>1</td><td>1</td></tr><tr><td>2026-06</td><td>1</td><td>1</td></tr><tr><td>2026-07</td><td>1</td><td>2</td></tr><tr><td>2026-08</td><td>3</td><td>4</td></tr><tr><td>2026-09</td><td>6</td><td>3</td></tr><tr><td>2026-10</td><td>7</td><td>4</td></tr></tbody></table>
+
+<h2>Did discounts speed things up? <span class="tag h">HYPOTHESIS</span></h2>
+<small>Shopify sales only (eBay orders don't say the list price). This shows a pattern, not a cause.</small>
+<table><thead><tr><th>Shopify sales</th><th>Count</th><th>Avg % off</th><th>Median days to sell</th></tr></thead><tbody><tr><td>discounted</td><td>6</td><td>15.0%</td><td>74</td></tr><tr><td>full price</td><td>13</td><td>–</td><td>92</td></tr></tbody></table>
+
+<h2>Notes on the data</h2>
+<ul><li>&#x27;Days to sell&#x27; is counted from the day the product was added to Shopify. Items listed on eBay before they were added to Shopify really took longer than shown, and sales from before they were on Shopify have no days-to-sell at all.</li><li>eBay order prices can include shipping, so eBay revenue is approximate. Sell-through and days-to-sell use unit counts and dates only, so they&#x27;re not affected.</li></ul>
+</main></body></html>

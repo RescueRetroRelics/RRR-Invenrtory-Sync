@@ -1,0 +1,6 @@
+{
+  "tier_discounts_pct": {"1": 10, "2": 20, "3": 30},
+  "tier_days": "auto",
+  "min_profit_over_cost": 3.00,
+  "min_price": 4.99
+}

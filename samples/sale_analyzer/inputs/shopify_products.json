@@ -1,0 +1,2028 @@
+[
+ {
+  "legacyResourceId": "900001",
+  "title": "Sample Mini Scene #1",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-06T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-1",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900002",
+  "title": "Sample Pin Set #2",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-17T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-2",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900003",
+  "title": "Sample Sticker Pack #3",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-17T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-3",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900004",
+  "title": "Sample Plush Keychain #4",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-03T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-4",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900005",
+  "title": "Sample Figure #5",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-24T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-5",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900006",
+  "title": "Sample Mini Scene #6",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-29T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-6",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900007",
+  "title": "Sample Pin Set #7",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-02T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-7",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900008",
+  "title": "Sample Sticker Pack #8",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-21T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-8",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900009",
+  "title": "Sample Plush Keychain #9",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-31T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-9",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900010",
+  "title": "Sample Figure #10",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-03T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-10",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900011",
+  "title": "Sample Mini Scene #11",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-02T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-11",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900012",
+  "title": "Sample Pin Set #12",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-12T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-12",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900013",
+  "title": "Sample Sticker Pack #13",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-04T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-13",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900014",
+  "title": "Sample Plush Keychain #14",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-16T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-14",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900015",
+  "title": "Sample Figure #15",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-05T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-15",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900016",
+  "title": "Sample Mini Scene #16",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-27T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-16",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900017",
+  "title": "Sample Pin Set #17",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-12T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-17",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900018",
+  "title": "Sample Sticker Pack #18",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-12T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-18",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900019",
+  "title": "Sample Plush Keychain #19",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-08T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-19",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900020",
+  "title": "Sample Figure #20",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-10T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-20",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900021",
+  "title": "Sample Mini Scene #21",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-14T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-21",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900022",
+  "title": "Sample Pin Set #22",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-10T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-22",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900023",
+  "title": "Sample Sticker Pack #23",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-02T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-23",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900024",
+  "title": "Sample Plush Keychain #24",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-21T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-24",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900025",
+  "title": "Sample Figure #25",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-01T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-25",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900026",
+  "title": "Sample Mini Scene #26",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-05T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-26",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900027",
+  "title": "Sample Pin Set #27",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-28T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-27",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900028",
+  "title": "Sample Sticker Pack #28",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-20T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-28",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900029",
+  "title": "Sample Plush Keychain #29",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-13T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-29",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900030",
+  "title": "Sample Figure #30",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-08T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-30",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900031",
+  "title": "Sample Mini Scene #31",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-24T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-31",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900032",
+  "title": "Sample Pin Set #32",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-11T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-32",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900033",
+  "title": "Sample Sticker Pack #33",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-14T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-33",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900034",
+  "title": "Sample Plush Keychain #34",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-03T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-34",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900035",
+  "title": "Sample Figure #35",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-23T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-35",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900036",
+  "title": "Sample Mini Scene #36",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-08T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-36",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900037",
+  "title": "Sample Pin Set #37",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-18T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-37",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900038",
+  "title": "Sample Sticker Pack #38",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-01T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-38",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900039",
+  "title": "Sample Plush Keychain #39",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-03T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-39",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900040",
+  "title": "Sample Figure #40",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-01T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-40",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900041",
+  "title": "Sample Mini Scene #41",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-15T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-41",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900042",
+  "title": "Sample Pin Set #42",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-08T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-42",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900043",
+  "title": "Sample Sticker Pack #43",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-18T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-43",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900044",
+  "title": "Sample Plush Keychain #44",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-15T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-44",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900045",
+  "title": "Sample Figure #45",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-07T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-45",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900046",
+  "title": "Sample Mini Scene #46",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-06T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-46",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900047",
+  "title": "Sample Pin Set #47",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-27T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-47",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900048",
+  "title": "Sample Sticker Pack #48",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-15T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-48",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900049",
+  "title": "Sample Plush Keychain #49",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-30T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-49",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900050",
+  "title": "Sample Figure #50",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-28T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-50",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900051",
+  "title": "Sample Mini Scene #51",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-15T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-51",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900052",
+  "title": "Sample Pin Set #52",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-06T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-52",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900053",
+  "title": "Sample Sticker Pack #53",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-12T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-53",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900054",
+  "title": "Sample Plush Keychain #54",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-23T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-54",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900055",
+  "title": "Sample Figure #55",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-16T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-55",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900056",
+  "title": "Sample Mini Scene #56",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-22T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-56",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900057",
+  "title": "Sample Pin Set #57",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-13T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-57",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900058",
+  "title": "Sample Sticker Pack #58",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-18T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-58",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900059",
+  "title": "Sample Plush Keychain #59",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-10T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-59",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900060",
+  "title": "Sample Figure #60",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-09T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-60",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900061",
+  "title": "Sample Mini Scene #61",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-11T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-61",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900062",
+  "title": "Sample Pin Set #62",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-09-26T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-62",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900063",
+  "title": "Sample Sticker Pack #63",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-31T12:00:00Z",
+  "totalInventory": 3,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-63",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900064",
+  "title": "Sample Plush Keychain #64",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-26T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-64",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900065",
+  "title": "Sample Figure #65",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-05T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-65",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900066",
+  "title": "Sample Mini Scene #66",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-01T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-66",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900067",
+  "title": "Sample Pin Set #67",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-05T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-67",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900068",
+  "title": "Sample Sticker Pack #68",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-07T12:00:00Z",
+  "totalInventory": 2,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-68",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900069",
+  "title": "Sample Plush Keychain #69",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-10-01T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-69",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900070",
+  "title": "Sample Figure #70",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-09T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-70",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900071",
+  "title": "Sample Mini Scene #71",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-18T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-71",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "7.2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900072",
+  "title": "Sample Pin Set #72",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-21T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-72",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900073",
+  "title": "Sample Sticker Pack #73",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-06T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-73",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900074",
+  "title": "Sample Plush Keychain #74",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-20T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-74",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "6.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900075",
+  "title": "Sample Figure #75",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-18T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-75",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900076",
+  "title": "Sample Mini Scene #76",
+  "productType": "Collectible Miniature Scene",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-22T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "24.0"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-76",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900077",
+  "title": "Sample Pin Set #77",
+  "productType": "Enamel Pin Set",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-06-18T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "14.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-77",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "4.5"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900078",
+  "title": "Sample Sticker Pack #78",
+  "productType": "Sticker Pack",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-09T12:00:00Z",
+  "totalInventory": 4,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "9.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-78",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "3.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900079",
+  "title": "Sample Plush Keychain #79",
+  "productType": "Plush Keychain",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-08-25T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "19.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-79",
+     "inventoryItem": {
+      "unitCost": null
+     }
+    }
+   ]
+  }
+ },
+ {
+  "legacyResourceId": "900080",
+  "title": "Sample Figure #80",
+  "productType": "Collectible Figure",
+  "vendor": "Sample",
+  "status": "ACTIVE",
+  "createdAt": "2026-05-21T12:00:00Z",
+  "totalInventory": 1,
+  "priceRangeV2": {
+   "minVariantPrice": {
+    "amount": "29.99"
+   }
+  },
+  "variants": {
+   "nodes": [
+    {
+     "sku": "SAMPLE-80",
+     "inventoryItem": {
+      "unitCost": {
+       "amount": "9.0"
+      }
+     }
+    }
+   ]
+  }
+ }
+]

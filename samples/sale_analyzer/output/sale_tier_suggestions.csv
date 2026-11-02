@@ -1,0 +1,81 @@
+﻿tier,tier_name,discount_pct,price,suggested_price,qty,title,type,days_without_sale,days_listed,units_sold,cost,product_id,reason
+2,Tier 2: sale,20,29.99,23.99,4,Sample Figure #10,Collectible Figure,152,152,0,,900010,152 days without a sale
+2,Tier 2: sale,20,29.99,23.99,4,Sample Figure #65,Collectible Figure,150,150,0,9.0,900065,150 days without a sale
+2,Tier 2: sale,20,29.99,23.99,4,Sample Figure #70,Collectible Figure,146,146,0,,900070,146 days without a sale
+2,Tier 2: sale,20,29.99,23.99,4,Sample Figure #75,Collectible Figure,137,137,0,9.0,900075,137 days without a sale
+2,Tier 2: sale,20,19.99,15.99,2,Sample Plush Keychain #44,Plush Keychain,171,171,0,6.0,900044,171 days without a sale
+2,Tier 2: sale,20,9.99,7.99,4,Sample Sticker Pack #58,Sticker Pack,168,168,0,,900058,168 days without a sale
+2,Tier 2: sale,20,29.99,23.99,1,Sample Figure #20,Collectible Figure,176,176,0,9.0,900020,176 days without a sale
+2,Tier 2: sale,20,29.99,23.99,1,Sample Figure #30,Collectible Figure,147,147,0,9.0,900030,147 days without a sale
+2,Tier 2: sale,20,29.99,23.99,1,Sample Figure #45,Collectible Figure,179,179,0,9.0,900045,179 days without a sale
+2,Tier 2: sale,20,9.99,7.99,3,Sample Sticker Pack #63,Sticker Pack,155,155,0,3.0,900063,155 days without a sale
+2,Tier 2: sale,20,9.99,7.99,2,Sample Sticker Pack #68,Sticker Pack,148,148,0,3.0,900068,148 days without a sale
+2,Tier 2: sale,20,9.99,7.99,1,Sample Sticker Pack #33,Sticker Pack,172,172,0,3.0,900033,172 days without a sale
+2,Tier 2: sale,20,9.99,7.99,1,Sample Sticker Pack #38,Sticker Pack,185,185,0,3.0,900038,185 days without a sale
+2,Tier 2: sale,20,9.99,7.99,1,Sample Sticker Pack #73,Sticker Pack,149,149,0,,900073,149 days without a sale
+1,Tier 1: nudge,10,24.0,21.99,4,Sample Mini Scene #6,Collectible Miniature Scene,126,126,0,7.2,900006,126 days without a sale
+1,Tier 1: nudge,10,29.99,26.99,3,Sample Figure #50,Collectible Figure,127,127,0,9.0,900050,127 days without a sale
+1,Tier 1: nudge,10,24.0,21.99,3,Sample Mini Scene #1,Collectible Miniature Scene,119,119,0,,900001,119 days without a sale
+1,Tier 1: nudge,10,19.99,17.99,3,Sample Plush Keychain #39,Plush Keychain,122,122,0,6.0,900039,122 days without a sale
+1,Tier 1: nudge,10,29.99,26.99,1,Sample Figure #55,Collectible Figure,109,109,0,,900055,109 days without a sale
+1,Tier 1: nudge,10,14.99,12.99,2,Sample Pin Set #2,Enamel Pin Set,138,138,0,4.5,900002,"138 days without a sale; 'Enamel Pin Set' sells fast, held back one tier"
+1,Tier 1: nudge,10,9.99,8.99,3,Sample Sticker Pack #13,Sticker Pack,121,121,0,,900013,121 days without a sale
+1,Tier 1: nudge,10,9.99,8.99,3,Sample Sticker Pack #23,Sticker Pack,123,123,0,3.0,900023,123 days without a sale
+1,Tier 1: nudge,10,24.0,21.99,1,Sample Mini Scene #31,Collectible Miniature Scene,131,131,0,,900031,131 days without a sale
+1,Tier 1: nudge,10,19.99,17.99,1,Sample Plush Keychain #19,Plush Keychain,117,117,0,,900019,117 days without a sale
+1,Tier 1: nudge,10,14.99,12.99,1,Sample Pin Set #42,Enamel Pin Set,174,178,1,4.5,900042,"174 days without a sale; last sold 2026-05-12; 'Enamel Pin Set' sells fast, held back one tier"
+0,Fresh (leave it),0,29.99,29.99,4,Sample Figure #5,Collectible Figure,70,70,0,9.0,900005,70 days without a sale
+0,Fresh (leave it),0,29.99,29.99,4,Sample Figure #25,Collectible Figure,62,62,0,,900025,62 days without a sale
+0,Fresh (leave it),0,29.99,29.99,4,Sample Figure #40,Collectible Figure,62,62,0,,900040,62 days without a sale
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #21,Collectible Miniature Scene,38,49,1,7.2,900021,38 days without a sale; last sold 2026-09-25
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #36,Collectible Miniature Scene,25,25,0,7.2,900036,25 days without a sale
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #41,Collectible Miniature Scene,48,48,0,7.2,900041,48 days without a sale
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #66,Collectible Miniature Scene,75,185,2,7.2,900066,75 days without a sale; last sold 2026-08-19
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #71,Collectible Miniature Scene,30,76,1,7.2,900071,30 days without a sale; last sold 2026-10-03
+0,Fresh (leave it),0,24.0,24.0,4,Sample Mini Scene #76,Collectible Miniature Scene,30,133,1,,900076,30 days without a sale; last sold 2026-10-03
+0,Fresh (leave it),0,29.99,29.99,3,Sample Figure #35,Collectible Figure,26,163,2,9.0,900035,26 days without a sale; last sold 2026-10-07
+0,Fresh (leave it),0,19.99,19.99,4,Sample Plush Keychain #24,Plush Keychain,23,104,2,6.0,900024,23 days without a sale; last sold 2026-10-10
+0,Fresh (leave it),0,19.99,19.99,4,Sample Plush Keychain #34,Plush Keychain,91,91,0,,900034,91 days without a sale
+0,Fresh (leave it),0,19.99,19.99,4,Sample Plush Keychain #54,Plush Keychain,102,102,0,6.0,900054,102 days without a sale
+0,Fresh (leave it),0,19.99,19.99,4,Sample Plush Keychain #69,Plush Keychain,32,32,0,6.0,900069,32 days without a sale
+0,Fresh (leave it),0,29.99,29.99,2,Sample Figure #15,Collectible Figure,46,58,1,9.0,900015,46 days without a sale; last sold 2026-09-17
+0,Fresh (leave it),0,29.99,29.99,2,Sample Figure #60,Collectible Figure,54,54,0,9.0,900060,54 days without a sale
+0,Fresh (leave it),0,19.99,19.99,3,Sample Plush Keychain #9,Plush Keychain,94,94,0,6.0,900009,94 days without a sale
+0,Fresh (leave it),0,19.99,19.99,3,Sample Plush Keychain #29,Plush Keychain,31,173,1,6.0,900029,31 days without a sale; last sold 2026-10-02
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #7,Enamel Pin Set,22,92,1,,900007,22 days without a sale; last sold 2026-10-11
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #32,Enamel Pin Set,52,52,0,4.5,900032,52 days without a sale
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #37,Enamel Pin Set,66,107,1,,900037,66 days without a sale; last sold 2026-08-28
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #47,Enamel Pin Set,10,128,2,4.5,900047,10 days without a sale; last sold 2026-10-23
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #52,Enamel Pin Set,88,88,0,,900052,88 days without a sale
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #62,Enamel Pin Set,13,37,1,4.5,900062,13 days without a sale; last sold 2026-10-20
+0,Fresh (leave it),0,14.99,14.99,4,Sample Pin Set #77,Enamel Pin Set,125,137,1,4.5,900077,"125 days without a sale; last sold 2026-06-30; 'Enamel Pin Set' sells fast, held back one tier"
+0,Fresh (leave it),0,24.0,24.0,2,Sample Mini Scene #11,Collectible Miniature Scene,92,92,0,7.2,900011,92 days without a sale
+0,Fresh (leave it),0,24.0,24.0,2,Sample Mini Scene #16,Collectible Miniature Scene,53,98,1,,900016,53 days without a sale; last sold 2026-09-10
+0,Fresh (leave it),0,24.0,24.0,2,Sample Mini Scene #26,Collectible Miniature Scene,48,150,2,7.2,900026,48 days without a sale; last sold 2026-09-15
+0,Fresh (leave it),0,24.0,24.0,2,Sample Mini Scene #46,Collectible Miniature Scene,27,27,0,,900046,27 days without a sale
+0,Fresh (leave it),0,24.0,24.0,2,Sample Mini Scene #61,Collectible Miniature Scene,52,52,0,,900061,52 days without a sale
+0,Fresh (leave it),0,19.99,19.99,2,Sample Plush Keychain #14,Plush Keychain,17,17,0,6.0,900014,17 days without a sale
+0,Fresh (leave it),0,19.99,19.99,2,Sample Plush Keychain #59,Plush Keychain,38,145,2,6.0,900059,38 days without a sale; last sold 2026-09-25
+0,Fresh (leave it),0,9.99,9.99,4,Sample Sticker Pack #8,Sticker Pack,73,73,0,3.0,900008,73 days without a sale
+0,Fresh (leave it),0,9.99,9.99,4,Sample Sticker Pack #78,Sticker Pack,85,85,0,3.0,900078,85 days without a sale
+0,Fresh (leave it),0,29.99,29.99,1,Sample Figure #80,Collectible Figure,19,165,2,9.0,900080,19 days without a sale; last sold 2026-10-14
+0,Fresh (leave it),0,14.99,14.99,2,Sample Pin Set #12,Enamel Pin Set,58,174,1,4.5,900012,58 days without a sale; last sold 2026-09-05
+0,Fresh (leave it),0,14.99,14.99,2,Sample Pin Set #22,Enamel Pin Set,87,145,1,,900022,87 days without a sale; last sold 2026-08-07
+0,Fresh (leave it),0,14.99,14.99,2,Sample Pin Set #27,Enamel Pin Set,97,97,0,4.5,900027,97 days without a sale
+0,Fresh (leave it),0,14.99,14.99,2,Sample Pin Set #57,Enamel Pin Set,25,50,1,4.5,900057,25 days without a sale; last sold 2026-10-08
+0,Fresh (leave it),0,14.99,14.99,2,Sample Pin Set #67,Enamel Pin Set,38,150,2,,900067,38 days without a sale; last sold 2026-09-25
+0,Fresh (leave it),0,9.99,9.99,3,Sample Sticker Pack #53,Sticker Pack,51,51,0,3.0,900053,51 days without a sale
+0,Fresh (leave it),0,24.0,24.0,1,Sample Mini Scene #51,Collectible Miniature Scene,101,140,1,7.2,900051,101 days without a sale; last sold 2026-07-24
+0,Fresh (leave it),0,24.0,24.0,1,Sample Mini Scene #56,Collectible Miniature Scene,41,41,0,7.2,900056,41 days without a sale
+0,Fresh (leave it),0,19.99,19.99,1,Sample Plush Keychain #4,Plush Keychain,30,30,0,,900004,30 days without a sale
+0,Fresh (leave it),0,19.99,19.99,1,Sample Plush Keychain #49,Plush Keychain,85,125,1,,900049,85 days without a sale; last sold 2026-08-09
+0,Fresh (leave it),0,19.99,19.99,1,Sample Plush Keychain #64,Plush Keychain,10,160,1,,900064,10 days without a sale; last sold 2026-10-23
+0,Fresh (leave it),0,19.99,19.99,1,Sample Plush Keychain #74,Plush Keychain,74,74,0,6.0,900074,74 days without a sale
+0,Fresh (leave it),0,19.99,19.99,1,Sample Plush Keychain #79,Plush Keychain,69,69,0,,900079,69 days without a sale
+0,Fresh (leave it),0,9.99,9.99,2,Sample Sticker Pack #3,Sticker Pack,81,138,1,3.0,900003,81 days without a sale; last sold 2026-08-13
+0,Fresh (leave it),0,9.99,9.99,2,Sample Sticker Pack #48,Sticker Pack,18,18,0,3.0,900048,18 days without a sale
+0,Fresh (leave it),0,14.99,14.99,1,Sample Pin Set #17,Enamel Pin Set,21,21,0,4.5,900017,21 days without a sale
+0,Fresh (leave it),0,14.99,14.99,1,Sample Pin Set #72,Enamel Pin Set,73,73,0,4.5,900072,73 days without a sale
+0,Fresh (leave it),0,9.99,9.99,1,Sample Sticker Pack #18,Sticker Pack,51,51,0,3.0,900018,51 days without a sale
+0,Fresh (leave it),0,9.99,9.99,1,Sample Sticker Pack #28,Sticker Pack,74,74,0,,900028,74 days without a sale
+0,Fresh (leave it),0,9.99,9.99,1,Sample Sticker Pack #43,Sticker Pack,107,107,0,,900043,107 days without a sale

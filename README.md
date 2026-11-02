@@ -185,6 +185,11 @@ Add to `%APPDATA%\Claude\claude_desktop_config.json`, then restart Claude Deskto
 }
 ```
 
+## Sale tier report
+
+Read-only report on what sells and what to put on sale: double-click `run_sale_analyzer.bat`
+or run `python -m sale_analyzer`. Details in [SALE_ANALYZER.md](SALE_ANALYZER.md).
+
 ## Files
 
 ```
@@ -198,6 +203,7 @@ rrr_sync/matching.py    eBay ↔ Shopify matching and data/matches.csv
 rrr_sync/sync.py        eBay-shows-1 rule: count eBay sales on Shopify, set eBay to 1 or 0
 rrr_sync/notify.py      activity log + ntfy phone notifications
 run_sync.bat            what Windows Task Scheduler runs
+sale_analyzer/          sale tier report (read-only), see SALE_ANALYZER.md
 rrr_sync/orders.py      order CSV/JSON export
 ```
 
