@@ -1,0 +1,6 @@
+Transaction Date,Type,Order,Card Brand,Card Source,Payout Status,Payout Date,Payout ID,Available On,Amount,Fee,Net,Checkout,Payment Method Name,Presentment Amount,Presentment Currency,Currency
+2026-09-14 13:02:11 -0400,charge,#1001,visa,online,paid,2026-09-16,1111,2026-09-16,51.02,1.78,49.24,,card,51.02,USD,USD
+2026-10-03 19:44:00 -0400,charge,#1002,mastercard,online,paid,2026-10-06,2222,2026-10-06,68.90,2.30,66.60,,card,68.90,USD,USD
+2026-10-21 10:15:00 -0400,charge,#1003,visa,online,paid,2026-10-23,3333,2026-10-23,36.80,1.37,35.43,,card,36.80,USD,USD
+2026-10-25 09:00:00 -0400,refund,#1003,visa,online,paid,2026-10-27,4444,2026-10-27,-12.00,0.00,-12.00,,card,-12.00,USD,USD
+2026-10-28 09:00:00 -0400,adjustment,,,,paid,2026-10-30,5555,2026-10-30,-1.50,0.00,-1.50,,,-1.50,USD,USD

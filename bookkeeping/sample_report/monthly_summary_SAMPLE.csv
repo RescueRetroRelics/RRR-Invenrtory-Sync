@@ -1,0 +1,33 @@
+Month,Section,Line,Amount
+2026-09,INCOME,Shopify product sales (after discounts),42.00
+2026-09,INCOME,eBay item sales,35.00
+2026-09,INCOME,Shopify shipping charged to buyers,6.50
+2026-09,INCOME,eBay shipping charged to buyers,5.00
+2026-09,EXPENSES,Inventory bought (your expenses list),40.00
+2026-09,EXPENSES,eBay shipping labels,5.85
+2026-09,EXPENSES,eBay selling fees (final value etc.),5.78
+2026-09,EXPENSES,Shopify Payments card fees,1.78
+2026-09,Sales tax,"Shopify sales tax collected (owed to the state, not yours)",2.52
+2026-09,Sales tax,"eBay sales tax (eBay collects and pays it, not yours)",2.40
+2026-09,TOTAL,Total income,88.50
+2026-09,TOTAL,Total expenses,53.41
+2026-09,TOTAL,Net profit (income minus expenses),35.09
+2026-10,INCOME,Shopify product sales (after discounts),95.00
+2026-10,INCOME,eBay item sales,60.00
+2026-10,INCOME,eBay refunds (net of fee credits),-20.00
+2026-10,INCOME,Shopify refunds,-12.00
+2026-10,INCOME,Shopify shipping charged to buyers,5.00
+2026-10,EXPENSES,Software/apps (your expenses list),39.00
+2026-10,EXPENSES,Inventory bought (your expenses list),25.00
+2026-10,EXPENSES,Shipping supplies (your expenses list),18.99
+2026-10,EXPENSES,eBay selling fees (final value etc.),8.45
+2026-10,EXPENSES,eBay other fees: Promoted Listings - General fee,4.10
+2026-10,EXPENSES,Shopify Payments card fees,3.67
+2026-10,Sales tax,"Shopify sales tax collected (owed to the state, not yours)",5.70
+2026-10,Sales tax,"eBay sales tax (eBay collects and pays it, not yours)",3.60
+2026-10,Money moved to your bank,eBay payouts sent to your bank,55.37
+2026-10,Look at these,Shopify Payments 'adjustment' (net),-1.50
+2026-10,For your info,Shopify discounts given,7.22
+2026-10,TOTAL,Total income,128.00
+2026-10,TOTAL,Total expenses,99.21
+2026-10,TOTAL,Net profit (income minus expenses),28.79

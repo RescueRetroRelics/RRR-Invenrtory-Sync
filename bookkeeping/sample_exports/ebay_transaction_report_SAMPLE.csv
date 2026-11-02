@@ -1,0 +1,11 @@
+"Transaction report"
+"Start date","Sep 01, 2026"
+"End date","Oct 31, 2026"
+
+"Transaction creation date","Type","Order number","Legacy order ID","Buyer username","Buyer name","Net amount","Payout currency","Payout date","Payout ID","Payout method","Payout status","Item ID","Transaction ID","Item title","Custom label","Quantity","Item subtotal","Shipping and handling","Seller collected tax","eBay collected tax","Final Value Fee - fixed","Final Value Fee - variable","Regulatory operating fee","Very high ""item not as described"" fee","Below standard performance fee","International fee","Gross transaction amount","Description"
+"Sep 20, 2026","Order","00-00000-00001","--","sample_buyer","Sample Buyer","31.92","USD","Sep 22, 2026","P1","Bank","Paid","100000000001","T1","SAMPLE Vintage Peanuts lunchbox","LB-01","1","35.00","5.00","--","2.40","-0.40","-5.30","-0.08","--","--","--","42.40","--"
+"Sep 22, 2026","Shipping label","--","--","--","--","-5.85","USD","Sep 24, 2026","P2","Bank","Paid","100000000001","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","USPS Ground Advantage"
+"Oct 05, 2026","Order","00-00000-00002","--","sample_buyer2","Sample Buyer","53.40","USD","Oct 07, 2026","P3","Bank","Paid","100000000002","T2","SAMPLE Halloween blow mold","HW-07","1","60.00","0.00","--","3.60","-0.40","-7.95","-0.10","--","--","--","63.60","--"
+"Oct 12, 2026","Other fee","--","--","--","--","-4.10","USD","Oct 14, 2026","P4","Bank","Paid","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","Promoted Listings - General fee"
+"Oct 18, 2026","Refund","00-00000-00002","--","sample_buyer2","Sample Buyer","-20.00","USD","Oct 20, 2026","P5","Bank","Paid","100000000002","T2","SAMPLE Halloween blow mold","HW-07","--","--","--","--","--","--","--","--","--","--","--","--","Partial refund"
+"Oct 20, 2026","Payout","--","--","--","--","-55.37","USD","Oct 20, 2026","P6","Bank","Paid","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","Payout to bank"

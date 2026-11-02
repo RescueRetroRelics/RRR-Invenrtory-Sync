@@ -9,3 +9,8 @@ data/
 __pycache__/
 *.pyc
 .venv/
+
+# Bookkeeping helper: your real exports and reports stay on your computer only
+bookkeeping/exports/*
+!bookkeeping/exports/.keep
+bookkeeping/reports/
