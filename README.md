@@ -140,6 +140,56 @@ These come through as urgent:
 - Only the store's one location (13252 Leech Dr) is synced; set `SHOPIFY_LOCATION_ID` to change it.
 - Products with inventory tracking turned off in Shopify are skipped.
 
+## Inventory check: Shopify vs eBay (read-only report)
+
+Finds what's out of sync between your two stores. **It only reads. It never changes Shopify or eBay.**
+
+**What it tells you**
+
+- In stock on Shopify but not listed on eBay
+- On eBay but not found on Shopify
+- Quantity mismatches, worst first (eBay offering more than Shopify has = oversell risk)
+- One Shopify item with 2+ eBay listings (duplicates)
+- Items with no unit cost, best sellers first
+- Close-title matches it wants you to eyeball
+
+**Run it (one command)**
+
+1. Shopify admin → **Products** → **Export** → *All products*, *CSV for Excel* → **Export products**.
+   Download the file from the email.
+2. Put that file (`products_export_1.csv`) in the **`exports`** folder.
+3. Double-click **`reconcile.bat`** (or run `python -m rrr_sync reconcile`).
+
+The report folder opens by itself when it's done. Start with **`SUMMARY.txt`**.
+
+eBay: if there's no eBay CSV in `exports`, it reads your live eBay listings and last 12 months of
+eBay sales with the same eBay login the sync uses. If you'd rather use a file, download
+*Seller Hub → Reports → Downloads → Active listings* and drop it in `exports` (file name with "ebay"
+or "listing" in it).
+
+Optional extras in `exports` (all picked up automatically):
+`inventory_export_1.csv` (Products → Inventory → Export) if your product export has no stock counts,
+and `orders_export_1.csv` (Orders → Export) so Shopify sales count toward "best sellers".
+
+**What you get** (in `data/reconcile/<date_time>/`)
+
+| File | What's in it |
+|------|--------------|
+| `SUMMARY.txt` | the counts and the top 10 of each problem |
+| `master.csv` | every item, Shopify product ID and eBay item number side by side, with an `issues` column |
+| `quantity_mismatches.csv` | oversell risks first |
+| `only_on_shopify.csv` / `only_on_ebay.csv` | listed on one store only |
+| `ebay_duplicates.csv` | items listed on eBay more than once |
+| `missing_unit_costs.csv` | no cost entered, best sellers first |
+| `check_these_matches.csv` | title matches that are close but not exact |
+
+**Re-running after you fix things:** export a fresh Shopify file into `exports`, double-click
+`reconcile.bat` again. Each run gets its own dated folder, so you can compare before and after.
+
+Good to know: the product export has no Shopify product IDs, so `shopify_product_gid` is blank when
+you use it; the `handle` column (the end of the product's web address) identifies the product instead.
+"Close title" matches are guesses; check them before acting on them.
+
 ## Claude Desktop: eBay listing tools (MCP server)
 
 `rrr_ebay_mcp.py` lets Claude create, finish and publish eBay listings straight from Shopify.
@@ -199,6 +249,7 @@ rrr_sync/sync.py        eBay-shows-1 rule: count eBay sales on Shopify, set eBay
 rrr_sync/notify.py      activity log + ntfy phone notifications
 run_sync.bat            what Windows Task Scheduler runs
 rrr_sync/orders.py      order CSV/JSON export
+rrr_sync/reconcile.py   read-only Shopify vs eBay report (reconcile.bat runs it)
 ```
 
 Never committed: `.env`, `.secrets/` (tokens), `data/` (orders, matches, sync state).

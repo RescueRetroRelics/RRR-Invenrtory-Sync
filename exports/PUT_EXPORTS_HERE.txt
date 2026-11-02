@@ -1,0 +1,10 @@
+Drop your export files in this folder, then double-click reconcile.bat.
+
+Needed:   products_export_1.csv     (Shopify admin > Products > Export > All products, CSV)
+Optional: your eBay active listings CSV (Seller Hub > Reports > Downloads). If it's not here,
+          the tool reads your live eBay listings itself (read-only).
+Optional: inventory_export_1.csv    (Shopify > Products > Inventory > Export) for stock counts
+Optional: orders_export_1.csv       (Shopify > Orders > Export) for top sellers
+
+The newest file of each kind is used, so you can just keep adding new downloads.
+Files in this folder never get uploaded to GitHub.

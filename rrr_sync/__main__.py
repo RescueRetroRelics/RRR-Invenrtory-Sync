@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from . import ebay, ebay_auth, matching, notify, orders, sync
+from . import ebay, ebay_auth, matching, notify, orders, reconcile, sync
 from .config import Config
 from .shopify import Shopify
 
@@ -91,6 +91,57 @@ def cmd_orders(cfg, args):
     print(f"  {csv_path}\n  {json_path}")
 
 
+def cmd_reconcile(cfg, args):
+    from datetime import datetime
+    from pathlib import Path
+    from .config import DATA_DIR, ROOT
+
+    folder = Path(args.folder) if args.folder else ROOT / "exports"
+    found = reconcile.find_exports(folder) if folder.exists() else {}
+    shopify_csv = args.shopify or found.get("shopify")
+    ebay_csv = args.ebay or found.get("ebay")
+    inventory_csv = args.inventory or found.get("inventory")
+    orders_csv = args.orders or found.get("orders")
+    if not shopify_csv:
+        print(f"No Shopify product export found. Put products_export.csv in {folder} "
+              "(Shopify admin > Products > Export), then run this again.")
+        return 1
+
+    notes = []
+    print(f"Shopify file: {Path(shopify_csv).name}")
+    shop = reconcile.load_shopify_products_csv(shopify_csv, inventory_csv)
+    if inventory_csv:
+        print(f"Inventory file: {Path(inventory_csv).name}")
+    if all(s.qty is None for s in shop):
+        notes.append("NOTE: the Shopify export had no stock counts, so quantity checks were skipped. "
+                     "Add Shopify's inventory export (Products > Inventory > Export) to the exports folder.")
+
+    ebay_sold = None
+    if ebay_csv:
+        print(f"eBay file:    {Path(ebay_csv).name}")
+        ebay_items = reconcile.load_ebay_csv(ebay_csv)
+    else:
+        print("eBay:         no eBay export found, reading live listings from eBay (read-only)...")
+        ebay_items = reconcile.load_ebay_live(cfg)
+        try:
+            ebay_sold = reconcile.ebay_sales_live(cfg)
+        except Exception as e:  # sales are a bonus; the rest of the report still works
+            notes.append(f"NOTE: couldn't read eBay orders for sales counts ({e}).")
+
+    shopify_orders = None
+    if orders_csv:
+        print(f"Orders file:  {Path(orders_csv).name}")
+        shopify_orders = reconcile.load_shopify_orders_csv(orders_csv)
+
+    report = reconcile.Report(shop=shop, ebay=reconcile.match(ebay_items, shop), notes=notes)
+    reconcile.add_sales(report, ebay_sold=ebay_sold, shopify_orders=shopify_orders)
+    out_dir = Path(args.out) if args.out else DATA_DIR / "reconcile" / datetime.now().strftime("%Y-%m-%d_%H%M")
+    print()
+    print(reconcile.write_reports(report, out_dir))
+    print(f"Report folder: {out_dir}")
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -105,6 +156,14 @@ def main(argv=None):
     sub.add_parser("notify-test", help="send a test phone notification")
     od = sub.add_parser("orders", help="export eBay orders to data/")
     od.add_argument("--since", default="2026-01-01", help="YYYY-MM-DD (default 2026-01-01)")
+
+    rc = sub.add_parser("reconcile", help="read-only Shopify vs eBay inventory report")
+    rc.add_argument("--folder", help="folder with your export CSVs (default: exports/)")
+    rc.add_argument("--shopify", help="Shopify product export CSV")
+    rc.add_argument("--ebay", help="eBay Seller Hub active listings CSV (default: read live from eBay)")
+    rc.add_argument("--inventory", help="Shopify inventory export CSV (optional, for stock counts)")
+    rc.add_argument("--orders", help="Shopify orders export CSV (optional, for top sellers)")
+    rc.add_argument("--out", help="where to write the report (default: data/reconcile/<date>)")
 
     args = p.parse_args(argv)
     cfg = Config.load()
