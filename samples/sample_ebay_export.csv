@@ -1,0 +1,9 @@
+Item number,Title,Variation details,Custom label (SKU),Available quantity,Format,Currency,Start price,Current price,Watchers,Bids,Start date
+100000000000,Sample Snoopy Ceramic Mug,,SNP-1,1,FIXED_PRICE,USD,24.99,24.99,0,0,Oct-20-26 10:00:00 PDT
+100000000001,Sample Re-Ment Miniature Set,,,1,FIXED_PRICE,USD,39.99,39.99,1,0,Aug-25-26 10:00:00 PDT
+100000000002,Sample Funko Pop Vinyl Figure,,,1,FIXED_PRICE,USD,18.99,18.99,0,0,Jul-10-26 10:00:00 PDT
+100000000003,Sample Sonny Angel Blind Box,,,1,FIXED_PRICE,USD,14.99,14.99,5,0,Apr-01-26 10:00:00 PDT
+100000000004,Sample Vintage Peanuts Playing Cards,,CARDS-1,1,FIXED_PRICE,USD,12.99,12.99,0,0,Sep-15-25 10:00:00 PDT
+100000000005,Sample Halloween Tin Lunchbox,,TIN-1,1,FIXED_PRICE,USD,9.99,9.99,0,0,Mar-01-26 10:00:00 PDT
+100000000006,Sample Labubu Outfit Set,,,1,FIXED_PRICE,USD,29.99,29.99,0,0,Jun-01-26 10:00:00 PDT
+100000000007,Sample Star Wars Deck,,,1,FIXED_PRICE,USD,8.99,8.99,0,0,Aug-01-25 10:00:00 PDT

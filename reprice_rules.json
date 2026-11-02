@@ -1,0 +1,36 @@
+{
+  "_read_me": "Your repricing rules. Change a number, save, and run the repricer again. Lines starting with _ are notes.",
+
+  "fees": {
+    "_note": "eBay's standard rate for most categories is 13.6% of the total sale + a per-order fee. Check yours in Seller Hub > Payments > Reports > Transaction report and change these if they differ.",
+    "final_value_fee_percent": 13.6,
+    "per_order_fee_over_10": 0.40,
+    "per_order_fee_10_or_less": 0.30,
+    "promoted_listing_percent": 0.0,
+    "_tax_note": "eBay charges its fee on the sales tax too. 6 is Michigan's rate, a middle-of-the-road guess for buyers nationwide.",
+    "sales_tax_percent_fee_is_charged_on": 6.0,
+    "_shipping_note": "If you offer free shipping, put your average label cost here so the floor covers it.",
+    "shipping_you_pay_per_item": 0.0
+  },
+
+  "_profit_note": "The lowest price ever suggested covers cost + eBay fees + this much profit ($3 matches the sale tier report), and is never under min_price.",
+  "min_profit": 3.00,
+  "min_price": 4.99,
+  "cost_when_unknown": 0.0,
+
+  "_tiers_note": "How much to cut from the ORIGINAL price once a listing has been up this many days. These match the sale tier report built from your own sales (Nov 2026): 10% at 79 days, 20% at 107, 30% at 160. Bigger cuts = faster sales.",
+  "age_tiers": [
+    {"days": 79, "cut_percent": 10},
+    {"days": 107, "cut_percent": 20},
+    {"days": 160, "cut_percent": 30}
+  ],
+
+  "_watchers_note": "Listings with at least this many watchers get the next-smaller cut. Send those watchers an offer instead.",
+  "watchers_soften_at": 3,
+
+  "_slow_lane_note": "Titles with these words sell well for you, so they wait one tier longer before a cut.",
+  "wait_one_tier_longer": ["re-ment", "rement", "pin", "hippers"],
+
+  "_min_change_note": "Skip changes smaller than this many dollars.",
+  "min_change_dollars": 0.50
+}
