@@ -1,0 +1,228 @@
+keyword,brand,confidence,note
+# Rules are checked top to bottom. First match wins. Add your own rows any time.
+# keyword = words to look for in the title, type or tags (not case-sensitive)
+# confidence: high = the maker is named, medium = very likely, low = franchise only (no maker named)
+hippers,Takara Tomy,high,HIPPERS figures are made by Takara Tomy A.R.T.S
+takara tomy,Takara Tomy,high,
+t-arts,Takara Tomy,high,
+re-ment,Re-Ment,high,
+rement,Re-Ment,high,
+sonny angel,Sonny Angel,high,
+smiski,Dreams Inc.,high,Smiski is made by Dreams (same company as Sonny Angel)
+accommode,Accommode,high,
+nine wood sundries,Nine Woods Sundries,medium,Spelling check: title says Nine Wood but tag says Nine Woods
+nine woods sundries,Nine Woods Sundries,medium,
+bandai,Bandai,high,
+tamagotchi,Bandai,high,
+kitan club,Kitan Club,high,
+san-x,San-X,high,
+rilakkuma,San-X,high,
+sumikko gurashi,San-X,high,
+sanrio,Sanrio,high,
+hello kitty,Sanrio,medium,Licensed items may have a different maker
+my melody,Sanrio,medium,
+kuromi,Sanrio,medium,
+pompompurin,Sanrio,medium,
+cinnamoroll,Sanrio,medium,
+pop mart,Pop Mart,high,
+labubu,Pop Mart,high,
+funko,Funko,high,
+good smile,Good Smile Company,high,
+nendoroid,Good Smile Company,high,
+medicom,Medicom Toy,high,
+kidrobot,Kidrobot,high,
+tomica,Takara Tomy,high,
+mattel,Mattel,high,
+barbie,Mattel,high,
+hot wheels,Mattel,high,
+fisher-price,Fisher-Price,high,
+fisher price,Fisher-Price,high,
+polly pocket,Bluebird Toys,medium,Vintage Polly Pocket = Bluebird; newer = Mattel
+hasbro,Hasbro,high,
+kenner,Kenner,high,
+my little pony,Hasbro,medium,
+playskool,Playskool,high,
+lego,LEGO,high,
+matchbox,Matchbox,high,
+ty beanie,Ty,high,
+beanie babies,Ty,high,
+beanie baby,Ty,high,
+gund,Gund,high,
+steiff,Steiff,high,
+hallmark,Hallmark,high,
+enesco,Enesco,high,
+precious moments,Enesco,medium,
+department 56,Department 56,high,
+willitts,Willitts Designs,high,
+determined productions,Determined Productions,high,
+avon,Avon,high,
+pyrex,Pyrex,high,
+fire-king,Fire-King,high,
+fire king,Fire-King,high,
+anchor hocking,Anchor Hocking,high,
+corelle,Corelle,high,
+corning ware,Corning Ware,high,
+corningware,Corning Ware,high,
+tupperware,Tupperware,high,
+lenox,Lenox,high,
+royal doulton,Royal Doulton,high,
+franciscan,Franciscan,high,
+disney store,Disney,high,
+loungefly,Loungefly,high,
+american greetings,American Greetings,high,
+coach,Coach,medium,Check it is the handbag brand and not a word in the title
+nike,Nike,medium,
+levi's,Levi's,medium,
+# Makers found in Stephanie's catalog (Nov 2026)
+aquarius,Aquarius,high,Aquarius makes licensed playing cards and novelties
+celavi,Celavi,high,
+neca,NECA,high,
+super7,Super7,high,
+kayou,Kayou,high,
+miniverse,MGA Entertainment,high,
+mga,MGA Entertainment,high,
+jakks,Jakks Pacific,high,
+beast kingdom,Beast Kingdom,high,
+bushiroad,Bushiroad,high,
+taste beauty,Taste Beauty,high,
+beauty creations,Beauty Creations,high,
+centric beauty,Centric Beauty,high,
+joivida,Joivida,high,
+shukui,ShuKui,high,
+mr paper,Mr. Paper,high,
+mr. paper,Mr. Paper,high,
+what do you meme,What Do You Meme?,high,
+sembo,Sembo,high,
+just play,Just Play,high,
+paul frank,Paul Frank,high,
+kohl's cares,Kohl's Cares,high,
+sega,SEGA,medium,SEGA named; check whether it is the maker or the licensor
+capcom,Capcom,medium,Capcom named; check whether it is the maker or the licensor
+miniso,Miniso,high,
+blokees,Blokees,high,
+hugkis,Hugkis,high,
+squishmallow,Jazwares,high,Squishmallows are made by Jazwares
+creme shop,The Creme Shop,high,
+joytop,Joytop,high,
+doorables,Moose Toys,high,Disney Doorables are made by Moose Toys
+korilakkuma,San-X,high,
+gashapon,Bandai,medium,Gashapon is Bandai's capsule brand; check if a different maker is named
+# Franchise-only fallbacks (no maker named). Low confidence = NEEDS YOUR REVIEW.
+pokémon,Pokémon,low,No maker named
+pokemon,Pokémon,low,No maker named
+powerpuff,Powerpuff Girls,low,No maker named
+tom & jerry,Tom and Jerry,low,No maker named
+tom and jerry,Tom and Jerry,low,No maker named
+jerry the mouse,Tom and Jerry,low,No maker named
+looney tunes,Looney Tunes,low,No maker named
+pinky and the brain,Animaniacs,low,No maker named
+animaniacs,Animaniacs,low,No maker named
+snoopy,Peanuts,low,No maker named
+peanuts,Peanuts,low,No maker named
+charlie brown,Peanuts,low,No maker named
+hello kitty,Sanrio,medium,Licensed items may have a different maker
+betty boop,Betty Boop,low,No maker named
+beetlejuice,Beetlejuice,low,No maker named
+strawberry shortcake,Strawberry Shortcake,low,No maker named
+batman,DC Comics,low,No maker named
+superman,DC Comics,low,No maker named
+dc comics,DC Comics,low,No maker named
+grinch,Dr. Seuss,low,No maker named
+dr seuss,Dr. Seuss,low,No maker named
+dr. seuss,Dr. Seuss,low,No maker named
+chainsaw man,Chainsaw Man,low,No maker named
+spongebob,SpongeBob SquarePants,low,No maker named
+rugrats,Nickelodeon,low,No maker named
+fairly oddparents,Nickelodeon,low,No maker named
+hey arnold,Nickelodeon,low,No maker named
+tmnt,TMNT,low,No maker named
+teenage mutant,TMNT,low,No maker named
+ace ventura,Ace Ventura,low,No maker named
+aqua teen,Adult Swim,low,No maker named
+christmas story,A Christmas Story,low,No maker named
+buddy the elf,Elf,low,No maker named
+christmas vacation,National Lampoon's Christmas Vacation,low,No maker named
+goonies,The Goonies,low,No maker named
+bendy,Bendy and the Ink Machine,low,No maker named
+berenstain,Berenstain Bears,low,No maker named
+bewitched,Bewitched,low,No maker named
+blockbuster,Blockbuster,low,No maker named
+bluey,Bluey,low,No maker named
+bob ross,Bob Ross,low,No maker named
+breaking bad,Breaking Bad,low,No maker named
+buffy,Buffy the Vampire Slayer,low,No maker named
+care bear,Care Bears,low,No maker named
+casper,Harvey Comics,low,No maker named
+harvey comics,Harvey Comics,low,No maker named
+hot stuff,Harvey Comics,low,No maker named
+chiikawa,Chiikawa,low,No maker named
+chucky,Chucky,low,No maker named
+daria,MTV,low,No maker named
+mtv,MTV,low,No maker named
+deputy dawg,Deputy Dawg,low,No maker named
+donkey kong,Nintendo,low,No maker named
+zelda,Nintendo,low,No maker named
+super mario,Nintendo,low,No maker named
+mario kart,Nintendo,low,No maker named
+nintendo,Nintendo,low,No maker named
+duck hunt,Nintendo,low,No maker named
+e.t.,E.T. the Extra-Terrestrial,low,No maker named
+felix the cat,Felix the Cat,low,No maker named
+flintstone,Hanna-Barbera,low,No maker named
+hanna-barbera,Hanna-Barbera,low,No maker named
+huckleberry hound,Hanna-Barbera,low,No maker named
+yogi bear,Hanna-Barbera,low,No maker named
+scooby,Scooby-Doo,low,No maker named
+jetsons,Hanna-Barbera,low,No maker named
+friday the 13th,Friday the 13th,low,No maker named
+friends tv,Friends,low,No maker named
+futurama,Futurama,low,No maker named
+garfield,Garfield,low,No maker named
+ghostbusters,Ghostbusters,low,No maker named
+golden girls,The Golden Girls,low,No maker named
+harry potter,Harry Potter,low,No maker named
+hogwarts,Harry Potter,low,No maker named
+hocus pocus,Disney,low,No maker named
+i love lucy,I Love Lucy,low,No maker named
+jaws,Jaws,low,No maker named
+land before time,The Land Before Time,low,No maker named
+mad magazine,MAD Magazine,low,No maker named
+spy vs spy,MAD Magazine,low,No maker named
+marvel,Marvel,low,No maker named
+spider-man,Marvel,low,No maker named
+mean girls,Mean Girls,low,No maker named
+michael myers,Halloween,low,No maker named
+mofusand,Mofusand,low,No maker named
+mona the vampire,Mona the Vampire,low,No maker named
+pink panther,Pink Panther,low,No maker named
+popeye,Popeye,low,No maker named
+project hail mary,Project Hail Mary,low,No maker named
+rainbow brite,Rainbow Brite,low,No maker named
+resident evil,Capcom,low,No maker named
+saved by the bell,Saved by the Bell,low,No maker named
+simpsons,The Simpsons,low,No maker named
+smurf,The Smurfs,low,No maker named
+sonic,SEGA,low,No maker named
+south park,South Park,low,No maker named
+star trek,Star Trek,low,No maker named
+star wars,Star Wars,low,No maker named
+supernatural,Supernatural,low,No maker named
+tales from the crypt,Tales from the Crypt,low,No maker named
+rudolph,Rudolph the Red-Nosed Reindeer,low,No maker named
+nickelodeon,Nickelodeon,low,No maker named
+cartoon network,Cartoon Network,low,No maker named
+warner,Warner Bros.,low,No maker named
+disney,Disney,low,No maker named
+x-files,The X-Files,low,No maker named
+toys r us,Toys R Us,low,No maker named
+transformers,Hasbro,low,No maker named
+wicked,Wicked,low,No maker named
+where the wild things are,Where the Wild Things Are,low,No maker named
+the mask,The Mask,low,No maker named
+tootsie,Tootsie Roll,low,No maker named
+rick and morty,Adult Swim,low,No maker named
+adventure time,Cartoon Network,low,No maker named
+toy story,Disney,low,No maker named
+pixar,Disney,low,No maker named
+bugs bunny,Looney Tunes,low,No maker named
+tweety,Looney Tunes,low,No maker named
