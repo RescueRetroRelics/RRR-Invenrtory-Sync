@@ -8,7 +8,7 @@ from .config import DATA_DIR
 COLUMNS = [
     "order_id", "created", "payment_status", "fulfillment_status", "buyer",
     "order_total", "currency", "line_item_id", "item_id", "sku", "title",
-    "quantity", "line_total",
+    "quantity", "item_cost", "line_total",
 ]
 
 
@@ -32,6 +32,7 @@ def order_rows(orders):
                 "sku": li.get("sku", ""),
                 "title": li.get("title", ""),
                 "quantity": li.get("quantity", ""),
+                "item_cost": li.get("lineItemCost", {}).get("value", ""),
                 "line_total": li.get("total", {}).get("value", ""),
             }
 

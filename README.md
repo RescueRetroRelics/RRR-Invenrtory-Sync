@@ -1,5 +1,7 @@
 # RRR eBay ↔ Shopify Inventory Sync
 
+> Also in this folder: **Weekly Business Snapshot** (sales, top sellers, slow movers). See [WEEKLY_SNAPSHOT.md](WEEKLY_SNAPSHOT.md).
+
 Keeps stock counts for **Rescue Retro Relics** the same on eBay and Shopify, and exports eBay orders.
 
 - Pulls every active eBay listing (including variations) and matches it to a Shopify product/variant.
