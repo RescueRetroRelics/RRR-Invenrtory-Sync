@@ -48,13 +48,13 @@ class PlanTest(unittest.TestCase):
         return {r["item_id"]: r for r in rows}, orig
 
     def test_age_tiers(self):
-        rows, _ = self.plan([listing("new", 20, 5), listing("m1", 20, 45), listing("old", 20, 400)])
+        rows, _ = self.plan([listing("new", 20, 45), listing("m1", 20, 90), listing("old", 20, 400)])
         self.assertEqual(rows["new"]["status"], "KEEP")
         self.assertEqual((rows["m1"]["status"], rows["m1"]["new_price"]), ("LOWER", 17.99))  # 10% -> 18.00 -> 17.99
-        self.assertEqual(rows["old"]["new_price"], 11.99)  # 40% -> 12.00 -> 11.99
+        self.assertEqual(rows["old"]["new_price"], 13.99)  # 30% -> 14.00 -> 13.99
 
     def test_floor_stops_cut(self):
-        rows, _ = self.plan([listing("x", 12.99, 400, sku="ABC")], costs={"sku:abc": 9.0})
+        rows, _ = self.plan([listing("x", 19.99, 400, sku="ABC")], costs={"sku:abc": 9.0})
         floor = reprice.floor_price(9.0, RULES)
         self.assertEqual(rows["x"]["status"], "LOWER_TO_FLOOR")
         self.assertEqual(rows["x"]["new_price"], floor)
@@ -65,19 +65,27 @@ class PlanTest(unittest.TestCase):
         self.assertEqual(rows["x"]["new_price"], 6.00)
 
     def test_watchers_soften(self):
-        rows, _ = self.plan([listing("w", 20, 45, watchers=5), listing("w2", 20, 70, watchers=5)])
+        rows, _ = self.plan([listing("w", 20, 90, watchers=5), listing("w2", 20, 120, watchers=5)])
         self.assertEqual(rows["w"]["status"], "KEEP")
-        self.assertEqual(rows["w2"]["new_price"], 17.99)  # 60-day tier softened to 10%
+        self.assertEqual(rows["w2"]["new_price"], 17.99)  # 107-day tier softened to 10%
+
+    def test_fast_sellers_wait_a_tier(self):
+        rows, _ = self.plan([listing("r", 20, 120, title="Re-Ment Snoopy Kitchen"),
+                             listing("p", 20, 120, title="Snoopy Enamel Pins Set"),
+                             listing("s", 20, 120, title="Spinning Top Pink")])
+        self.assertEqual(rows["r"]["new_price"], 17.99)
+        self.assertEqual(rows["p"]["new_price"], 17.99)
+        self.assertEqual(rows["s"]["new_price"], 15.99)  # "pin" inside a word doesn't count
 
     def test_no_stacking_on_rerun(self):
-        rows, orig = self.plan([listing("a", 20, 45)])
-        rows2, _ = self.plan([listing("a", rows["a"]["new_price"], 46)], originals=orig)
+        rows, orig = self.plan([listing("a", 20, 90)])
+        rows2, _ = self.plan([listing("a", rows["a"]["new_price"], 91)], originals=orig)
         self.assertEqual(rows2["a"]["status"], "KEEP")
-        rows3, _ = self.plan([listing("a", 17.99, 65)], originals=orig)
+        rows3, _ = self.plan([listing("a", 17.99, 110)], originals=orig)
         self.assertEqual(rows3["a"]["new_price"], 15.99)  # 20% off the original $20
 
     def test_raised_price_becomes_new_original(self):
-        rows, orig = self.plan([listing("a", 25, 45)], originals={"a": 20.0})
+        rows, orig = self.plan([listing("a", 25, 90)], originals={"a": 20.0})
         self.assertEqual(orig["a"], 25)
         self.assertEqual(rows["a"]["new_price"], 22.49)
 

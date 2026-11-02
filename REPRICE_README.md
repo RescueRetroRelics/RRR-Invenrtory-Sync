@@ -31,7 +31,7 @@ python -m rrr_sync reprice --file ebay-export.csv --costs shopify-products.csv
 
 The costs file can be the Shopify product export (**Products → Export**, it has "Cost per item"),
 or any CSV with a `cost` column plus `item_id`, `sku` or `title`. Without costs, the floor only
-covers eBay's fees + $1, so a cheap price could still be a loss.
+covers eBay's fees + $3, so a cheap price could still be a loss.
 
 ## What you get
 
@@ -67,18 +67,21 @@ If eBay rejects the file format, send Claude the error from eBay's results file.
 
 | Listed for | Cut from the original price |
 |---|---|
-| under 30 days | none |
-| 30+ days | 10% |
-| 60+ days | 20% |
-| 90+ days | 25% |
-| 180+ days | 30% |
-| 365+ days | 40% |
+| under 79 days | none |
+| 79+ days | 10% |
+| 107+ days | 20% |
+| 160+ days | 30% |
+
+These days come from the sale tier report built on your own sales (Nov 2026). They're a starting
+rule (hypothesis), so tweak them once you see how batches sell.
 
 - **3+ watchers** → the next-smaller cut. Someone wants it, so send them an offer too.
+- **Re-Ment, pins and Hippers** sell well for you, so they wait one tier longer
+  (`wait_one_tier_longer` in the rules file).
 - **Cuts never stack.** The tool remembers each listing's original price
   (`data\reprice\original_prices.csv`), so running it twice in a row suggests nothing new.
   A listing only drops again when it reaches the next age tier.
-- **Floor** = cost + $1.00 profit + eBay's fees, never under $4.99. Fees are set to eBay's standard
+- **Floor** = cost + $3.00 profit + eBay's fees, never under $4.99. Fees are set to eBay's standard
   13.6% + $0.40 per order ($0.30 on orders of $10 or less), charged on the price plus about 6% sales tax.
   **Check these against your own eBay fees** (Seller Hub → Payments → Reports) and change them in
   `reprice_rules.json` if they differ. Using Promoted Listings? Put the ad rate in

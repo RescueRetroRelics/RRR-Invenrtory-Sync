@@ -12,7 +12,7 @@ Read-only. It never changes eBay. It writes files you look at and upload yoursel
 
 How a new price is chosen (all numbers live in reprice_rules.json):
   1. How long has it been listed? Older listings get a bigger cut (age tiers).
-  2. Watchers mean someone is interested, so those get the next-smaller cut.
+  2. Watchers, or a fast-selling line (Re-Ment, pins, Hippers), mean the next-smaller cut.
   3. The cut is taken from the ORIGINAL price (remembered in data/reprice/original_prices.csv),
      so running the tool twice never stacks cuts.
   4. The price never goes below the floor: your cost + minimum profit + eBay's fees.
@@ -44,17 +44,16 @@ DEFAULT_RULES = {
         "sales_tax_percent_fee_is_charged_on": 6.0,
         "shipping_you_pay_per_item": 0.0,
     },
-    "min_profit": 1.00,
+    "min_profit": 3.00,
     "min_price": 4.99,
     "cost_when_unknown": 0.0,
     "age_tiers": [
-        {"days": 30, "cut_percent": 10},
-        {"days": 60, "cut_percent": 20},
-        {"days": 90, "cut_percent": 25},
-        {"days": 180, "cut_percent": 30},
-        {"days": 365, "cut_percent": 40},
+        {"days": 79, "cut_percent": 10},
+        {"days": 107, "cut_percent": 20},
+        {"days": 160, "cut_percent": 30},
     ],
     "watchers_soften_at": 3,
+    "wait_one_tier_longer": ["re-ment", "rement", "pin", "hippers"],
     "min_change_dollars": 0.50,
 }
 
@@ -292,7 +291,14 @@ def save_originals(originals, path=ORIGINALS_FILE):
 
 # ---------------------------------------------------------------- the rule
 
-def _cut_for(days, watchers, rules):
+def _slow_lane(title, rules):
+    for word in rules.get("wait_one_tier_longer", []):
+        if re.search(r"\b" + re.escape(word.lower()) + r"s?\b", title.lower()):
+            return word
+    return None
+
+
+def _cut_for(days, watchers, rules, title=""):
     tiers = [t for t in rules["age_tiers"] if days >= t["days"]]
     if not tiers:
         return 0, "listed under %d days" % rules["age_tiers"][0]["days"]
@@ -301,8 +307,12 @@ def _cut_for(days, watchers, rules):
     if watchers >= rules["watchers_soften_at"]:
         idx -= 1
         reason += f", {watchers} watchers so a smaller cut (send them an offer too)"
-        if idx < 0:
-            return 0, reason
+    lane = _slow_lane(title, rules)
+    if lane:
+        idx -= 1
+        reason += f", '{lane}' items sell well so they wait one tier longer"
+    if idx < 0:
+        return 0, reason
     return rules["age_tiers"][idx]["cut_percent"], reason
 
 
@@ -362,7 +372,7 @@ def plan(listings, rules, costs=None, originals=None, today=None):
             done("BELOW_FLOOR", f"already under break-even ${floor:.2f}{cost_note}, consider raising")
             continue
 
-        cut, why = _cut_for(days, row["watchers"], rules)
+        cut, why = _cut_for(days, row["watchers"], rules, l["title"])
         if not cut:
             done("KEEP", why)
             continue

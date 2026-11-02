@@ -13,22 +13,23 @@
     "shipping_you_pay_per_item": 0.0
   },
 
-  "_profit_note": "The lowest price ever suggested covers cost + fees + this much profit, and is never under min_price.",
-  "min_profit": 1.00,
+  "_profit_note": "The lowest price ever suggested covers cost + eBay fees + this much profit ($3 matches the sale tier report), and is never under min_price.",
+  "min_profit": 3.00,
   "min_price": 4.99,
   "cost_when_unknown": 0.0,
 
-  "_tiers_note": "How much to cut from the ORIGINAL price once a listing has been up this many days. Bigger cuts = faster sales.",
+  "_tiers_note": "How much to cut from the ORIGINAL price once a listing has been up this many days. These match the sale tier report built from your own sales (Nov 2026): 10% at 79 days, 20% at 107, 30% at 160. Bigger cuts = faster sales.",
   "age_tiers": [
-    {"days": 30, "cut_percent": 10},
-    {"days": 60, "cut_percent": 20},
-    {"days": 90, "cut_percent": 25},
-    {"days": 180, "cut_percent": 30},
-    {"days": 365, "cut_percent": 40}
+    {"days": 79, "cut_percent": 10},
+    {"days": 107, "cut_percent": 20},
+    {"days": 160, "cut_percent": 30}
   ],
 
   "_watchers_note": "Listings with at least this many watchers get the next-smaller cut. Send those watchers an offer instead.",
   "watchers_soften_at": 3,
+
+  "_slow_lane_note": "Titles with these words sell well for you, so they wait one tier longer before a cut.",
+  "wait_one_tier_longer": ["re-ment", "rement", "pin", "hippers"],
 
   "_min_change_note": "Skip changes smaller than this many dollars.",
   "min_change_dollars": 0.50
