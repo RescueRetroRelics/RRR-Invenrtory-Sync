@@ -100,18 +100,62 @@ def parse_active_list(root):
     return listings, pages
 
 
-def active_listings(cfg):
-    listings, page, pages = [], 1, 1
+def _active_list_pages(cfg):
+    """Yield every GetMyeBaySelling ActiveList page."""
+    page, pages = 1, 1
     while page <= pages:
         root = _trading_call(cfg, "GetMyeBaySelling", (
             "<ActiveList><Include>true</Include>"
             f"<Pagination><EntriesPerPage>200</EntriesPerPage><PageNumber>{page}</PageNumber></Pagination>"
             "</ActiveList><DetailLevel>ReturnAll</DetailLevel>"
         ))
-        batch, pages = parse_active_list(root)
-        listings.extend(batch)
+        yield root
+        pages = _int(root, "e:ActiveList/e:PaginationResult/e:TotalNumberOfPages")
         page += 1
+
+
+def active_listings(cfg):
+    listings = []
+    for root in _active_list_pages(cfg):
+        listings.extend(parse_active_list(root)[0])
     return listings
+
+
+def _float(el, path):
+    try:
+        return float(_text(el, path, "0"))
+    except ValueError:
+        return 0.0
+
+
+def parse_pricing_list(root):
+    """GetMyeBaySelling ActiveList -> one dict per listing with what repricing needs."""
+    rows = []
+    for item in root.findall("e:ActiveList/e:ItemArray/e:Item", NS):
+        price = _float(item, "e:SellingStatus/e:CurrentPrice") or _float(item, "e:BuyItNowPrice") \
+            or _float(item, "e:StartPrice")
+        rows.append({
+            "item_id": _text(item, "e:ItemID"),
+            "sku": _text(item, "e:SKU"),
+            "title": _text(item, "e:Title"),
+            "price": price,
+            "start_date": _text(item, "e:ListingDetails/e:StartTime"),
+            "watchers": _int(item, "e:WatchCount"),
+            "bids": _int(item, "e:SellingStatus/e:BidCount"),
+            "quantity": _int(item, "e:QuantityAvailable") if item.find("e:QuantityAvailable", NS) is not None
+            else _int(item, "e:Quantity") - _int(item, "e:SellingStatus/e:QuantitySold"),
+            "format": "auction" if _text(item, "e:ListingType") == "Chinese" else "fixed",
+            "variation": bool(item.findall("e:Variations/e:Variation", NS)),
+        })
+    return rows
+
+
+def pricing_listings(cfg):
+    """Every active listing with price, start date and watchers (read-only)."""
+    rows = []
+    for root in _active_list_pages(cfg):
+        rows.extend(parse_pricing_list(root))
+    return rows
 
 
 def set_quantity(cfg, listing, qty):

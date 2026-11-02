@@ -1,0 +1,13 @@
+Listings checked:            8
+  Price goes down:           5
+  Down, stopped at floor:    1
+  Already below break-even:  1  (not changed, look at these)
+  No change:                 1
+  Skipped:                   0
+
+Asking prices of the lowered listings: $125.94 -> $96.44
+Upload files: 1 (up to 50 changes each)
+Lowered listings with no cost on file: 5
+
+Fees used: 13.6% final value fee + 0.0% promoted, $0.40/order ($0.30 at $10 or less), min profit $1.00, min price $4.99. Change them in reprice_rules.json.
+Nothing was changed on eBay.

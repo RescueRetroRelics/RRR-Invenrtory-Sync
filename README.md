@@ -140,6 +140,15 @@ These come through as urgent:
 - Only the store's one location (13252 Leech Dr) is synced; set `SHOPIFY_LOCATION_ID` to change it.
 - Products with inventory tracking turned off in Shopify are skipped.
 
+## eBay repricer
+
+Suggests lower prices for listings that aren't selling, never below break-even, and makes upload
+files in batches of 50. Changes nothing on eBay. See **[REPRICE_README.md](REPRICE_README.md)**.
+
+```bash
+python -m rrr_sync reprice --file ebay-export.csv --costs shopify-products.csv
+```
+
 ## Claude Desktop: eBay listing tools (MCP server)
 
 `rrr_ebay_mcp.py` lets Claude create, finish and publish eBay listings straight from Shopify.
@@ -198,6 +207,9 @@ rrr_sync/matching.py    eBay ↔ Shopify matching and data/matches.csv
 rrr_sync/sync.py        eBay-shows-1 rule: count eBay sales on Shopify, set eBay to 1 or 0
 rrr_sync/notify.py      activity log + ntfy phone notifications
 run_sync.bat            what Windows Task Scheduler runs
+rrr_sync/reprice.py     eBay repricer: age-based cuts, break-even floor, preview + upload batches
+reprice_rules.json      repricer settings (fees, cuts, minimums)
+run_reprice.bat         double-click (or drop an eBay export on it) to run the repricer
 rrr_sync/orders.py      order CSV/JSON export
 ```
 

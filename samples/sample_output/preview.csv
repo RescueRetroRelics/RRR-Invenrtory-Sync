@@ -1,0 +1,9 @@
+status,item_id,title,old_price,new_price,change,change_percent,days_listed,watchers,original_price,floor_price,cost,reason
+LOWER,100000000001,Sample Re-Ment Miniature Set,39.99,31.99,-8.00,-20.00,69,1,39.99,4.99,,"listed 69 days: 20% off original $39.99 (no cost on file, floor covers fees + min profit only)"
+LOWER,100000000006,Sample Labubu Outfit Set,29.99,22.49,-7.50,-25.00,154,0,29.99,4.99,,"listed 154 days: 25% off original $29.99 (no cost on file, floor covers fees + min profit only)"
+LOWER,100000000002,Sample Funko Pop Vinyl Figure,18.99,14.49,-4.50,-23.70,115,0,18.99,4.99,,"listed 115 days: 25% off original $18.99 (no cost on file, floor covers fees + min profit only)"
+LOWER,100000000003,Sample Sonny Angel Blind Box,14.99,11.49,-3.50,-23.30,215,5,14.99,4.99,,"listed 215 days, 5 watchers so a smaller cut (send them an offer too): 25% off original $14.99 (no cost on file, floor covers fees + min profit only)"
+LOWER,100000000007,Sample Star Wars Deck,8.99,5.49,-3.50,-38.90,458,0,8.99,4.99,,"listed 458 days: 40% off original $8.99 (no cost on file, floor covers fees + min profit only)"
+LOWER_TO_FLOOR,100000000004,Sample Vintage Peanuts Playing Cards,12.99,10.49,-2.50,-19.20,413,0,12.99,10.49,7.50,"listed 413 days, stopped at break-even floor $10.49: 40% off original $12.99"
+BELOW_FLOOR,100000000005,Sample Halloween Tin Lunchbox,9.99,9.99,,,246,0,9.99,10.99,8.00,"already under break-even $10.99, consider raising"
+KEEP,100000000000,Sample Snoopy Ceramic Mug,24.99,24.99,,,13,0,24.99,8.99,6.00,listed under 30 days

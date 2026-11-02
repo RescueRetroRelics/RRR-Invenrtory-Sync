@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from . import ebay, ebay_auth, matching, notify, orders, sync
+from . import ebay, ebay_auth, matching, notify, orders, reprice, sync
 from .config import Config
 from .shopify import Shopify
 
@@ -91,6 +91,27 @@ def cmd_orders(cfg, args):
     print(f"  {csv_path}\n  {json_path}")
 
 
+def cmd_reprice(cfg, args):
+    rules = reprice.load_rules(args.rules)
+    if args.file:
+        listings = reprice.read_ebay_export(args.file)
+        print(f"Read {len(listings)} listings from {args.file}")
+    else:
+        print("Reading your active eBay listings (read-only)...")
+        listings = ebay.pricing_listings(cfg)
+        print(f"Got {len(listings)} listings from eBay")
+    costs = reprice.read_costs(args.costs) if args.costs else {}
+    if args.costs:
+        print(f"Read {len(costs)} cost entries from {args.costs}")
+    out_dir, summary, batches = reprice.run(listings, rules, costs)
+    print()
+    print(summary)
+    print(f"Open this to look it over:  {out_dir / 'preview.html'}")
+    if batches:
+        print(f"Upload files (when you're happy): {out_dir / 'upload_batch_01.csv'} and up")
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -105,6 +126,11 @@ def main(argv=None):
     sub.add_parser("notify-test", help="send a test phone notification")
     od = sub.add_parser("orders", help="export eBay orders to data/")
     od.add_argument("--since", default="2026-01-01", help="YYYY-MM-DD (default 2026-01-01)")
+
+    rp = sub.add_parser("reprice", help="suggest lower eBay prices (preview + upload files, changes nothing)")
+    rp.add_argument("--file", help="eBay active listings CSV from Seller Hub (default: read live from eBay)")
+    rp.add_argument("--costs", help="Shopify product export or any CSV with a cost column")
+    rp.add_argument("--rules", help="rules file (default: reprice_rules.json)")
 
     args = p.parse_args(argv)
     cfg = Config.load()
