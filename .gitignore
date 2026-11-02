@@ -12,3 +12,5 @@ __pycache__/
 
 # Shopify exports (business data)
 products_export*.csv
+# Simulated shopper reports (screenshots of the site)
+shopper_reports/
