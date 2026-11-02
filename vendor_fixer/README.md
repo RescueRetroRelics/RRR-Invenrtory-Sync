@@ -29,12 +29,16 @@ You get two files in `data\vendor_fixer\`:
 
 ## Reading the preview
 
+Every product gets a best guess. Rows marked **NEEDS MY REVIEW** in the *Needs Review* column
+(low and none) are the ones to check by hand. A maker found only in the tags is marked medium,
+because tags are often search keywords.
+
 | Confidence | Meaning | What to do |
 |---|---|---|
 | high | Maker is named in the title, type or tags | Already marked **Y**. Skim it. |
 | medium | Very likely (e.g. Hello Kitty → Sanrio) | Glance, type **Y** if right |
 | low | Only the character is named (Snoopy → Peanuts) | Your call: type the real maker, or **Y** to use the franchise name |
-| none | No brand found | Type a brand in **Proposed Vendor** and **Y**, or leave blank to skip |
+| none | No brand or character found | Suggests **Unbranded**. Type a real brand, or **Y** to accept |
 
 Open in Excel, change the **Proposed Vendor** column or the **Approve (Y/N)** column, save as CSV.
 

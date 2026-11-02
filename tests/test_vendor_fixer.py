@@ -21,17 +21,25 @@ class ProposeTests(unittest.TestCase):
         self.check("Hello Kitty BanDai American Design Gashapon Full Set", "Bandai", "high")
 
     def test_tag_used_when_title_silent(self):
-        self.check("Snoopy Bunnies Keychain Green", "Accommode", "high", tags="Accommode, Snoopy")
+        self.check("Snoopy Bunnies Keychain Green", "Accommode", "medium", tags="Accommode, Snoopy")
+
+    def test_title_maker_beats_tag_maker(self):
+        self.check("Star Wars Playing Cards Deck Aquarius", "Aquarius", "high", tags="Kenner, Star Wars")
 
     def test_franchise_fallback_is_low(self):
         self.check("Cute Snoopy A5 Acrylic Shaker Notebook", "Peanuts", "low")
 
     def test_no_match(self):
-        self.check("Vintage Brass Candle Holder Pair", "", "none")
+        self.check("Vintage Brass Candle Holder Pair", "Unbranded", "none")
 
     def test_word_start_only(self):
         # "avon" must not match inside "Savonnerie"
-        self.check("Savonnerie Rug Runner", "", "none")
+        self.check("Savonnerie Rug Runner", "Unbranded", "none")
+
+    def test_whole_word_only(self):
+        # "lego" must not match "Legolas"; "smurf" matches "Smurfs"
+        self.check("Legolas Figure", "Unbranded", "none")
+        self.check("Smurfs Keychain", "The Smurfs", "low")
 
 
 if __name__ == "__main__":

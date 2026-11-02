@@ -19,6 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_RULES = os.path.join(HERE, "brands.csv")
 STORE_NAME = "rescue retro relics"
 BATCH_SIZE = 50
+REVIEW_FLAG = {"medium": "Quick check", "low": "NEEDS MY REVIEW", "none": "NEEDS MY REVIEW"}
 
 
 def load_rules(path):
@@ -30,7 +31,8 @@ def load_rules(path):
         brand = (row.get("brand") or "").strip()
         if not kw or not brand:
             continue
-        pattern = re.compile(r"(?<![a-z0-9])" + re.escape(kw))
+        # Whole word or phrase; a plural "s" or "'s" on the end is fine.
+        pattern = re.compile(r"(?<![a-z0-9])" + re.escape(kw) + r"(?:'?s)?(?![a-z0-9])")
         rules.append({
             "keyword": kw,
             "brand": brand,
@@ -42,16 +44,30 @@ def load_rules(path):
 
 
 def propose(title, product_type, tags, rules):
-    """Return (brand, confidence, reason). Title wins over type, type over tags."""
+    """Return (brand, confidence, reason).
+
+    Stronger rules win first (high, then medium, then low). Within the same
+    strength, the title beats the product type, which beats the tags. Tags are
+    often search keywords, so a maker found ONLY in the tags drops one level.
+    """
     fields = [("title", title), ("type", product_type), ("tags", tags)]
-    for rule in rules:
+    for tier in ("high", "medium", "low"):
         for name, text in fields:
-            if text and rule["pattern"].search(text.lower()):
+            if not text:
+                continue
+            low_text = text.lower()
+            for rule in rules:
+                if rule["confidence"] != tier or not rule["pattern"].search(low_text):
+                    continue
+                conf = tier
                 reason = f'"{rule["keyword"]}" in {name}'
+                if name == "tags" and tier == "high":
+                    conf = "medium"
+                    reason += " only (tags can be search keywords)"
                 if rule["note"]:
                     reason += f" ({rule['note']})"
-                return rule["brand"], rule["confidence"], reason
-    return "", "none", "No brand found. Fill in by hand or leave as is."
+                return rule["brand"], conf, reason
+    return "Unbranded", "none", "No brand or character found. Best guess is Unbranded; type the real brand if you know it."
 
 
 def read_products(path):
@@ -92,6 +108,7 @@ def build(products, rules, only_store_vendor=True):
             "Proposed Vendor": brand,
             "Confidence": conf,
             "Why": reason,
+            "Needs Review": REVIEW_FLAG.get(conf, ""),
             "Approve (Y/N)": "Y" if conf == "high" else "",
         })
     order = {"high": 0, "medium": 1, "low": 2, "none": 3}
@@ -166,7 +183,8 @@ def main(argv=None):
     print(f"  high confidence:   {counts.get('high', 0)}  (pre-marked Y)")
     print(f"  medium confidence: {counts.get('medium', 0)}  (quick look)")
     print(f"  low (franchise):   {counts.get('low', 0)}  (no maker named)")
-    print(f"  no match:          {counts.get('none', 0)}")
+    print(f"  no brand found:    {counts.get('none', 0)}  (suggested Unbranded)")
+    print(f"NEEDS MY REVIEW:     {counts.get('low', 0) + counts.get('none', 0)}")
     print("Top proposed brands:")
     for b, n in sorted(brands.items(), key=lambda x: -x[1])[:15]:
         print(f"  {n:4d}  {b}")
