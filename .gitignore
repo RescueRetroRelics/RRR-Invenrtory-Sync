@@ -9,3 +9,5 @@ data/
 __pycache__/
 *.pyc
 .venv/
+exports/*
+!exports/PUT_EXPORTS_HERE.txt
