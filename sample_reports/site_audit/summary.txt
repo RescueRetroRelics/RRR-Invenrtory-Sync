@@ -1,0 +1,50 @@
+RRR Site Audit - https://practice-store.example  (SAMPLE: a fake practice store, not your real site)
+Run: Monday November 02, 2026 09:44 AM   Pages checked: 11   Links/images checked: 17
+
+Already good:
+  + Every product page has Product structured data
+  + Every page has a title
+  + Every page has a main heading
+  + 9 of 10 pages have a meta description
+
+FIX LIST (do these in order; ⚡ = quick win):
+ 1. ⚡ Broken link to a page on your own site - 1 found on 1 page(s) [high impact, easy, verified]
+     How: Find the link on the page listed and point it at a page that exists (Online Store > Navigation for menus, or edit the page/product text). If the page moved, add a redirect: Online Store > Navigation > View URL redirects.
+     e.g. https://practice-store.example/  'Old item' -> https://practice-store.example/products/deleted-thing (HTTP 404)
+ 2. ⚡ Broken image - 1 found on 1 page(s) [high impact, easy, verified]
+     How: Open the product/page in admin and re-upload the image.
+     e.g. https://practice-store.example/collections/all  https://practice-store.example/img/missing.jpg (HTTP 404)
+ 3. ⚡ Menu and footer disagree - 1 found on 1 page(s) [high impact, easy, verified]
+     How: Online Store > Navigation: open the main menu and the footer menu and point both items at the same page. For policies, use the built-in Shopify policy pages (Settings > Policies).
+     e.g. https://practice-store.example/  'terms of service' goes to different places: https://practice-store.example/pages/terms-of-service (main menu); http:/
+ 4. Structured data is broken (bad JSON) - 1 found on 1 page(s) [high impact, medium, verified]
+     How: Usually from an app or a custom code snippet. Online Store > Themes > Edit code, or turn off the app that adds it. Test fixes at https://search.google.com/test/rich-results
+     e.g. https://practice-store.example/products/charizard-holo  Expecting value: line 1 column 12 (char 11)
+ 5. ⚡ Image has no alt text - 3 found on 2 page(s) [medium impact, easy, verified]
+     How: Products: click the image in admin > 'Add alt text'. Pages/theme: Online Store > Customize > the image block > 'Image alt text'. Describe it like you'd tell a friend: 'Vintage 1965 Snoopy Hallmark ornament, red doghouse'.
+     e.g. https://practice-store.example/products/charizard-holo  char.jpg (alt is blank)
+     e.g. https://practice-store.example/pages/about  bailee.jpg
+     e.g. https://practice-store.example/pages/about  team.jpg
+ 6. ⚡ Meta description looks cut off mid-sentence - 1 found on 1 page(s) [medium impact, easy, verified]
+     How: Admin > 'Search engine listing' > Edit > write a complete sentence or two, 120-155 characters.
+     e.g. https://practice-store.example/products/charizard-holo  …who wants a centerpiece for their binder or display case and
+ 7. ⚡ No meta description - 1 found on 1 page(s) [medium impact, easy, verified]
+     How: Product/collection/page in admin > scroll to 'Search engine listing' > Edit > write 1-2 sentences (120-155 characters).
+     e.g. https://practice-store.example/pages/about  
+ 8. Product structured data is missing details - 1 found on 1 page(s) [medium impact, medium, verified]
+     How: Missing brand = the Vendor field says 'Rescue Retro Relics' or is blank (the Vendor fixer tool handles this). Missing price/availability usually means a theme or app problem.
+     e.g. https://practice-store.example/products/charizard-holo  missing: brand (says 'Rescue Retro Relics', not the real maker)
+ 9. Meta description very short - 1 found on 1 page(s) [low impact, easy, verified]
+     How: Admin > 'Search engine listing' > Edit > expand to 120-155 characters.
+     e.g. https://practice-store.example/pages/contact  10 chars: Contact us
+10. Same meta description on several pages - 7 found on 7 page(s) [low impact, medium, verified]
+     How: Give each page its own description in 'Search engine listing'.
+     e.g. https://practice-store.example/  shared with 6 other page(s): 'vintage and retro collectibles, snoopy, sonny angel and re-ment finds.'
+     e.g. https://practice-store.example/products/snoopy-hippers-belle  shared with 6 other page(s): 'vintage and retro collectibles, snoopy, sonny angel and re-ment finds.'
+     e.g. https://practice-store.example/pages/terms-of-service  shared with 6 other page(s): 'vintage and retro collectibles, snoopy, sonny angel and re-ment finds.'
+11. Heading levels skip (e.g. H2 then H4) - 1 found on 1 page(s) [low impact, medium, verified]
+     How: In the page text editor, change the skipped heading to the next level down (H2 > H3 > H4).
+     e.g. https://practice-store.example/pages/about  H2 then H4 'Why dogs'
+12. More than one main heading (H1) - 1 found on 1 page(s) [low impact, medium, hypothesis]
+     How: Check the page in Customize. If a logo or banner is an H1, change the extra one to a smaller heading.
+     e.g. https://practice-store.example/products/charizard-holo  Charizard Holo | Also a heading

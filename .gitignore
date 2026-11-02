@@ -9,3 +9,6 @@ data/
 __pycache__/
 *.pyc
 .venv/
+
+# Site audit reports (re-created every run)
+site_audit_reports/
