@@ -1,0 +1,85 @@
+keyword,brand,confidence,note
+# Rules are checked top to bottom. First match wins. Add your own rows any time.
+# keyword = words to look for in the title, type or tags (not case-sensitive)
+# confidence: high = the maker is named, medium = very likely, low = franchise only (no maker named)
+hippers,Takara Tomy,high,HIPPERS figures are made by Takara Tomy A.R.T.S
+takara tomy,Takara Tomy,high,
+t-arts,Takara Tomy,high,
+re-ment,Re-Ment,high,
+rement,Re-Ment,high,
+sonny angel,Sonny Angel,high,
+smiski,Dreams Inc.,high,Smiski is made by Dreams (same company as Sonny Angel)
+accommode,Accommode,high,
+nine wood sundries,Nine Woods Sundries,medium,Spelling check: title says Nine Wood but tag says Nine Woods
+nine woods sundries,Nine Woods Sundries,medium,
+bandai,Bandai,high,
+tamagotchi,Bandai,high,
+gashapon,Bandai,medium,Gashapon is Bandai's capsule brand; check if a different maker is named
+kitan club,Kitan Club,high,
+san-x,San-X,high,
+rilakkuma,San-X,high,
+sumikko gurashi,San-X,high,
+sanrio,Sanrio,high,
+hello kitty,Sanrio,medium,Licensed items may have a different maker
+my melody,Sanrio,medium,
+kuromi,Sanrio,medium,
+pompompurin,Sanrio,medium,
+cinnamoroll,Sanrio,medium,
+pop mart,Pop Mart,high,
+labubu,Pop Mart,high,
+funko,Funko,high,
+good smile,Good Smile Company,high,
+nendoroid,Good Smile Company,high,
+medicom,Medicom Toy,high,
+kidrobot,Kidrobot,high,
+tomica,Takara Tomy,high,
+mattel,Mattel,high,
+barbie,Mattel,high,
+hot wheels,Mattel,high,
+fisher-price,Fisher-Price,high,
+fisher price,Fisher-Price,high,
+polly pocket,Bluebird Toys,medium,Vintage Polly Pocket = Bluebird; newer = Mattel
+hasbro,Hasbro,high,
+kenner,Kenner,high,
+my little pony,Hasbro,medium,
+playskool,Playskool,high,
+lego,LEGO,high,
+matchbox,Matchbox,high,
+ty beanie,Ty,high,
+beanie bab,Ty,high,
+gund,Gund,high,
+steiff,Steiff,high,
+hallmark,Hallmark,high,
+enesco,Enesco,high,
+precious moments,Enesco,medium,
+department 56,Department 56,high,
+willitts,Willitts Designs,high,
+determined productions,Determined Productions,high,
+avon,Avon,high,
+pyrex,Pyrex,high,
+fire-king,Fire-King,high,
+fire king,Fire-King,high,
+anchor hocking,Anchor Hocking,high,
+corelle,Corelle,high,
+corning ware,Corning Ware,high,
+corningware,Corning Ware,high,
+tupperware,Tupperware,high,
+lenox,Lenox,high,
+royal doulton,Royal Doulton,high,
+franciscan,Franciscan,high,
+disney store,Disney,high,
+loungefly,Loungefly,high,
+american greetings,American Greetings,high,
+coach,Coach,medium,Check it is the handbag brand and not a word in the title
+nike,Nike,medium,
+levi,Levi's,medium,
+# Franchise-only fallbacks (no maker named). Low confidence: worth a quick look.
+pokémon,Pokémon,low,No maker named in title or tags
+pokemon,Pokémon,low,No maker named in title or tags
+powerpuff,Cartoon Network,low,No maker named in title or tags
+cartoon network,Cartoon Network,low,
+tom & jerry,Warner Bros.,low,No maker named in title or tags
+looney tunes,Warner Bros.,low,
+snoopy,Peanuts,low,No maker named in title or tags
+peanuts,Peanuts,low,No maker named in title or tags
+disney,Disney,low,

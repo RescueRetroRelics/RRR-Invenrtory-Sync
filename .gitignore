@@ -9,3 +9,6 @@ data/
 __pycache__/
 *.pyc
 .venv/
+
+# Shopify exports (business data)
+products_export*.csv
