@@ -204,3 +204,7 @@ rrr_sync/orders.py      order CSV/JSON export
 Never committed: `.env`, `.secrets/` (tokens), `data/` (orders, matches, sync state).
 
 Tests: `python -m unittest discover -s tests -t .`
+
+## Other tools in this repo
+
+- **Site audit** (SEO + broken links): double-click `run_site_audit.bat`. See [README_SITE_AUDIT.md](README_SITE_AUDIT.md).

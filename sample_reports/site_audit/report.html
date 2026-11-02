@@ -1,0 +1,142 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RRR Site Audit</title><style>
+body{font-family:system-ui,Segoe UI,sans-serif;max-width:1000px;margin:0 auto;padding:16px;background:#fbf8f3;color:#222}
+h1{margin-bottom:0} .muted{color:#777} .stats{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.stat{background:#fff;border:1px solid #e5ddd0;border-radius:10px;padding:10px 16px} .stat b{font-size:1.6em;display:block}
+.fix{background:#fff;border:1px solid #e5ddd0;border-radius:10px;margin:10px 0;padding:10px 14px}
+.fix.qw{border-left:6px solid #e0a100} summary{cursor:pointer;font-weight:600} .n{display:inline-block;width:1.6em;color:#999}
+.pill{font-weight:400;font-size:.8em;background:#eee;border-radius:20px;padding:2px 8px;margin-left:4px;white-space:nowrap}
+.i3{background:#f8d0cc} .i2{background:#fde8c4} .verified{background:#d4edda} .hypothesis{background:#e2e3f3}
+table{border-collapse:collapse;width:100%;font-size:.85em} td,th{border-top:1px solid #eee;padding:4px;text-align:left;vertical-align:top;word-break:break-word}
+.win{background:#d4edda;border-radius:10px;padding:10px 14px;margin:10px 0}
+</style></head><body>
+<h1>🐾 Site audit: https://practice-store.example</h1><p class="muted">Monday November 02, 2026 09:44 AM. Read-only check, nothing on your store was changed.</p>
+
+<div class="stats"><div class="stat"><b>11</b>pages checked</div><div class="stat"><b>17</b>links &amp; images checked</div>
+<div class="stat"><b>12</b>kinds of problems</div><div class="stat"><b>6</b>⚡ quick wins</div></div>
+
+<h2>Already good</h2><ul><li>Every product page has Product structured data</li><li>Every page has a title</li><li>Every page has a main heading</li><li>9 of 10 pages have a meta description</li></ul>
+<h2>Fix list</h2><p class="muted">Most valuable and easiest first. ⚡ = matters and is easy. <b>verified</b> = the crawler saw it.
+<b>hypothesis</b> = probably a problem, eyeball it first. Every row is also in <code>fix_list.csv</code> with a "done" column.</p>
+
+<details class="fix qw" open>
+<summary><span class="n">1</span> ⚡ Broken link to a page on your own site
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i3">high impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Shoppers hit a dead end and Google sees a sloppy site.</p>
+<p><b>How to fix:</b> Find the link on the page listed and point it at a page that exists (Online Store &gt; Navigation for menus, or edit the page/product text). If the page moved, add a redirect: Online Store &gt; Navigation &gt; View URL redirects.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/' target='_blank'>127.0.0.1:35215/</a></td><td>&#x27;Old item&#x27; -&gt; https://practice-store.example/products/deleted-thing (HTTP 404)</td></tr></table>
+</details>
+<details class="fix qw" open>
+<summary><span class="n">2</span> ⚡ Broken image
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i3">high impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> A missing picture on a vintage listing kills the sale.</p>
+<p><b>How to fix:</b> Open the product/page in admin and re-upload the image.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/collections/all' target='_blank'>127.0.0.1:35215/collections/all</a></td><td>https://practice-store.example/img/missing.jpg (HTTP 404)</td></tr></table>
+</details>
+<details class="fix qw" open>
+<summary><span class="n">3</span> ⚡ Menu and footer disagree
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i3">high impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Same link name going to two different places confuses shoppers and splits your SEO.</p>
+<p><b>How to fix:</b> Online Store &gt; Navigation: open the main menu and the footer menu and point both items at the same page. For policies, use the built-in Shopify policy pages (Settings &gt; Policies).</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/' target='_blank'>127.0.0.1:35215/</a></td><td>&#x27;terms of service&#x27; goes to different places: https://practice-store.example/pages/terms-of-service (main menu); https://practice-store.example/policies/terms-of-service (footer)</td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">4</span> Structured data is broken (bad JSON)
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i3">high impact</span>
+ <span class="pill">medium</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Google ignores it completely, so no price/stock stars in search results.</p>
+<p><b>How to fix:</b> Usually from an app or a custom code snippet. Online Store &gt; Themes &gt; Edit code, or turn off the app that adds it. Test fixes at https://search.google.com/test/rich-results</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/products/charizard-holo' target='_blank'>127.0.0.1:35215/products/charizard-holo</a></td><td>Expecting value: line 1 column 12 (char 11)</td></tr></table>
+</details>
+<details class="fix qw" >
+<summary><span class="n">5</span> ⚡ Image has no alt text
+ <span class="pill">3 on 2 page(s)</span>
+ <span class="pill i2">medium impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Screen readers skip it and Google Images can&#x27;t index it. Alt text is free SEO for collectibles.</p>
+<p><b>How to fix:</b> Products: click the image in admin &gt; &#x27;Add alt text&#x27;. Pages/theme: Online Store &gt; Customize &gt; the image block &gt; &#x27;Image alt text&#x27;. Describe it like you&#x27;d tell a friend: &#x27;Vintage 1965 Snoopy Hallmark ornament, red doghouse&#x27;.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/products/charizard-holo' target='_blank'>127.0.0.1:35215/products/charizard-holo</a></td><td>char.jpg (alt is blank)</td></tr><tr><td><a href='https://practice-store.example/pages/about' target='_blank'>127.0.0.1:35215/pages/about</a></td><td>bailee.jpg</td></tr><tr><td><a href='https://practice-store.example/pages/about' target='_blank'>127.0.0.1:35215/pages/about</a></td><td>team.jpg</td></tr></table>
+</details>
+<details class="fix qw" >
+<summary><span class="n">6</span> ⚡ Meta description looks cut off mid-sentence
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i2">medium impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Shopify fills this from the first 160 characters of your description, so it stops mid-word in Google.</p>
+<p><b>How to fix:</b> Admin &gt; &#x27;Search engine listing&#x27; &gt; Edit &gt; write a complete sentence or two, 120-155 characters.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/products/charizard-holo' target='_blank'>127.0.0.1:35215/products/charizard-holo</a></td><td>…who wants a centerpiece for their binder or display case and</td></tr></table>
+</details>
+<details class="fix qw" >
+<summary><span class="n">7</span> ⚡ No meta description
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i2">medium impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Google makes up its own snippet from random page text. A written one gets more clicks.</p>
+<p><b>How to fix:</b> Product/collection/page in admin &gt; scroll to &#x27;Search engine listing&#x27; &gt; Edit &gt; write 1-2 sentences (120-155 characters).</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/pages/about' target='_blank'>127.0.0.1:35215/pages/about</a></td><td></td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">8</span> Product structured data is missing details
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i2">medium impact</span>
+ <span class="pill">medium</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Google wants name, image, price, currency and availability to show a rich result. Brand helps too.</p>
+<p><b>How to fix:</b> Missing brand = the Vendor field says &#x27;Rescue Retro Relics&#x27; or is blank (the Vendor fixer tool handles this). Missing price/availability usually means a theme or app problem.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/products/charizard-holo' target='_blank'>127.0.0.1:35215/products/charizard-holo</a></td><td>missing: brand (says &#x27;Rescue Retro Relics&#x27;, not the real maker)</td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">9</span> Meta description very short
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i1">low impact</span>
+ <span class="pill">easy</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Under ~50 characters wastes the space Google gives you.</p>
+<p><b>How to fix:</b> Admin &gt; &#x27;Search engine listing&#x27; &gt; Edit &gt; expand to 120-155 characters.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/pages/contact' target='_blank'>127.0.0.1:35215/pages/contact</a></td><td>10 chars: Contact us</td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">10</span> Same meta description on several pages
+ <span class="pill">7 on 7 page(s)</span>
+ <span class="pill i1">low impact</span>
+ <span class="pill">medium</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Google treats copy-paste descriptions as low effort.</p>
+<p><b>How to fix:</b> Give each page its own description in &#x27;Search engine listing&#x27;.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/' target='_blank'>127.0.0.1:35215/</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/products/snoopy-hippers-belle' target='_blank'>127.0.0.1:35215/products/snoopy-hippers-belle</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/pages/terms-of-service' target='_blank'>127.0.0.1:35215/pages/terms-of-service</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/policies/refund-policy' target='_blank'>127.0.0.1:35215/policies/refund-policy</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/policies/shipping-policy' target='_blank'>127.0.0.1:35215/policies/shipping-policy</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/policies/terms-of-service' target='_blank'>127.0.0.1:35215/policies/terms-of-service</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr><tr><td><a href='https://practice-store.example/collections/all' target='_blank'>127.0.0.1:35215/collections/all</a></td><td>shared with 6 other page(s): &#x27;vintage and retro collectibles, snoopy, sonny angel and re-ment finds.&#x27;</td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">11</span> Heading levels skip (e.g. H2 then H4)
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i1">low impact</span>
+ <span class="pill">medium</span>
+ <span class="pill verified">verified</span></summary>
+<p><b>Why it matters:</b> Screen readers use headings like a table of contents; gaps make it confusing.</p>
+<p><b>How to fix:</b> In the page text editor, change the skipped heading to the next level down (H2 &gt; H3 &gt; H4).</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/pages/about' target='_blank'>127.0.0.1:35215/pages/about</a></td><td>H2 then H4 &#x27;Why dogs&#x27;</td></tr></table>
+</details>
+<details class="fix " >
+<summary><span class="n">12</span> More than one main heading (H1)
+ <span class="pill">1 on 1 page(s)</span>
+ <span class="pill i1">low impact</span>
+ <span class="pill">medium</span>
+ <span class="pill hypothesis">hypothesis</span></summary>
+<p><b>Why it matters:</b> Not an error, but one clear H1 is a stronger signal. Often caused by the theme.</p>
+<p><b>How to fix:</b> Check the page in Customize. If a logo or banner is an H1, change the extra one to a smaller heading.</p>
+<table><tr><th>Page</th><th>What we saw</th></tr><tr><td><a href='https://practice-store.example/products/charizard-holo' target='_blank'>127.0.0.1:35215/products/charizard-holo</a></td><td>Charizard Holo | Also a heading</td></tr></table>
+</details>
+</body></html>
