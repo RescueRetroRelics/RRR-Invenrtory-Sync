@@ -70,3 +70,30 @@ class ReconcileTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LinkReportTest(unittest.TestCase):
+    def test_strict_matching_and_six_files(self):
+        from rrr_sync import link_report as lr
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "p.csv").write_text(SHOPIFY, encoding="utf-8")
+        shop = reconcile.load_shopify_products_csv(tmp / "p.csv")
+        ebay = [
+            reconcile.EbayItem("1", "Totally different", sku="SNP-KETCHUP", qty=1),
+            reconcile.EbayItem("2", "Snoopy Hippers Belle Pink Bow Sonny Angel 🎀", qty=1),
+            reconcile.EbayItem("3", "Snoopy Hippers Belle Pink Bow Sonny Angel ✨", qty=1),
+            reconcile.EbayItem("4", "Vintage Garfield Lunchbox 1978 Thermos Rare", qty=1),
+            reconcile.EbayItem("5", "Care Bears Funshine Plush", sku="15420259205416", qty=1),
+        ]
+        c, u, m = lr.link(ebay, shop, {"belle": "gid://shopify/Product/9"})
+        self.assertEqual(sorted(r["ebay"].item_id for r in c), ["1", "2", "3"])  # emojis ignored
+        self.assertEqual([r["ebay"].item_id for r in u], ["4"])  # close, not certain: never auto-picked
+        self.assertEqual([r["ebay"].item_id for r in m], ["5"])
+        self.assertEqual(lr.sku_kind("15420259205416"), "Shopify-style number")
+        self.assertEqual(lr.sku_kind("RR-TJBND-05"), "old custom SKU")
+        self.assertEqual(lr.clean("Pokémon ⚡"), "pokemon")
+        lr.write(tmp / "out", shop, c, u, m)
+        for n in range(1, 7):
+            self.assertEqual(len(list((tmp / "out").glob(f"{n}_*.csv"))), 1)
+        dupes = (tmp / "out" / "2_duplicate_groups.csv").read_text(encoding="utf-8-sig")
+        self.assertIn("gid://shopify/Product/9", dupes)

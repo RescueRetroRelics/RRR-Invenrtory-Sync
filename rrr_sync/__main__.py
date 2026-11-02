@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from . import ebay, ebay_auth, matching, notify, orders, reconcile, sync
+from . import ebay, ebay_auth, link_report, matching, notify, orders, reconcile, sync
 from .config import Config
 from .shopify import Shopify
 
@@ -142,6 +142,42 @@ def cmd_reconcile(cfg, args):
     return 0
 
 
+def cmd_link_report(cfg, args):
+    from datetime import datetime
+    from pathlib import Path
+    from .config import DATA_DIR, ROOT
+
+    folder = Path(args.folder) if args.folder else ROOT / "exports"
+    found = reconcile.find_exports(folder) if folder.exists() else {}
+    shopify_csv = args.shopify or found.get("shopify")
+    if not shopify_csv:
+        print(f"No Shopify product export found in {folder}. Shopify admin > Products > Export.")
+        return 1
+    shop = reconcile.load_shopify_products_csv(shopify_csv)
+    print(f"Shopify file: {Path(shopify_csv).name} ({len(shop)} items)")
+    gids = {}
+    try:
+        gids = link_report.gids_from_shopify(cfg)
+        print(f"Shopify IDs:  {len(gids)} products read from Shopify (read-only)")
+    except Exception as e:
+        print(f"Shopify IDs:  not filled in ({e}). Lists still work, using the product handle.")
+    ebay_csv = args.ebay or found.get("ebay")
+    if ebay_csv:
+        ebay_items = reconcile.load_ebay_csv(ebay_csv)
+        print(f"eBay file:    {Path(ebay_csv).name}")
+    else:
+        ebay_items = reconcile.load_ebay_live(cfg)
+        print("eBay:         read live (read-only). Prices need a Seller Hub CSV in exports/.")
+    orders_csv = args.orders or found.get("orders")
+    last_sale = link_report.last_sale_from_orders_csv(orders_csv) if orders_csv else {}
+    confirmed, uncertain, missing = link_report.link(ebay_items, shop, gids)
+    out_dir = Path(args.out) if args.out else DATA_DIR / "links" / datetime.now().strftime("%Y-%m-%d_%H%M")
+    print()
+    print(link_report.write(out_dir, shop, confirmed, uncertain, missing, last_sale))
+    print(f"Report folder: {out_dir}")
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -164,6 +200,13 @@ def main(argv=None):
     rc.add_argument("--inventory", help="Shopify inventory export CSV (optional, for stock counts)")
     rc.add_argument("--orders", help="Shopify orders export CSV (optional, for top sellers)")
     rc.add_argument("--out", help="where to write the report (default: data/reconcile/<date>)")
+
+    lk = sub.add_parser("link-report", help="six read-only lists linking eBay listings to Shopify products")
+    lk.add_argument("--folder", help="folder with your export CSVs (default: exports/)")
+    lk.add_argument("--shopify", help="Shopify product export CSV")
+    lk.add_argument("--ebay", help="eBay Seller Hub active listings CSV (default: read live)")
+    lk.add_argument("--orders", help="Shopify orders export CSV (for last sale dates)")
+    lk.add_argument("--out", help="where to write the lists (default: data/links/<date>)")
 
     args = p.parse_args(argv)
     cfg = Config.load()

@@ -190,6 +190,25 @@ Good to know: the product export has no Shopify product IDs, so `shopify_product
 you use it; the `handle` column (the end of the product's web address) identifies the product instead.
 "Close title" matches are guesses; check them before acting on them.
 
+## Link eBay listings to Shopify products (six lists, read-only)
+
+Double-click **`link_report.bat`** (or `python -m rrr_sync link-report`) with your Shopify product export in
+`exports/`. It only auto-matches when it's certain: same SKU, or the exact same title once emojis,
+symbols, accents and capitals are ignored. Everything else lands in list 3 with a best guess for you
+to decide. Several eBay copies of one Shopify product are treated as one group.
+
+| File | What's in it |
+|------|--------------|
+| `1_confirmed_matches.csv` | every pair it's sure about |
+| `2_duplicate_groups.csv` | Shopify products with 2+ eBay copies; flags eBay qty > Shopify and 5+ copies |
+| `3_cant_match.csv` | uncertain ones, best guess + how close; fill in `your_pick` |
+| `4_existing_skus.csv` | eBay listings that already have a SKU, Shopify-style number vs old custom, with the matched GID beside it |
+| `5_on_ebay_not_shopify.csv` | still need migrating, one row per unique item with copies, price, qty |
+| `6_on_shopify_not_ebay.csv` | product, qty, last sale date (add `orders_export_1.csv` to `exports/` for dates) |
+
+Shopify product IDs (GIDs) are filled in when the tool's Shopify login in `.env` works; otherwise the
+`handle` column identifies each product. eBay prices need a Seller Hub CSV in `exports/`.
+
 ## Claude Desktop: eBay listing tools (MCP server)
 
 `rrr_ebay_mcp.py` lets Claude create, finish and publish eBay listings straight from Shopify.
@@ -249,6 +268,7 @@ rrr_sync/sync.py        eBay-shows-1 rule: count eBay sales on Shopify, set eBay
 rrr_sync/notify.py      activity log + ntfy phone notifications
 run_sync.bat            what Windows Task Scheduler runs
 rrr_sync/orders.py      order CSV/JSON export
+rrr_sync/link_report.py six strict eBay -> Shopify link lists (link_report.bat)
 rrr_sync/reconcile.py   read-only Shopify vs eBay report (reconcile.bat runs it)
 ```
 

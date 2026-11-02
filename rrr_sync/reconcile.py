@@ -132,7 +132,7 @@ def load_shopify_products_csv(path, inventory_csv=None):
             continue  # extra image row
         options = [o for o in options if o]
         title = product["title"]
-        if options and options != ["Default Title"]:
+        if options and options not in (["Default Title"], ["Default"]):
             title += " " + " / ".join(options)
         variant_gid = _gid("ProductVariant", _get(row, "Variant ID"))
         qty = _int(_get(row, "Variant Inventory Qty"))
