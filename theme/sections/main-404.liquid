@@ -1,0 +1,14 @@
+<div class="page-width section empty">
+  <h1>This relic wandered off</h1>
+  <p>We couldn't find that page. Like a good hound, let's sniff it out.</p>
+  <form class="search-form" style="margin:1rem auto" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="visually-hidden" for="q404">Search</label>
+    <input class="field" id="q404" type="search" name="q" placeholder="Search the shop">
+    <button class="btn" type="submit">Search</button>
+  </form>
+  <a class="btn btn--ghost" href="{{ routes.root_url }}">Back to home</a>
+</div>
+
+{% schema %}
+{ "name": "404", "settings": [] }
+{% endschema %}

@@ -1,0 +1,33 @@
+{%- assign c = section.settings.collection -%}
+<section class="section{% if section.settings.tint %} section--tint{% endif %}">
+  <div class="page-width">
+    <div class="section-head">
+      <h2>{{ section.settings.heading | default: c.title | escape }}</h2>
+      {%- if c != blank -%}<a href="{{ c.url }}">View all &rarr;</a>{%- endif -%}
+    </div>
+    <ul class="grid grid--4">
+      {%- if c != blank and c.products_count > 0 -%}
+        {%- for p in c.products limit: section.settings.limit -%}
+          {%- render 'product-card', card_product: p, loading: 'lazy' -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <li class="card"><div class="card__media">{{ 'product-1' | placeholder_svg_tag: 'card__img placeholder' }}</div><h3 class="card__title">Pick a collection in Customize</h3></li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Freshly rescued" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 24, "step": 1, "default": 8 },
+    { "type": "checkbox", "id": "tint", "label": "White background", "default": false }
+  ],
+  "presets": [{ "name": "Featured collection" }]
+}
+{% endschema %}

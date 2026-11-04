@@ -1,0 +1,20 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Your gift card &ndash; {{ shop.name }}</title>
+  {{ content_for_header }}
+  {%- render 'css' -%}
+</head>
+<body>
+  <main class="page-width section empty">
+    <h1>{{ shop.name }} gift card</h1>
+    <p style="font-size:2rem;font-weight:700">{{ gift_card.balance | money }}</p>
+    {%- if gift_card.expired or gift_card.enabled == false -%}<p>This gift card is no longer active.</p>{%- endif -%}
+    <p>Code: <strong>{{ gift_card.code | format_code }}</strong></p>
+    {%- if gift_card.pass_url -%}<p><a href="{{ gift_card.pass_url }}">Add to Apple Wallet</a></p>{%- endif -%}
+    <a class="btn" href="{{ shop.url }}">Start shopping</a>
+  </main>
+</body>
+</html>

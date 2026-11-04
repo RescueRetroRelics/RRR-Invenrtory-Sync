@@ -1,0 +1,114 @@
+{%- comment -%}
+  Header + mega menu. The menu comes from Online Store > Navigation (default: Main menu).
+  Any top-level item with sub-items becomes a mega menu panel. Third-level items show as lists under each column.
+  Zero JavaScript needed to open menus: they use built-in <details> elements.
+{%- endcomment -%}
+<header class="header">
+  <div class="page-width header__bar">
+    <button class="icon-btn menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false">
+      <span class="visually-hidden">Menu</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}">
+        {%- if section.settings.logo != blank -%}
+          {%- assign logo_h = section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round -%}
+          {%- assign logo_2x = section.settings.logo_width | times: 2 -%}
+          {{ section.settings.logo | image_url: width: logo_2x | image_tag: width: section.settings.logo_width, height: logo_h, loading: 'eager', alt: shop.name, style: 'max-width:100%' }}
+        {%- else -%}
+          {{ shop.name }}
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div class="header__icons">
+      <a class="icon-btn" href="{{ routes.search_url }}">
+        <span class="visually-hidden">Search</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-btn" href="{{ routes.account_url }}">
+          <span class="visually-hidden">Account</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </a>
+      {%- endif -%}
+      <a class="icon-btn" href="{{ routes.cart_url }}">
+        <span class="visually-hidden">Cart, {{ cart.item_count }} items</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        {%- if cart.item_count > 0 -%}<span class="cart-count" aria-hidden="true">{{ cart.item_count }}</span>{%- endif -%}
+      </a>
+    </div>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__top">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <details data-group="mega" data-closeable>
+                <summary>{{ link.title | escape }}</summary>
+                <div class="mega">
+                  <div class="page-width">
+                    <ul class="mega__cols">
+                      {%- for child in link.links -%}
+                        <li>
+                          <a class="mega__head" href="{{ child.url }}">{{ child.title | escape }}</a>
+                          {%- if child.links.size > 0 -%}
+                            <ul class="mega__sub">
+                              {%- for grandchild in child.links -%}
+                                <li><a href="{{ grandchild.url }}">{{ grandchild.title | escape }}</a></li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    {%- if link.url != '#' and link.url != blank -%}
+                      <a class="mega__all" href="{{ link.url }}">Shop all {{ link.title | escape }} &rarr;</a>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+
+        {%- if section.settings.show_all_collections -%}
+          <li>
+            <details data-group="mega" data-closeable>
+              <summary>{{ section.settings.all_collections_label | escape }}</summary>
+              <div class="mega">
+                <div class="page-width">
+                  <ul class="mega__cols">
+                    {%- for c in collections limit: 100 -%}
+                      {%- if c.handle != 'frontpage' and c.all_products_count > 0 -%}
+                        <li><a href="{{ c.url }}">{{ c.title | escape }}</a></li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                  <a class="mega__all" href="{{ routes.collections_url }}">See every collection &rarr;</a>
+                </div>
+              </div>
+            </details>
+          </li>
+        {%- endif -%}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 300, "step": 10, "unit": "px", "default": 160 },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Items with sub-items become mega menu panels." },
+    { "type": "checkbox", "id": "show_all_collections", "label": "Add an 'All collections' mega menu", "info": "Lists every collection with products automatically.", "default": false },
+    { "type": "text", "id": "all_collections_label", "label": "'All collections' label", "default": "All Collections" }
+  ]
+}
+{% endschema %}

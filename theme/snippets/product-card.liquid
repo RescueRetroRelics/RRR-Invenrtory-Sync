@@ -1,0 +1,30 @@
+{%- comment -%}
+  Product card. Params: card_product, loading ('lazy' or 'eager'), sizes (optional)
+{%- endcomment -%}
+{%- liquid
+  assign loading = loading | default: 'lazy'
+  assign sizes = sizes | default: '(min-width: 990px) 23vw, (min-width: 750px) 31vw, 47vw'
+-%}
+<li class="card">
+  <a class="card__link" href="{{ card_product.url }}">
+    <div class="card__media">
+      {%- if card_product.featured_media -%}
+        {%- assign img_alt = card_product.featured_media.alt | default: card_product.title -%}
+        {%- if loading == 'eager' -%}
+          {{ card_product.featured_media | image_url: width: 600 | image_tag: loading: 'eager', widths: '200,300,400,500,600', sizes: sizes, alt: img_alt, class: 'card__img' }}
+        {%- else -%}
+          {{ card_product.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', decoding: 'async', widths: '200,300,400,500,600', sizes: sizes, alt: img_alt, class: 'card__img' }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'card__img placeholder' }}
+      {%- endif -%}
+      {%- unless card_product.available -%}
+        <span class="badge badge--sold">Adopted</span>
+      {%- else -%}
+        {%- if card_product.compare_at_price > card_product.price -%}<span class="badge badge--sale">Sale</span>{%- endif -%}
+      {%- endunless -%}
+    </div>
+    <h3 class="card__title">{{ card_product.title | escape }}</h3>
+    {%- render 'price', product: card_product -%}
+  </a>
+</li>

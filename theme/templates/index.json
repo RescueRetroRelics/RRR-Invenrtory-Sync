@@ -1,0 +1,119 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "heading": "Retro relics rescued. Shelter dogs saved.",
+        "text": "<p>Vintage and nostalgic treasures, rehomed with love. Inspired by Bailee, our forever founding hound.</p>",
+        "btn_label": "Shop new finds",
+        "btn_link": "shopify://collections/retro-relics-rescued-new-finds",
+        "btn2_label": "Browse collections",
+        "height_mobile": 420,
+        "height_desktop": 560,
+        "shade": true
+      }
+    },
+    "new-finds": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Freshly rescued",
+        "collection": "retro-relics-rescued-new-finds",
+        "limit": 8
+      }
+    },
+    "tiles": {
+      "type": "collection-grid",
+      "settings": {
+        "heading": "Shop the rescue squad",
+        "tint": true
+      },
+      "blocks": {
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "collection": "retro-rescue-snoopy-found",
+            "label": "Snoopy's Rescue Squad"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "collection": "re-ment",
+            "label": "Re-Ment Rescued"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "collection": "for-the-love-of-pets",
+            "label": "For the Love of Pets"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "collection": "gift-sets",
+            "label": "Gift Sets"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "90s-nostalgia",
+            "label": "Totally Rescued 90s"
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "searching-for-sanrio",
+            "label": "Searching for Sanrio"
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "garfield",
+            "label": "Garfield"
+          }
+        },
+        "c8": {
+          "type": "collection",
+          "settings": {
+            "collection": "paranormal-pursuits-unexplained-rescues",
+            "label": "Paranormal Pursuits"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ]
+    },
+    "mission": {
+      "type": "mission",
+      "settings": {}
+    },
+    "gifts": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "From our pack to yours",
+        "collection": "gift-sets",
+        "limit": 4
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "new-finds",
+    "tiles",
+    "mission",
+    "gifts"
+  ]
+}

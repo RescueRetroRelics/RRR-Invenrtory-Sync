@@ -1,0 +1,19 @@
+{%- comment -%} Usage: render 'price', product: product, variant: variant (variant optional) {%- endcomment -%}
+{%- liquid
+  if variant
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+    assign varies = false
+  else
+    assign price = product.price
+    assign compare = product.compare_at_price
+    assign varies = product.price_varies
+  endif
+-%}
+<div class="price{% if compare > price %} price--sale{% endif %}">
+  {%- if varies -%}<span class="price__from">From</span> {% endif -%}
+  <span class="price__now">{{ price | money }}</span>
+  {%- if compare > price -%}
+    <s class="price__was"><span class="visually-hidden">Regular price</span>{{ compare | money }}</s>
+  {%- endif -%}
+</div>

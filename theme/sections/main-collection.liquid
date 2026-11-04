@@ -1,0 +1,108 @@
+{%- comment -%}
+  Collection page. Filters use Shopify's built-in Search & Discovery filters (no app script).
+  The first row of product images loads right away (no lazy) so the page paints fast; the rest lazy load.
+{%- endcomment -%}
+{%- paginate collection.products by section.settings.per_page -%}
+<div class="page-width">
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a> / <span aria-current="page">{{ collection.title | escape }}</span></nav>
+  <header class="coll-head">
+    <h1>{{ collection.title | escape }}</h1>
+    {%- if collection.description != blank and current_page == 1 -%}
+      <div class="coll-head__desc rte">{{ collection.description }}</div>
+    {%- endif -%}
+  </header>
+
+  <form class="toolbar" method="get" action="{{ collection.url }}" data-autosubmit>
+    {%- if section.settings.show_filters and collection.filters.size > 0 -%}
+      <div class="facets">
+        {%- for filter in collection.filters -%}
+          <details class="facet" data-closeable data-group="facet">
+            <summary>{{ filter.label | escape }}{% if filter.active_values.size > 0 %} ({{ filter.active_values.size }}){% endif %}</summary>
+            <div class="facet__panel">
+              {%- case filter.type -%}
+                {%- when 'price_range' -%}
+                  <div class="facet__price">
+                    <label>Min <input class="field" type="number" min="0" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | replace: ',', '' }}{% endif %}" placeholder="0"></label>
+                    <label>Max <input class="field" type="number" min="0" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | replace: ',', '' }}{% endif %}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"></label>
+                  </div>
+                  <button class="btn" type="submit" style="margin-top:.6rem">Apply</button>
+                {%- else -%}
+                  {%- for value in filter.values -%}
+                    <label>
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                      {{ value.label | escape }} <span style="color:var(--muted)">({{ value.count }})</span>
+                    </label>
+                  {%- endfor -%}
+              {%- endcase -%}
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    <div class="sort">
+      <label for="sort-{{ section.id }}">Sort</label>
+      {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+      <select id="sort-{{ section.id }}" name="sort_by">
+        {%- for option in collection.sort_options -%}
+          <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+        {%- endfor -%}
+      </select>
+      <noscript><button class="btn" type="submit">Go</button></noscript>
+    </div>
+  </form>
+
+  {%- liquid
+    assign active_count = 0
+    for filter in collection.filters
+      assign active_count = active_count | plus: filter.active_values.size
+      if filter.type == 'price_range'
+        if filter.min_value.value != nil or filter.max_value.value != nil
+          assign active_count = active_count | plus: 1
+        endif
+      endif
+    endfor
+  -%}
+  {%- if active_count > 0 -%}
+    <div class="active-filters">
+      {%- for filter in collection.filters -%}
+        {%- for value in filter.active_values -%}
+          <a class="chip" href="{{ value.url_to_remove }}">{{ value.label | escape }} &times;</a>
+        {%- endfor -%}
+      {%- endfor -%}
+      <a class="chip" href="{{ collection.url }}?sort_by={{ sort_by }}">Clear all</a>
+    </div>
+  {%- endif -%}
+
+  {%- if collection.products.size > 0 -%}
+    <p style="color:var(--muted);font-size:.9rem">{{ collection.products_count }} {{ collection.products_count | pluralize: 'find', 'finds' }}</p>
+    <ul class="grid grid--4">
+      {%- for p in collection.products -%}
+        {%- if forloop.index <= 4 and current_page == 1 -%}
+          {%- render 'product-card', card_product: p, loading: 'eager' -%}
+        {%- else -%}
+          {%- render 'product-card', card_product: p, loading: 'lazy' -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <div class="empty">
+      <p>No finds here yet{% if active_count > 0 %} with those filters{% endif %}.</p>
+      <a class="btn" href="{{ routes.all_products_collection_url }}">Shop everything</a>
+    </div>
+  {%- endif -%}
+
+  {%- if paginate.pages > 1 -%}
+    <nav class="pagination" aria-label="Pages">{{ paginate | default_pagination: next: 'Next &rarr;', previous: '&larr; Prev' }}</nav>
+  {%- endif -%}
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection products",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_filters", "label": "Show filters", "default": true, "info": "Set up filters in the Search & Discovery app (free, by Shopify)." }
+  ]
+}
+{% endschema %}

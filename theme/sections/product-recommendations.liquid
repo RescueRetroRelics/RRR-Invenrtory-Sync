@@ -1,0 +1,25 @@
+{%- comment -%}
+  "You may also like". Loads only when the shopper scrolls near it, so it never slows the page.
+{%- endcomment -%}
+<section class="section">
+  <div class="page-width" data-recs-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related">
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <ul class="grid grid--4">
+        {%- for p in recommendations.products -%}
+          {%- render 'product-card', card_product: p, loading: 'lazy' -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "You may also like",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "More rescued relics" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 10, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

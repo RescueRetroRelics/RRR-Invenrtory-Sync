@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    {%- render 'meta-tags' -%}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- endif -%}
+    {%- render 'css' -%}
+    <script src="{{ 'rrr.js' | asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+  <body class="tpl-{{ request.page_type | handle }}">
+    <a class="skip-link" href="#main">Skip to content</a>
+    {% sections 'header-group' %}
+    <main id="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+    {% sections 'footer-group' %}
+    {%- render 'schema-org' -%}
+  </body>
+</html>

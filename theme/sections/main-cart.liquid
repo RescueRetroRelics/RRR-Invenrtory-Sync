@@ -1,0 +1,54 @@
+<div class="page-width section">
+  <h1>Your cart</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" novalidate>
+      <table class="cart-table">
+        <tbody>
+          {%- for item in cart.items -%}
+            <tr>
+              <td class="cart-item__img">
+                {%- if item.image -%}<a href="{{ item.url }}">{{ item.image | image_url: width: 160 | image_tag: loading: 'lazy', width: 80, alt: item.title }}</a>{%- endif -%}
+              </td>
+              <td>
+                <a href="{{ item.url }}"><strong>{{ item.product.title | escape }}</strong></a>
+                {%- unless item.product.has_only_default_variant -%}<div style="color:var(--muted)">{{ item.variant.title | escape }}</div>{%- endunless -%}
+                <div>{{ item.final_price | money }}</div>
+                {%- for d in item.line_level_discount_allocations -%}<div style="color:#B3204A">{{ d.discount_application.title | escape }} (-{{ d.amount | money }})</div>{%- endfor -%}
+                <div style="display:flex;gap:.8rem;align-items:center;margin-top:.5rem">
+                  <label class="visually-hidden" for="q-{{ forloop.index }}">Quantity</label>
+                  <input class="field qty" id="q-{{ forloop.index }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0">
+                  <a href="{{ item.url_to_remove }}" style="color:var(--teal)">Remove</a>
+                </div>
+              </td>
+              <td style="text-align:right;white-space:nowrap"><strong>{{ item.final_line_price | money }}</strong></td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+      <div class="cart-foot">
+        {%- for d in cart.cart_level_discount_applications -%}<div>{{ d.title | escape }}: -{{ d.total_allocated_amount | money }}</div>{%- endfor -%}
+        <div style="font-size:1.25rem"><strong>Subtotal: {{ cart.total_price | money_with_currency }}</strong></div>
+        <small style="color:var(--muted)">Taxes and shipping are added at checkout.</small>
+        <button class="btn btn--ghost" type="submit" name="update">Update cart</button>
+        <button class="btn" type="submit" name="checkout">Check out</button>
+        {%- if additional_checkout_buttons and section.settings.show_express -%}
+          <div>{{ content_for_additional_checkout_buttons }}</div>
+        {%- endif -%}
+      </div>
+    </form>
+  {%- else -%}
+    <div class="empty">
+      <p>Your cart is empty. Lots of relics are waiting for a good home!</p>
+      <a class="btn" href="{{ routes.all_products_collection_url }}">Start shopping</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_express", "label": "Show express checkout buttons (Shop Pay, PayPal)", "default": true }
+  ]
+}
+{% endschema %}

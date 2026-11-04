@@ -1,0 +1,27 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Shop Retro Collectibles, Save Shelter Dogs' Lives",
+        "link": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "logo_width": 110,
+        "show_all_collections": false,
+        "all_collections_label": "All Collections",
+        "logo": "shopify://shop_images/Logo_f4d2082a-8fbd-4bed-a209-5db913c29da9.jpg"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}
