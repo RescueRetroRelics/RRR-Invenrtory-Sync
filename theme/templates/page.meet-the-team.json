@@ -1,0 +1,58 @@
+{
+  "sections": {
+    "team": {
+      "type": "meet-the-team",
+      "settings": {
+        "heading": "Meet the Team",
+        "intro": "<p>Rescue Retro Relics exists because of three very good dogs. Every relic we rescue helps another dog find a home.</p>",
+        "columns": 3
+      },
+      "blocks": {
+        "bailee": {
+          "type": "member",
+          "settings": {
+            "name": "Bailee",
+            "role": "Founding Hound & Forever CEO",
+            "bio": "<p>Bailee was a Plott Hound with the biggest heart in Detroit, and the reason this shop exists. Bailee is the face of our brand and watches over every rescue we make.</p>",
+            "memorial": true,
+            "memorial_label": "Forever our founder. In loving memory."
+          }
+        },
+        "casey": {
+          "type": "member",
+          "settings": {
+            "name": "Casey",
+            "role": "Head of Quality Control",
+            "bio": "<p>Casey is a rescue pup who inspects every box that comes through the door (mostly for snacks). Her full story is coming soon.</p>",
+            "memorial": false
+          }
+        },
+        "savannah": {
+          "type": "member",
+          "settings": {
+            "name": "Savannah",
+            "role": "Director of Cuddles & Customer Happiness",
+            "bio": "<p>Savannah is a rescue pup who makes sure every order is packed with love. Her full story is coming soon.</p>",
+            "memorial": false
+          }
+        }
+      },
+      "block_order": [
+        "bailee",
+        "casey",
+        "savannah"
+      ]
+    },
+    "mission": {
+      "type": "mission",
+      "settings": {
+        "btn_label": "Shop new finds",
+        "btn_link": "/collections/retro-relics-rescued-new-finds"
+      }
+    }
+  },
+  "order": [
+    "team",
+    "mission"
+  ]
+}

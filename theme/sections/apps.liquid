@@ -1,0 +1,14 @@
+{%- comment -%} A place to drop app blocks (reviews widget, etc.) only on the pages that need them. {%- endcomment -%}
+<div class="page-width section">
+  {%- for block in section.blocks -%}
+    {% render block %}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Apps",
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "Apps" }]
+}
+{% endschema %}

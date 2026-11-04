@@ -1,0 +1,21 @@
+<div class="page-width section" style="max-width:820px">
+  <h1>{{ page.title | escape }}</h1>
+  {%- if page.content != blank -%}<div class="rte">{{ page.content }}</div>{%- endif -%}
+  {%- form 'contact', style: 'display:grid;gap:.8rem;margin-top:1.2rem' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="mission-note" role="status">Thanks! Your message is on its way. We'll get back to you soon.</p>
+    {%- endif -%}
+    {{ form.errors | default_errors }}
+    <label for="c-name">Name</label>
+    <input class="field" id="c-name" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+    <label for="c-email">Email *</label>
+    <input class="field" id="c-email" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+    <label for="c-msg">Message</label>
+    <textarea class="field" id="c-msg" name="contact[body]" rows="6">{{ form.body }}</textarea>
+    <button class="btn" type="submit">Send</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{ "name": "Contact form", "settings": [] }
+{% endschema %}

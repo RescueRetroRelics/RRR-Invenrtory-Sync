@@ -1,0 +1,51 @@
+{
+  "current": {
+    "color_bg": "#FFF6E9",
+    "color_paper": "#FFFFFF",
+    "color_ink": "#2A1E16",
+    "color_muted": "#6B5A4C",
+    "color_brand": "#6E4426",
+    "color_accent": "#D9622B",
+    "color_teal": "#136C64",
+    "color_sun": "#F4B63F",
+    "color_pink": "#D9466F",
+    "color_button": "#8A3B12",
+    "color_button_text": "#FFFFFF",
+    "color_line": "#EAD9C3",
+    "page_width": 1280,
+    "radius": 14,
+    "logo": "shopify://shop_images/Logo_f4d2082a-8fbd-4bed-a209-5db913c29da9.jpg",
+    "social_facebook": "https://www.facebook.com/RescueRetroRelics",
+    "social_instagram": "https://www.instagram.com/RescueRetroSteph",
+    "social_tiktok": "https://www.tiktok.com/@rescueretrorelics",
+    "social_pinterest": "https://www.pinterest.com/rescueretrorelics",
+    "blocks": {
+      "14060646107696862457": {
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {}
+      }
+    },
+    "social_x": "https://x.com/ShopRescueRetro",
+    "org_email": "stephanie@rescueretrorelics.com",
+    "org_description": "A retro-inspired collectibles shop with a mission \u2014 every purchase helps fund dog rescue in the Detroit area."
+  },
+  "presets": {
+    "Default": {
+      "color_bg": "#FFF6E9",
+      "color_paper": "#FFFFFF",
+      "color_ink": "#2A1E16",
+      "color_muted": "#6B5A4C",
+      "color_brand": "#6E4426",
+      "color_accent": "#D9622B",
+      "color_teal": "#136C64",
+      "color_sun": "#F4B63F",
+      "color_pink": "#D9466F",
+      "color_button": "#8A3B12",
+      "color_button_text": "#FFFFFF",
+      "color_line": "#EAD9C3",
+      "page_width": 1280,
+      "radius": 14
+    }
+  }
+}

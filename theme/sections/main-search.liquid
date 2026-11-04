@@ -1,0 +1,36 @@
+{%- paginate search.results by 24 -%}
+<div class="page-width section">
+  <h1>Search</h1>
+  <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="visually-hidden" for="q">Search</label>
+    <input class="field" id="q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Snoopy, Re-Ment, 90s..." autocomplete="off">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button class="btn" type="submit">Search</button>
+  </form>
+  {%- if search.performed -%}
+    <p style="margin-top:1rem;color:var(--muted)">{{ search.results_count }} results for "{{ search.terms | escape }}"</p>
+    {%- if search.results_count > 0 -%}
+      <ul class="grid grid--4">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {%- if forloop.index <= 4 and current_page == 1 -%}
+              {%- render 'product-card', card_product: item, loading: 'eager' -%}
+            {%- else -%}
+              {%- render 'product-card', card_product: item, loading: 'lazy' -%}
+            {%- endif -%}
+          {%- else -%}
+            <li class="card"><a class="card__link" href="{{ item.url }}"><div class="card__media" style="display:grid;place-items:center;padding:1rem;text-align:center"><strong>{{ item.title | escape }}</strong></div><span class="card__title">{{ item.object_type | capitalize }}</span></a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="empty"><p>No matches. Try a shorter word, or <a href="{{ routes.collections_url }}">browse collections</a>.</p></div>
+    {%- endif -%}
+    {%- if paginate.pages > 1 -%}<nav class="pagination" aria-label="Pages">{{ paginate | default_pagination: next: 'Next &rarr;', previous: '&larr; Prev' }}</nav>{%- endif -%}
+  {%- endif -%}
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Search results", "settings": [] }
+{% endschema %}

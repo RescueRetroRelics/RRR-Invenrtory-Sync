@@ -1,0 +1,61 @@
+<footer class="footer">
+  <div class="page-width">
+    <div class="footer__cols">
+      <div>
+        <h2>{{ section.settings.heading | escape }}</h2>
+        <div class="rte">{{ section.settings.text }}</div>
+        {%- assign socials = 'facebook,instagram,tiktok,pinterest,youtube,x' | split: ',' -%}
+        <ul class="list-plain" style="display:flex;gap:1rem;flex-wrap:wrap">
+          {%- for s in socials -%}
+            {%- assign key = 'social_' | append: s -%}
+            {%- if settings[key] != blank -%}
+              <li><a href="{{ settings[key] }}" rel="noopener" target="_blank">{{ s | capitalize }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+      <div>
+        <h2>{{ section.settings.menu.title | default: 'Explore' }}</h2>
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+      <div>
+        <h2>Help</h2>
+        <ul>
+          {%- for link in section.settings.menu_2.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <small>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}. {{ powered_by_link }}</small>
+      {%- if section.settings.show_payments -%}
+        <ul class="payments" aria-label="Payment methods">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Rescue Retro Relics" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Vintage and nostalgic finds, rescued and rehomed. Every purchase helps fund dog rescue in Detroit. In loving memory of Bailee.</p>" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" },
+    { "type": "link_list", "id": "menu_2", "label": "Help menu" },
+    { "type": "checkbox", "id": "show_payments", "label": "Show payment icons", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,60 @@
+{%- comment -%}
+  Meet the Team. One block per team member. Turn on "In loving memory" for Bailee.
+  Photos: Customize > Meet the Team > click a member > Photo. Use a portrait (taller than wide) photo.
+{%- endcomment -%}
+<section class="section">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}<h1 class="center">{{ section.settings.heading | escape }}</h1>{%- endif -%}
+    {%- if section.settings.intro != blank -%}<div class="rte center" style="max-width:720px;margin:0 auto 2rem">{{ section.settings.intro }}</div>{%- endif -%}
+    <div class="team" style="--cols:{{ section.settings.columns }}">
+      {%- for block in section.blocks -%}
+        <article class="member{% if block.settings.memorial %} member--memorial{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.memorial -%}<div class="member__ribbon">{{ block.settings.memorial_label | escape }}</div>{%- endif -%}
+          <div class="member__photo">
+            {%- if block.settings.photo != blank -%}
+              {%- capture alt -%}{{ block.settings.photo.alt | default: block.settings.name | escape }}{%- endcapture -%}
+              {%- if forloop.first -%}
+                {{ block.settings.photo | image_url: width: 900 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '300,450,600,900', sizes: '(min-width: 750px) 33vw, 100vw', alt: alt }}
+              {%- else -%}
+                {{ block.settings.photo | image_url: width: 900 | image_tag: loading: 'lazy', decoding: 'async', widths: '300,450,600,900', sizes: '(min-width: 750px) 33vw, 100vw', alt: alt }}
+              {%- endif -%}
+            {%- else -%}
+              <div style="height:100%;display:grid;place-items:center;text-align:center;padding:1rem;color:var(--muted)">Photo of {{ block.settings.name | escape }} goes here</div>
+            {%- endif -%}
+          </div>
+          <div class="member__body">
+            <h2 style="margin-bottom:.15rem">{{ block.settings.name | escape }}</h2>
+            {%- if block.settings.role != blank -%}<p class="member__role">{{ block.settings.role | escape }}</p>{%- endif -%}
+            <div class="rte">{{ block.settings.bio }}</div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Meet the Team",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Meet the Team" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Rescue Retro Relics is run by one human and a whole lot of dog love.</p>" },
+    { "type": "range", "id": "columns", "label": "Columns on computers", "min": 1, "max": 4, "step": 1, "default": 3 }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "Team member",
+      "settings": [
+        { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Name" },
+        { "type": "text", "id": "role", "label": "Job title", "default": "Job title" },
+        { "type": "richtext", "id": "bio", "label": "Story", "default": "<p>Tell their story here.</p>" },
+        { "type": "checkbox", "id": "memorial", "label": "In loving memory", "default": false },
+        { "type": "text", "id": "memorial_label", "label": "Memorial ribbon text", "default": "In loving memory" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Meet the Team", "blocks": [{ "type": "member" }, { "type": "member" }, { "type": "member" }] }]
+}
+{% endschema %}

@@ -1,0 +1,124 @@
+{%- comment -%}
+  Product page.
+  SPEED RULE: main product images are NEVER lazy loaded. The first image is preloaded with high priority.
+  The other gallery photos still load right away, but at low priority so they don't slow down the first one.
+  Add-to-cart works with zero JavaScript (plain form post).
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+<div class="page-width">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a> /
+    {%- if collection %} <a href="{{ collection.url }}">{{ collection.title | escape }}</a> /{% endif %}
+    <span aria-current="page">{{ product.title | escape }}</span>
+  </nav>
+
+  <div class="product">
+    <div class="product__media">
+      {%- assign images = product.media | where: 'media_type', 'image' -%}
+      {%- if images.size > 0 -%}
+        <div class="gallery" role="region" aria-label="Product photos" tabindex="0">
+          {%- for media in images -%}
+            {%- capture alt -%}{{ media.alt | default: product.title | escape }}{% if forloop.length > 1 %} (photo {{ forloop.index }} of {{ forloop.length }}){% endif %}{%- endcapture -%}
+            <figure class="gallery__item" id="m-{{ media.id }}">
+              {%- if forloop.first -%}
+                {{ media.preview_image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, widths: '360,500,700,900,1100,1400', sizes: '(min-width: 990px) 55vw, 88vw', alt: alt }}
+              {%- else -%}
+                {{ media.preview_image | image_url: width: 1100 | image_tag: loading: 'eager', fetchpriority: 'low', decoding: 'async', widths: '360,500,700,900,1100', sizes: '(min-width: 990px) 27vw, 88vw', alt: alt }}
+              {%- endif -%}
+            </figure>
+          {%- endfor -%}
+        </div>
+        {%- if images.size > 1 -%}
+          <ul class="thumbs" aria-label="Jump to photo">
+            {%- for media in images -%}
+              <li><a href="#m-{{ media.id }}">{{ media.preview_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: loading: 'lazy', alt: '' }}<span class="visually-hidden">Photo {{ forloop.index }}</span></a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      {%- else -%}
+        <div class="gallery"><figure class="gallery__item">{{ 'product-1' | placeholder_svg_tag: 'placeholder' }}</figure></div>
+      {%- endif -%}
+    </div>
+
+    <div class="product__info">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'title' -%}
+            {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor" {{ block.shopify_attributes }}>{{ product.vendor | escape }}</p>{%- endif -%}
+            <h1 class="product__title" {{ block.shopify_attributes }}>{{ product.title | escape }}</h1>
+          {%- when 'price' -%}
+            <div {{ block.shopify_attributes }}>{%- render 'price', product: product, variant: current_variant -%}</div>
+          {%- when 'buy' -%}
+            <div {{ block.shopify_attributes }}>
+              {%- form 'product', product, class: 'product-form', novalidate: 'novalidate' -%}
+                {%- if product.has_only_default_variant -%}
+                  <input type="hidden" name="id" value="{{ current_variant.id }}">
+                {%- else -%}
+                  <label for="variant-{{ section.id }}">{{ product.options | join: ' / ' | escape }}</label>
+                  <select class="field" id="variant-{{ section.id }}" name="id">
+                    {%- for variant in product.variants -%}
+                      <option value="{{ variant.id }}"{% if variant == current_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+                        {{ variant.title | escape }} &ndash; {{ variant.price | money }}{% unless variant.available %} (sold out){% endunless %}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                {%- endif -%}
+                {%- if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 1 -%}
+                  <label for="qty-{{ section.id }}">Quantity</label>
+                  <input class="field qty" id="qty-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="{{ current_variant.inventory_quantity }}">
+                {%- else -%}
+                  <input type="hidden" name="quantity" value="1">
+                {%- endif -%}
+                {%- if current_variant.available -%}
+                  <button class="btn btn--block" type="submit" name="add">Add to cart</button>
+                  {%- if block.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+                {%- else -%}
+                  <button class="btn btn--block" type="button" disabled>Already adopted (sold out)</button>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+          {%- when 'mission' -%}
+            <div class="mission-note" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'description' -%}
+            <div class="product__desc rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+          {%- when 'details' -%}
+            <ul class="meta-list" {{ block.shopify_attributes }}>
+              {%- if current_variant.sku != blank -%}<li>SKU: {{ current_variant.sku | escape }}</li>{%- endif -%}
+              {%- if product.type != blank -%}<li>Type: {{ product.type | escape }}</li>{%- endif -%}
+            </ul>
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product details",
+  "settings": [
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor/brand above title", "default": true }
+  ],
+  "blocks": [
+    { "type": "title", "name": "Title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    {
+      "type": "buy", "name": "Buy buttons", "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Shop Pay / express buttons", "default": false, "info": "Off = faster page. On = one-tap checkout but loads extra Shopify scripts." }
+      ]
+    },
+    {
+      "type": "mission", "name": "Rescue mission note",
+      "settings": [ { "type": "richtext", "id": "text", "label": "Text", "default": "<p><strong>Every purchase helps dogs.</strong> Part of every sale supports dog rescue in Detroit. Thank you for rescuing a relic!</p>" } ]
+    },
+    { "type": "description", "name": "Description", "limit": 1 },
+    { "type": "details", "name": "SKU and type", "limit": 1 },
+    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text" } ] },
+    { "type": "@app" }
+  ]
+}
+{% endschema %}

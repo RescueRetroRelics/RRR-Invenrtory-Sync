@@ -1,0 +1,33 @@
+<div class="page-width section">
+  <h1>All collections</h1>
+  {%- paginate collections by 48 -%}
+    <ul class="tiles">
+      {%- for c in collections -%}
+        {%- if c.all_products_count > 0 -%}
+          <li class="tile">
+            <a href="{{ c.url }}">
+              <div class="tile__media">
+                {%- assign img = c.featured_image -%}
+                {%- if img -%}
+                  {%- if forloop.index <= 4 -%}
+                    {{ img | image_url: width: 500 | image_tag: loading: 'eager', widths: '200,300,400,500', sizes: '(min-width: 750px) 23vw, 47vw', alt: c.title }}
+                  {%- else -%}
+                    {{ img | image_url: width: 500 | image_tag: loading: 'lazy', decoding: 'async', widths: '200,300,400,500', sizes: '(min-width: 750px) 23vw, 47vw', alt: c.title }}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
+                {%- endif -%}
+              </div>
+              <span class="tile__name">{{ c.title | escape }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    {%- if paginate.pages > 1 -%}<nav class="pagination" aria-label="Pages">{{ paginate | default_pagination }}</nav>{%- endif -%}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

@@ -1,0 +1,13 @@
+<article class="page-width section" style="max-width:820px">
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a> / <a href="{{ blog.url }}">{{ blog.title | escape }}</a></nav>
+  <h1>{{ article.title | escape }}</h1>
+  <p style="color:var(--muted)">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+  {%- if article.image -%}
+    {{ article.image | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500,800,1100,1600', sizes: '(min-width: 850px) 820px, 100vw', alt: article.title, style: 'border-radius:var(--radius);margin-bottom:1.5rem' }}
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{ "name": "Blog post", "settings": [] }
+{% endschema %}

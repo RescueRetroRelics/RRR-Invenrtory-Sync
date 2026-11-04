@@ -1,0 +1,67 @@
+{%- comment -%}
+  Full-width hero for the Bailee memorial artwork.
+  SPEED RULE: the hero image is NEVER lazy loaded. It loads first, with high priority, and is preloaded.
+{%- endcomment -%}
+{%- liquid
+  assign img = section.settings.image
+  assign img_m = section.settings.image_mobile | default: img
+  assign is_first = false
+  if section.index == 1 or section.index0 == 0
+    assign is_first = true
+  endif
+-%}
+<style>
+  #hero-{{ section.id }}{--hero-h-m:{{ section.settings.height_mobile }}px;--hero-h-d:{{ section.settings.height_desktop }}px}
+</style>
+<section id="hero-{{ section.id }}" class="hero{% if section.settings.shade %} hero--shade{% endif %}{% if section.settings.text_below_mobile %} hero--below-m{% endif %}">
+  {%- if img != blank -%}
+    {%- capture alt -%}{{ img.alt | default: section.settings.heading | escape }}{%- endcapture -%}
+    <picture>
+      {%- if section.settings.image_mobile != blank -%}
+        <source media="(max-width: 749px)" srcset="{{ img_m | image_url: width: 500 }} 500w, {{ img_m | image_url: width: 750 }} 750w, {{ img_m | image_url: width: 1000 }} 1000w" sizes="100vw">
+      {%- endif -%}
+      {{ img | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, widths: '500,750,1000,1400,1800,2400', sizes: '100vw', alt: alt, class: 'hero__img' }}
+    </picture>
+  {%- else -%}
+    <div class="hero__ph">Bailee memorial artwork goes here<br>(Customize &gt; Hero &gt; Image)</div>
+  {%- endif -%}
+  {%- if section.settings.heading != blank or section.settings.text != blank -%}
+    <div class="hero__content">
+      <div style="max-width:600px">
+        {%- if section.settings.heading != blank -%}
+          {%- if request.page_type == 'index' and is_first -%}
+            <h1>{{ section.settings.heading | escape }}</h1>
+          {%- else -%}
+            <h2>{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+        <div class="hero__btns">
+          {%- if section.settings.btn_label != blank -%}<a class="btn" href="{{ section.settings.btn_link | default: routes.all_products_collection_url }}">{{ section.settings.btn_label | escape }}</a>{%- endif -%}
+          {%- if section.settings.btn2_label != blank -%}<a class="btn btn--ghost" href="{{ section.settings.btn2_link | default: routes.collections_url }}">{{ section.settings.btn2_label | escape }}</a>{%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (Bailee memorial artwork)", "info": "Wide image, at least 2400px wide. Never lazy loaded." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Phone image (optional)", "info": "A taller crop for phones. Leave empty to reuse the main image." },
+    { "type": "range", "id": "height_mobile", "label": "Height on phones", "min": 240, "max": 700, "step": 20, "unit": "px", "default": 420 },
+    { "type": "range", "id": "height_desktop", "label": "Height on computers", "min": 300, "max": 900, "step": 20, "unit": "px", "default": 560 },
+    { "type": "checkbox", "id": "shade", "label": "Darken behind text", "default": true },
+    { "type": "checkbox", "id": "text_below_mobile", "label": "Put text under the image on phones", "default": false },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Retro relics rescued. Shelter dogs saved." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Vintage and nostalgic treasures, rehomed with love. Inspired by Bailee, our forever founding hound.</p>" },
+    { "type": "text", "id": "btn_label", "label": "Button label", "default": "Shop new finds" },
+    { "type": "url", "id": "btn_link", "label": "Button link" },
+    { "type": "text", "id": "btn2_label", "label": "Second button label", "default": "Browse collections" },
+    { "type": "url", "id": "btn2_link", "label": "Second button link" }
+  ],
+  "presets": [{ "name": "Hero banner" }]
+}
+{% endschema %}

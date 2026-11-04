@@ -1,0 +1,22 @@
+<section class="section mission">
+  <div class="page-width mission__inner">
+    {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    <div class="rte">{{ section.settings.text }}</div>
+    {%- if section.settings.btn_label != blank and section.settings.btn_link != blank -%}
+      <a class="btn" style="background:var(--sun);border-color:var(--sun);color:var(--ink)" href="{{ section.settings.btn_link }}">{{ section.settings.btn_label | escape }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Mission banner",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Every relic rescued helps a dog get rescued" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Rescue Retro Relics gives forgotten collectibles a second chance, and part of every sale goes to dog rescue in Detroit. It all started with Bailee, a big-hearted Plott Hound, and continues with our rescue pups Casey and Savannah.</p>" },
+    { "type": "text", "id": "btn_label", "label": "Button label", "default": "Meet the team" },
+    { "type": "text", "id": "btn_link", "label": "Button link", "info": "A page address, like /pages/meet-the-team", "default": "/pages/meet-the-team" }
+  ],
+  "presets": [{ "name": "Mission banner" }]
+}
+{% endschema %}

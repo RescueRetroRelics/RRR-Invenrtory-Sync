@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "Grep",
+      "Glob",
+      "LS",
+      "MultiEdit",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch",
+      "mcp__Shopify"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(rm:*)",
+      "Bash(*delete*)",
+      "Bash(*deploy*)",
+      "Bash(*purchase*)",
+      "Bash(shopify theme push:*)",
+      "Bash(shopify theme publish:*)",
+      "Bash(shopify theme delete:*)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Read(**/*credential*)",
+      "Edit(**/*credential*)",
+      "Write(**/*credential*)",
+      "Read(**/*secret*)",
+      "Edit(**/*secret*)",
+      "Write(**/*secret*)",
+      "Read(**/.secrets/**)",
+      "Read(**/.tokens.json)",
+      "Bash(*.env*)",
+      "Bash(*credential*)",
+      "Bash(*secret*)",
+      "Bash(*.tokens.json*)"
+    ]
+  }
+}

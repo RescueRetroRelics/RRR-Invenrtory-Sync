@@ -1,0 +1,19 @@
+<section class="section{% if section.settings.tint %} section--tint{% endif %}">
+  <div class="page-width{% if section.settings.center %} center{% endif %}" style="max-width:820px">
+    {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    <div class="rte">{{ section.settings.text }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Talk about your brand" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Share something with your customers.</p>" },
+    { "type": "checkbox", "id": "center", "label": "Center text", "default": true },
+    { "type": "checkbox", "id": "tint", "label": "White background", "default": false }
+  ],
+  "presets": [{ "name": "Rich text" }]
+}
+{% endschema %}
