@@ -41,6 +41,7 @@ January 1, 2026. New apps are made in the **Dev Dashboard** instead:
 2. **Create app** → name it `RRR Inventory Sync`.
 3. Create a version with these Admin API scopes: `read_products`, `read_inventory`,
    `write_inventory`, `read_locations`. Release it.
+   (For the New Finds tagger below, also add `write_products`.)
 4. **Install** the app on the Rescue Retro Relics store.
 5. Copy the **Client ID** and **Client secret** from the app's settings into `.env` as
    `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET`. The tool swaps them for a 24-hour token by itself.
@@ -204,3 +205,31 @@ rrr_sync/orders.py      order CSV/JSON export
 Never committed: `.env`, `.secrets/` (tokens), `data/` (orders, matches, sync state).
 
 Tests: `python -m unittest discover -s tests -t .`
+
+
+## New Finds tagger (replaces the Shopify Flow app)
+
+Flow's only job for RRR was keeping **Retro Relics Rescued - New Finds** fresh. That collection's rule is
+"product tag is `new item`". This command does the same job without an app:
+
+- A product listed in the last 14 days gets the `new item` tag.
+- After 14 days the tag comes off. The product stays in all its other collections.
+- Tag a product `keep-new` to pin it in New Finds past 14 days.
+- Only that one tag is ever touched.
+
+```bash
+python -m rrr_sync new-tags            # dry run: lists what it would tag/untag
+python -m rrr_sync new-tags --apply    # make the changes
+```
+
+Switching over from Flow:
+
+1. Add the `write_products` scope to the RRR Inventory Sync app in the Dev Dashboard, release a new
+   version, and approve it on the store.
+2. Run the dry run and check that the list looks right.
+3. Schedule `run_new_tags.bat` in Windows Task Scheduler to repeat **every 1 hour**, the same way as
+   `run_sync.bat`.
+4. Watch `data\new_tags_runs.log` for a day. While both run, Flow and this job agree, so nothing fights.
+5. Turn off the Flow workflow, then uninstall Flow.
+
+Timing: Flow tagged a listing the instant it was created. This job tags it at the next hourly run.

@@ -305,6 +305,11 @@ summary::-webkit-details-marker{display:none}
 .product__mission{display:flex;gap:.9rem;align-items:flex-start;margin-top:1.75rem;padding:1.1rem 1.2rem;border:3px dashed var(--color-raspberry);border-radius:16px;background:var(--color-surface)}
 .product__mission .icon{color:var(--color-raspberry);width:2.2rem;height:2.2rem}
 .product__mission .rte p:last-child{margin:0}
+.trust{display:grid;gap:.4rem;list-style:none;margin:0 0 1rem;padding:.9rem 1rem;border:3px solid var(--color-ink);border-radius:14px;background:var(--color-surface);box-shadow:3px 3px 0 var(--color-mustard)}
+.trust li{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:.95rem}
+.trust .icon{width:1.2rem;height:1.2rem;color:var(--color-primary)}
+.trust__pay{display:flex;flex-wrap:wrap;gap:.35rem;list-style:none;margin:0 0 1rem;padding:0}
+.product__app{margin-top:2rem}
 .product__sku{font-size:.8rem;color:var(--color-text-soft)}
 
 /* ---------- Collection page + facets ---------- */

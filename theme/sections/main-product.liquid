@@ -85,6 +85,19 @@
       {%- endif -%}
     {%- endform -%}
 
+    {%- if section.settings.show_trust -%}
+      <ul class="trust" aria-label="Why shop with us">
+        <li>{%- render 'icon', name: 'star' -%}<span>{{ section.settings.trust_1 }}</span></li>
+        <li>{%- render 'icon', name: 'paw' -%}<span>{{ section.settings.trust_2 }}</span></li>
+        <li>{%- render 'icon', name: 'shamrock' -%}<span>{{ section.settings.trust_3 }}</span></li>
+      </ul>
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="trust__pay" aria-label="Payment methods">
+          {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+
     {%- if current_variant.available and current_variant.inventory_quantity == 1 -%}
       <p class="product__one-of-one">{%- render 'icon', name: 'paw' -%} Only 1 left. When it's gone, it's gone.</p>
     {%- endif -%}
@@ -98,6 +111,11 @@
       </aside>
     {%- endif -%}
 
+    {%- comment -%} App blocks (e.g. Judge.me reviews) drop in here from the theme editor. {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == '@app' -%}<div class="product__app">{% render block %}</div>{%- endif -%}
+    {%- endfor -%}
+
     {%- if current_variant.sku != blank and section.settings.show_sku -%}<p class="product__sku">SKU: {{ current_variant.sku }}</p>{%- endif -%}
   </div>
 </section>
@@ -105,11 +123,17 @@
 {% schema %}
 {
   "name": "Product details",
+  "blocks": [{ "type": "@app" }],
   "settings": [
     { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false },
     { "type": "checkbox", "id": "show_sku", "label": "Show SKU", "default": false },
     { "type": "checkbox", "id": "show_quantity", "label": "Show quantity box (only when more than 1 in stock)", "default": true },
     { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Buy-it-now / Shop Pay button", "info": "Off by default: it loads extra Shopify scripts that slow the page.", "default": false },
+    { "type": "header", "content": "Trust row (replaces trust-badge apps)" },
+    { "type": "checkbox", "id": "show_trust", "label": "Show trust row + payment icons", "default": true },
+    { "type": "text", "id": "trust_1", "label": "Line 1", "default": "Secure checkout" },
+    { "type": "text", "id": "trust_2", "label": "Line 2", "default": "Every sale helps Detroit rescue dogs" },
+    { "type": "text", "id": "trust_3", "label": "Line 3", "default": "Packed with love in Michigan" },
     { "type": "richtext", "id": "mission_text", "label": "Mission note", "default": "<p><strong>This purchase helps Detroit rescue dogs.</strong> Every sale funds transport runs, medical bills and fosters, in honor of Bailee.</p>" }
   ]
 }

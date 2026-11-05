@@ -91,6 +91,13 @@ def cmd_orders(cfg, args):
     print(f"  {csv_path}\n  {json_path}")
 
 
+def cmd_new_tags(cfg, args):
+    from . import new_tags
+    from .shopify import Shopify
+    _, errors = new_tags.run(Shopify(cfg), do_apply=args.apply, days=args.days, tag=args.tag)
+    return 1 if errors else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -105,6 +112,10 @@ def main(argv=None):
     sub.add_parser("notify-test", help="send a test phone notification")
     od = sub.add_parser("orders", help="export eBay orders to data/")
     od.add_argument("--since", default="2026-01-01", help="YYYY-MM-DD (default 2026-01-01)")
+    nt = sub.add_parser("new-tags", help="replace Shopify Flow: tag new listings, untag after 14 days (dry run by default)")
+    nt.add_argument("--apply", action="store_true", help="actually add/remove tags")
+    nt.add_argument("--days", type=int, default=14, help="how long a listing counts as new (default 14)")
+    nt.add_argument("--tag", default="new item", help="the tag the New Finds collection uses (default 'new item')")
 
     args = p.parse_args(argv)
     cfg = Config.load()
