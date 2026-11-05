@@ -113,6 +113,13 @@ def cmd_alt_text(cfg, args):
     return 1 if any("Claude failed" not in e for e in errors) else 0
 
 
+def cmd_set_vendors(cfg, args):
+    from . import vendors
+    from .shopify import Shopify
+    _, errors = vendors.run(Shopify(cfg), args.csv, do_apply=args.apply)
+    return 1 if errors else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -138,6 +145,9 @@ def main(argv=None):
     at.add_argument("--days", type=int, default=30, help="only products listed in the last N days (default 30)")
     at.add_argument("--all", action="store_true", help="scan the whole catalog instead")
     at.add_argument("--max", type=int, default=200, help="most photos to do per run (default 200)")
+    sv = sub.add_parser("set-vendors", help="set product vendors from a CSV (dry run by default)")
+    sv.add_argument("csv", help="CSV with new_vendor plus product_gid, product_id or handle")
+    sv.add_argument("--apply", action="store_true", help="actually change the vendors (backs up old ones first)")
 
     args = p.parse_args(argv)
     cfg = Config.load()
