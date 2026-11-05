@@ -13,6 +13,14 @@
         {%- if settings.social_ebay != blank -%}<li><a href="{{ settings.social_ebay }}" aria-label="eBay store">{% render 'icon', name: 'ebay' %}</a></li>{%- endif -%}
       </ul>
     </div>
+    {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+      <div class="footer__col">
+        <p class="footer__heading">{{ section.settings.policies_heading }}</p>
+        <ul>
+          {%- for policy in shop.policies -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
     {%- for block in section.blocks -%}
       {%- assign menu = linklists[block.settings.menu] -%}
       <div class="footer__col" {{ block.shopify_attributes }}>
@@ -44,6 +52,8 @@
   "settings": [
     { "type": "text", "id": "tagline", "label": "Tagline", "default": "Irish roots. Michigan heart. Rescue soul." },
     { "type": "text", "id": "small_print", "label": "Small print", "default": "Rescued relics. Rescued dogs." },
+    { "type": "checkbox", "id": "show_policies", "label": "Show policy links (from Settings > Policies)", "default": true },
+    { "type": "text", "id": "policies_heading", "label": "Policies heading", "default": "The fine print" },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true }
   ],
   "blocks": [

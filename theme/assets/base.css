@@ -443,3 +443,21 @@ summary::-webkit-details-marker{display:none}
 .gift__code{font-size:1.4rem;letter-spacing:.1em}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* ---------- FAQ ---------- */
+.faq{max-width:52rem}
+.faq__head{text-align:center;margin-bottom:2rem}
+.faq__list{display:grid;gap:1rem}
+.faq__item{--c:var(--color-primary);background:var(--color-surface);border:3px solid var(--color-ink);border-radius:18px;box-shadow:4px 4px 0 var(--c);transition:box-shadow .15s}
+.faq__item--2{--c:var(--color-teal)}.faq__item--3{--c:var(--color-mustard)}.faq__item--0{--c:var(--color-raspberry)}
+.faq__item[open]{box-shadow:6px 6px 0 var(--c)}
+.faq__item summary{display:flex;align-items:center;gap:.75rem;padding:1rem 1.2rem;font-family:var(--font-label);font-size:clamp(1.15rem,3.2vw,1.4rem);letter-spacing:.04em;line-height:1.25;color:var(--color-ink)}
+.faq__item summary span{flex:1}
+.faq__item summary .icon--paw{color:var(--c);width:1.5rem;height:1.5rem}
+.faq__item--3 summary .icon--paw{color:#8a6f00}
+.faq__answer{padding:0 1.2rem 1.2rem 3.45rem;font-size:1.02rem}
+.faq__answer p:last-child{margin-bottom:0}
+.faq__contact{text-align:center;margin-top:2rem;font-weight:700}
+
+/* ---------- About ---------- */
+.rich-text--script .rte{font-family:var(--font-script);font-size:clamp(1.3rem,3.6vw,1.7rem);line-height:1.7;color:var(--color-raspberry)}

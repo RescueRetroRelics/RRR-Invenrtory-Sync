@@ -114,7 +114,7 @@ settings.type_heading_font = { family: 'Arvo', fallback_families: 'serif', weigh
 
 async function page(name, pageType, template, extra, overrides = {}) {
   const ctx = {
-    settings, linklists, collections, product, collection: null, shop: { name: 'Rescue Retro Relics', description: 'Vintage and nostalgia that funds dog rescue.', customer_accounts_enabled: true, enabled_payment_types: [], shipping_policy: { body: 'x', url: '/policies/shipping-policy' } },
+    settings, linklists, collections, product, collection: null, shop: { policies: [{ title: 'Refund policy', url: '/policies/refund-policy' }, { title: 'Privacy policy', url: '/policies/privacy-policy' }, { title: 'Terms of service', url: '/policies/terms-of-service' }, { title: 'Shipping policy', url: '/policies/shipping-policy' }], name: 'Rescue Retro Relics', description: 'Vintage and nostalgia that funds dog rescue.', customer_accounts_enabled: true, enabled_payment_types: [], shipping_policy: { body: 'x', url: '/policies/shipping-policy' } },
     page_description: 'Vintage and nostalgia that funds dog rescue.', request: { page_type: pageType, origin: ORIGIN, locale: { iso_code: 'en' } }, template: { name: pageType },
     routes: { root_url: '/', search_url: '/search', cart_url: '/cart', account_url: '/account', all_products_collection_url: '/collections/all' },
     cart: { item_count: 0, currency: { iso_code: 'USD' }, taxes_included: false }, canonical_url: ORIGIN + '/', content_for_header: '', current_page: 1, ...extra,
@@ -141,4 +141,6 @@ async function page(name, pageType, template, extra, overrides = {}) {
   await page('product', 'product', 'product', { page_title: product.title, page_description: 'Vintage find', page_image: product.featured_image });
   await page('collection', 'collection', 'collection', { collection, page_title: collection.title });
   await page('team', 'page', 'page.meet-the-team', { page_title: 'Meet the Team' });
+  await page('faq', 'page', 'page.faq', { page_title: 'FAQ' });
+  await page('about', 'page', 'page.about', { page_title: 'About' });
 })().catch((e) => { console.error(e); process.exit(1); });
