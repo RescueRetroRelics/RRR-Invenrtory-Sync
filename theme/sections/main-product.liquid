@@ -1,0 +1,115 @@
+{%- comment -%}
+  Product page. The first product image is the LCP element: loading="eager" + fetchpriority="high", never lazy.
+  The add-to-cart form is a plain HTML form, so it works even if JavaScript fails.
+{%- endcomment -%}
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign first_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+-%}
+{%- render 'breadcrumbs' -%}
+<section class="product page-width">
+  <div class="product__gallery">
+    {%- if first_media -%}
+      <div class="product__main media media--natural" style="--ratio: {{ first_media.preview_image.aspect_ratio | default: 1 }}">
+        {{ first_media.preview_image | image_url: width: 1600 | image_tag:
+          widths: '360, 500, 650, 800, 1000, 1200, 1600',
+          sizes: '(min-width: 990px) 55vw, 100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: first_media.alt | default: product.title,
+          id: 'ProductMainImage'
+        }}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <ul class="product__thumbs" aria-label="More photos">
+          {%- for media in product.media -%}
+            {%- if media.id == first_media.id -%}{%- continue -%}{%- endif -%}
+            <li class="media media--natural" style="--ratio: {{ media.preview_image.aspect_ratio | default: 1 }}">
+              <a href="{{ media.preview_image | image_url: width: 2000 }}" target="_blank" rel="noopener">
+                {{ media.preview_image | image_url: width: 800 | image_tag:
+                  widths: '200, 400, 600, 800',
+                  sizes: '(min-width: 990px) 27vw, 50vw',
+                  loading: 'lazy',
+                  alt: media.alt | default: product.title
+                }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- else -%}
+      {%- render 'placeholder', class: 'media media--square' -%}
+    {%- endif -%}
+  </div>
+
+  <div class="product__info">
+    {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor">{{ product.vendor }}</p>{%- endif -%}
+    <h1 class="product__title">{{ product.title }}</h1>
+    {%- render 'price', product: product, variant: current_variant -%}
+    {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+      <p class="product__tax">
+        {%- if cart.taxes_included -%}Tax included. {% endif -%}
+        {%- if shop.shipping_policy.body != blank -%}<a href="{{ shop.shipping_policy.url }}">Shipping</a> calculated at checkout.{%- endif -%}
+      </p>
+    {%- endif -%}
+
+    {%- form 'product', product, class: 'product__form', data-product-form: '' -%}
+      {%- unless product.has_only_default_variant -%}
+        <label class="field">
+          <span class="field__label">{{ product.options | join: ' / ' }}</span>
+          <select name="id" class="select" data-variant-select>
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" data-available="{{ variant.available }}"{% if variant == current_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} (sold){% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        </label>
+      {%- else -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+      {%- endunless -%}
+
+      {%- if section.settings.show_quantity and current_variant.inventory_quantity > 1 -%}
+        <label class="field field--qty">
+          <span class="field__label">Quantity</span>
+          <input class="input" type="number" name="quantity" value="1" min="1"{% if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny' %} max="{{ current_variant.inventory_quantity }}"{% endif %}>
+        </label>
+      {%- endif -%}
+
+      <button type="submit" name="add" class="button button--full" data-add-button{% unless current_variant.available %} disabled{% endunless %}>
+        {%- if current_variant.available -%}Add to cart{%- else -%}Sold, this one found a home{%- endif -%}
+      </button>
+      {%- if section.settings.show_dynamic_checkout and current_variant.available -%}
+        {{ form | payment_button }}
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if current_variant.available and current_variant.inventory_quantity == 1 -%}
+      <p class="product__one-of-one">{%- render 'icon', name: 'paw' -%} One of a kind. When it's gone, it's gone.</p>
+    {%- endif -%}
+
+    <div class="product__description rte">{{ product.description }}</div>
+
+    {%- if section.settings.mission_text != blank -%}
+      <aside class="product__mission">
+        {%- render 'icon', name: 'paw' -%}
+        <div class="rte">{{ section.settings.mission_text }}</div>
+      </aside>
+    {%- endif -%}
+
+    {%- if current_variant.sku != blank and section.settings.show_sku -%}<p class="product__sku">SKU: {{ current_variant.sku }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product details",
+  "settings": [
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false },
+    { "type": "checkbox", "id": "show_sku", "label": "Show SKU", "default": false },
+    { "type": "checkbox", "id": "show_quantity", "label": "Show quantity box (only when more than 1 in stock)", "default": true },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Buy-it-now / Shop Pay button", "info": "Off by default: it loads extra Shopify scripts that slow the page.", "default": false },
+    { "type": "richtext", "id": "mission_text", "label": "Mission note", "default": "<p><strong>This purchase helps dogs.</strong> A portion of every sale funds dog rescue, in honor of Bailee.</p>" }
+  ]
+}
+{% endschema %}

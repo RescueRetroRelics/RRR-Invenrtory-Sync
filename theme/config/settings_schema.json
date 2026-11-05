@@ -1,0 +1,68 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "RRR Relic",
+    "theme_version": "0.1.0",
+    "theme_author": "Rescue Retro Relics",
+    "theme_documentation_url": "https://github.com/RescueRetroRelics/RRR-Invenrtory-Sync",
+    "theme_support_url": "https://rescueretrorelics.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 300, "step": 10, "unit": "px", "default": 160 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "32 x 32px PNG" },
+      { "type": "textarea", "id": "mission_statement", "label": "Mission statement", "default": "Vintage and nostalgia with a purpose. Every relic you rescue helps fund dog rescue." }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Background", "default": "#FFF8EE" },
+      { "type": "color", "id": "color_surface", "label": "Card / panel background", "default": "#FFFFFF" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#2B1D14" },
+      { "type": "color", "id": "color_primary", "label": "Primary (buttons)", "default": "#C8501E" },
+      { "type": "color", "id": "color_primary_text", "label": "Primary button text", "default": "#FFFFFF" },
+      { "type": "color", "id": "color_accent_1", "label": "Accent 1 (teal)", "default": "#1F7A78" },
+      { "type": "color", "id": "color_accent_2", "label": "Accent 2 (mustard)", "default": "#F2B33D" },
+      { "type": "color", "id": "color_accent_3", "label": "Accent 3 (bubblegum)", "default": "#E8618C" },
+      { "type": "color", "id": "color_sale", "label": "Sale price", "default": "#B3261E" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "paragraph", "content": "Body text uses your visitor's built-in system font, so it loads instantly. Only headings download a font." },
+      { "type": "font_picker", "id": "type_heading_font", "label": "Heading font", "default": "arvo_n7" }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Page width", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1280 },
+      { "type": "range", "id": "corner_radius", "label": "Corner radius", "min": 0, "max": 24, "step": 2, "unit": "px", "default": 12 }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      { "type": "select", "id": "card_image_ratio", "label": "Image shape", "default": "square", "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "natural", "label": "Natural" }
+      ] },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Show vendor", "default": false }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "url", "id": "social_facebook", "label": "Facebook" },
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_ebay", "label": "eBay store" },
+      { "type": "url", "id": "social_pinterest", "label": "Pinterest" }
+    ]
+  }
+]

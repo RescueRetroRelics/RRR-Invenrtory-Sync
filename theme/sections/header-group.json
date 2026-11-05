@@ -1,0 +1,9 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": { "type": "announcement-bar", "settings": { "text": "Every purchase helps fund dog rescue" } },
+    "header": { "type": "header", "settings": { "menu": "main-menu", "sticky": true } }
+  },
+  "order": ["announcement", "header"]
+}

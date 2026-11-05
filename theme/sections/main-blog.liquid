@@ -1,0 +1,28 @@
+<section class="section page-width">
+  <h1>{{ blog.title }}</h1>
+  {%- paginate blog.articles by 12 -%}
+    <div class="grid grid--articles">
+      {%- for article in blog.articles -%}
+        <article class="card">
+          <a class="card__link" href="{{ article.url }}">
+            <div class="card__media media media--landscape">
+              {%- if article.image -%}
+                {%- if forloop.index <= 2 -%}{%- assign l = 'eager' -%}{%- else -%}{%- assign l = 'lazy' -%}{%- endif -%}
+                {{ article.image | image_url: width: 800 | image_tag: loading: l, widths: '300, 500, 800', sizes: '(min-width: 750px) 33vw, 100vw', alt: article.title }}
+              {%- else -%}{%- render 'placeholder' -%}{%- endif -%}
+            </div>
+            <div class="card__info">
+              <h2 class="card__title">{{ article.title }}</h2>
+              <p class="card__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+              <p>{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+            </div>
+          </a>
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</section>
+{% schema %}
+{ "name": "Blog posts", "settings": [] }
+{% endschema %}

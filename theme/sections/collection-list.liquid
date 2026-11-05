@@ -1,0 +1,40 @@
+<section class="section page-width">
+  {%- if section.settings.heading != blank -%}
+    <div class="section__head"><h2 class="section__title">{{ section.settings.heading }}</h2></div>
+  {%- endif -%}
+  <div class="grid grid--collections">
+    {%- for block in section.blocks -%}
+      {%- assign c = block.settings.collection -%}
+      <a class="tile tile--{{ forloop.index | modulo: 4 }}" href="{{ c.url | default: '#' }}" {{ block.shopify_attributes }}>
+        <div class="tile__media media media--square">
+          {%- assign tile_img = block.settings.image | default: c.featured_image -%}
+          {%- if tile_img -%}
+            {{ tile_img | image_url: width: 600 | image_tag: loading: 'lazy', widths: '200, 300, 400, 600', sizes: '(min-width: 750px) 25vw, 50vw', alt: c.title }}
+          {%- else -%}
+            {%- render 'placeholder' -%}
+          {%- endif -%}
+        </div>
+        <span class="tile__title">{{ block.settings.title | default: c.title | default: 'Collection' }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by category",
+  "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "Dig through the crates" }],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Custom title" },
+        { "type": "image_picker", "id": "image", "label": "Custom image" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Shop by category", "blocks": [{ "type": "collection" }, { "type": "collection" }, { "type": "collection" }, { "type": "collection" }] }]
+}
+{% endschema %}

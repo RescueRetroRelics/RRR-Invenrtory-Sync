@@ -1,0 +1,88 @@
+{%- comment -%}
+  Full-width banner built for the Bailee artwork.
+  This is the page's biggest image (LCP), so it is NEVER lazy-loaded: loading="eager" + fetchpriority="high".
+  Optional separate mobile image so phones download a smaller, better-cropped file.
+{%- endcomment -%}
+{%- liquid
+  assign img = section.settings.image
+  assign mobile_img = section.settings.mobile_image | default: img
+  assign is_first = false
+  if section.index == 1 or section.index0 == 0
+    assign is_first = true
+  endif
+-%}
+<section class="hero hero--{{ section.settings.height }} hero--text-{{ section.settings.text_position }}" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}">
+  <div class="hero__media">
+    {%- if img != blank -%}
+      <picture>
+        {%- if section.settings.mobile_image != blank -%}
+          <source media="(max-width: 749px)" srcset="
+            {{- mobile_img | image_url: width: 500 }} 500w,
+            {{ mobile_img | image_url: width: 750 }} 750w,
+            {{ mobile_img | image_url: width: 1000 }} 1000w,
+            {{ mobile_img | image_url: width: 1500 }} 1500w" sizes="100vw" width="{{ mobile_img.width }}" height="{{ mobile_img.height }}">
+        {%- endif -%}
+        {{ img | image_url: width: 3000 | image_tag:
+          widths: '500, 750, 1000, 1300, 1600, 2000, 2400, 3000',
+          sizes: '100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: section.settings.image_alt | default: img.alt,
+          class: 'hero__img',
+          style: section.settings.focal_css
+        }}
+      </picture>
+    {%- else -%}
+      {%- render 'placeholder', class: 'hero__placeholder', label: 'Add the Bailee artwork in the theme editor' -%}
+    {%- endif -%}
+  </div>
+  {%- if section.settings.heading != blank or section.settings.subheading != blank or section.settings.button_label != blank -%}
+    <div class="hero__content page-width">
+      <div class="hero__box">
+        {%- if section.settings.eyebrow != blank -%}<p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          {%- if is_first and request.page_type != 'index' -%}
+            <h1 class="hero__heading">{{ section.settings.heading }}</h1>
+          {%- else -%}
+            <h2 class="hero__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}<div class="hero__sub">{{ section.settings.subheading }}</div>{%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <a class="button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Bailee banner",
+  "tag": "div",
+  "class": "section-hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Banner image", "info": "Recommended: 2400 x 1000px or wider. This loads first and fast, it is never lazy-loaded." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)", "info": "A taller crop for phones, e.g. 1000 x 1250px." },
+    { "type": "text", "id": "image_alt", "label": "Image description (for Google + screen readers)", "default": "Bailee the Plott hound, the heart of Rescue Retro Relics" },
+    { "type": "select", "id": "height", "label": "Height", "default": "large", "options": [
+      { "value": "natural", "label": "Fit the image" },
+      { "value": "medium", "label": "Medium" },
+      { "value": "large", "label": "Large" }
+    ] },
+    { "type": "range", "id": "overlay", "label": "Darken image behind text", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 20 },
+    { "type": "select", "id": "text_position", "label": "Text position", "default": "bottom-left", "options": [
+      { "value": "center", "label": "Center" },
+      { "value": "bottom-left", "label": "Bottom left" },
+      { "value": "below", "label": "Below the image (keeps artwork clear)" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Small text above heading", "default": "Vintage with a purpose" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Rescued relics. Rescued dogs." },
+    { "type": "richtext", "id": "subheading", "label": "Text", "default": "<p>Vintage and nostalgia hand-picked in Michigan. Every sale helps fund dog rescue, in honor of Bailee.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the relics" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "focal_css", "label": "Advanced: image CSS", "info": "Optional, e.g. object-position: 30% 40%;" }
+  ],
+  "presets": [{ "name": "Bailee banner" }]
+}
+{% endschema %}

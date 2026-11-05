@@ -1,0 +1,20 @@
+<section class="section page-width">
+  <h1>{{ section.settings.heading }}</h1>
+  <div class="grid grid--collections">
+    {%- for c in collections -%}
+      {%- if c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+      <a class="tile tile--{{ forloop.index | modulo: 4 }}" href="{{ c.url }}">
+        <div class="tile__media media media--square">
+          {%- if c.featured_image -%}
+            {%- if forloop.index <= 4 -%}{%- assign l = 'eager' -%}{%- else -%}{%- assign l = 'lazy' -%}{%- endif -%}
+            {{ c.featured_image | image_url: width: 600 | image_tag: loading: l, widths: '200, 300, 400, 600', sizes: '(min-width: 750px) 25vw, 50vw', alt: c.title }}
+          {%- else -%}{%- render 'placeholder' -%}{%- endif -%}
+        </div>
+        <span class="tile__title">{{ c.title }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Collections list", "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "All collections" }] }
+{% endschema %}

@@ -1,0 +1,16 @@
+<section class="section page-width rich-text rich-text--{{ section.settings.align }}">
+  {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading }}</h2>{%- endif -%}
+  <div class="rte">{{ section.settings.text }}</div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Hand-picked. Honestly described." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every relic is inspected, photographed and described by a real human who loves this stuff.</p>" },
+    { "type": "select", "id": "align", "label": "Alignment", "default": "center", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }] }
+  ],
+  "presets": [{ "name": "Rich text" }]
+}
+{% endschema %}

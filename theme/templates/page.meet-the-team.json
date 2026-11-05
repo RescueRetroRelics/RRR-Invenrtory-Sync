@@ -1,0 +1,56 @@
+{
+  "sections": {
+    "team": {
+      "type": "meet-the-team",
+      "blocks": {
+        "bailee": {
+          "type": "member",
+          "settings": {
+            "name": "Bailee",
+            "role": "Founder, muse & forever Chief Inspiration Officer",
+            "badge": "In loving memory",
+            "featured": true,
+            "bio": "<p>Bailee was a Plott hound with a big voice and an even bigger heart, and she is the reason this shop exists. Every relic we rescue and every dollar we send to dog rescue carries her name with it.</p>"
+          }
+        },
+        "casey": {
+          "type": "member",
+          "settings": {
+            "name": "Casey",
+            "role": "Quality control & snack inspector",
+            "badge": "Rescued",
+            "bio": "<p>Casey came to us after being let down by people. Now she supervises every box that comes through the door.</p>"
+          }
+        },
+        "savannah": {
+          "type": "member",
+          "settings": {
+            "name": "Savannah",
+            "role": "Head of comfort & couch operations",
+            "badge": "Rescued",
+            "bio": "<p>Savannah is proof that a second chance changes everything. She keeps the whole crew calm on packing days.</p>"
+          }
+        },
+        "stephanie": {
+          "type": "member",
+          "settings": {
+            "name": "Stephanie",
+            "role": "Owner, picker & human",
+            "bio": "<p>Stephanie finds, cleans, photographs and ships every relic from Sterling Heights, Michigan, and runs the shop so more dogs get the second chance Casey and Savannah got.</p>"
+          }
+        }
+      },
+      "block_order": ["bailee", "casey", "savannah", "stephanie"],
+      "settings": {
+        "eyebrow": "The pack behind the relics",
+        "heading": "Meet the Team",
+        "intro": "<p>Rescue Retro Relics is a small shop with a big mission: give vintage treasures a new home and help dogs find theirs.</p>"
+      }
+    },
+    "cta": {
+      "type": "rich-text",
+      "settings": { "heading": "Shop with purpose", "text": "<p>Every relic you buy helps fund dog rescue. <a href=\"/collections/all\">Start digging &rarr;</a></p>", "align": "center" }
+    }
+  },
+  "order": ["team", "cta"]
+}

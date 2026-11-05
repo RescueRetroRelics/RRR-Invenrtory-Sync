@@ -1,0 +1,16 @@
+<article class="section page-width article">
+  <header>
+    <p class="card__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+    <h1>{{ article.title }}</h1>
+  </header>
+  {%- if article.image -%}
+    <div class="article__image media media--natural" style="--ratio: {{ article.image.aspect_ratio }}">
+      {{ article.image | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 800, 1200, 1600', sizes: '(min-width: 900px) 860px, 100vw', alt: article.image.alt | default: article.title }}
+    </div>
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+  <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
+</article>
+{% schema %}
+{ "name": "Blog post", "settings": [] }
+{% endschema %}

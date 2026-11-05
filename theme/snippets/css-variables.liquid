@@ -1,0 +1,23 @@
+{%- comment -%} Brand tokens. Body text uses the system font stack: zero font downloads. {%- endcomment -%}
+{% style %}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  :root {
+    --font-heading: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-weight: {{ settings.type_heading_font.weight }};
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --color-bg: {{ settings.color_background }};
+    --color-surface: {{ settings.color_surface }};
+    --color-text: {{ settings.color_text }};
+    --color-text-soft: {{ settings.color_text | color_mix: settings.color_background, 70 }};
+    --color-primary: {{ settings.color_primary }};
+    --color-primary-text: {{ settings.color_primary_text }};
+    --color-accent-1: {{ settings.color_accent_1 }};
+    --color-accent-2: {{ settings.color_accent_2 }};
+    --color-accent-3: {{ settings.color_accent_3 }};
+    --color-sale: {{ settings.color_sale }};
+    --color-border: {{ settings.color_text | color_mix: settings.color_background, 18 }};
+    --page-width: {{ settings.page_width }}px;
+    --radius: {{ settings.corner_radius }}px;
+    --logo-w: {{ settings.logo_width }}px;
+  }
+{% endstyle %}

@@ -1,0 +1,36 @@
+<section class="section page-width">
+  <div class="split{% if section.settings.image_right %} split--reverse{% endif %}" style="--split-bg: {{ section.settings.background }}">
+    <div class="split__media media media--landscape">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: '(min-width: 750px) 50vw, 100vw' }}
+      {%- else -%}
+        {%- render 'placeholder' -%}
+      {%- endif -%}
+    </div>
+    <div class="split__text">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a class="button button--secondary" href="{{ section.settings.button_link }}">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "image_right", "label": "Image on the right", "default": false },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FBE7C6" },
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Our mission" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop vintage. Save dogs." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Rescue Retro Relics gives forgotten treasures a second life, and puts the money toward giving dogs one too.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Meet the team" },
+    { "type": "url", "id": "button_link", "label": "Button link", "default": "/pages/meet-the-team" }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}

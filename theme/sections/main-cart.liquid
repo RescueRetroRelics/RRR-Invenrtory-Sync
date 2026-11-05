@@ -1,0 +1,50 @@
+<section class="section page-width cart">
+  <h1>Your cart</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart__form">
+      <ul class="cart__items">
+        {%- for item in cart.items -%}
+          <li class="cart__item">
+            <a href="{{ item.url }}" class="cart__thumb media media--square">
+              {%- if item.image -%}
+                {{ item.image | image_url: width: 240 | image_tag: loading: 'eager', widths: '120, 240', sizes: '120px', alt: item.product.title }}
+              {%- else -%}{%- render 'placeholder' -%}{%- endif -%}
+            </a>
+            <div class="cart__details">
+              <a href="{{ item.url }}" class="cart__title">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<p class="cart__variant">{{ item.variant.title }}</p>{%- endunless -%}
+              {%- for discount in item.line_level_discount_allocations -%}<p class="cart__discount">{{ discount.discount_application.title }} (-{{ discount.amount | money }})</p>{%- endfor -%}
+              <p class="cart__price">{{ item.final_line_price | money }}</p>
+              <div class="cart__qty">
+                <label><span class="visually-hidden">Quantity</span>
+                  <input class="input" type="number" name="updates[]" value="{{ item.quantity }}" min="0" data-autosubmit-qty>
+                </label>
+                <a href="{{ item.url_to_remove }}" class="cart__remove">Remove</a>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="cart__footer">
+        {%- if section.settings.show_note -%}
+          <label class="field"><span class="field__label">Order note</span>
+            <textarea class="input" name="note" rows="3">{{ cart.note }}</textarea>
+          </label>
+        {%- endif -%}
+        <div class="cart__summary">
+          {%- for discount in cart.cart_level_discount_applications -%}<p>{{ discount.title }}: -{{ discount.total_allocated_amount | money }}</p>{%- endfor -%}
+          <p class="cart__total">Subtotal <strong>{{ cart.total_price | money_with_currency }}</strong></p>
+          <p class="cart__note-small">Shipping and taxes calculated at checkout.</p>
+          <button type="submit" name="update" class="button button--secondary button--small">Update cart</button>
+          <button type="submit" name="checkout" class="button button--full">Check out</button>
+          <p class="cart__mission">{%- render 'icon', name: 'paw' -%} Part of this order helps fund dog rescue.</p>
+        </div>
+      </div>
+    </form>
+  {%- else -%}
+    <p class="empty">Your cart is empty. <a href="{{ routes.all_products_collection_url }}">Go dig for treasure &rarr;</a></p>
+  {%- endif -%}
+</section>
+{% schema %}
+{ "name": "Cart", "settings": [{ "type": "checkbox", "id": "show_note", "label": "Allow order note", "default": true }] }
+{% endschema %}

@@ -1,0 +1,28 @@
+<section class="section page-width search">
+  <h1>Search</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search__form">
+    <label class="visually-hidden" for="SearchInput">Search</label>
+    <input id="SearchInput" class="input" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search for treasure..." autocomplete="off">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button type="submit" class="button">Search</button>
+  </form>
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <p class="facets__count">{{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }} for "{{ search.terms | escape }}"</p>
+      <div class="grid grid--products">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {%- assign eager = false -%}{%- if forloop.index <= 4 -%}{%- assign eager = true -%}{%- endif -%}
+            {%- render 'product-card', product: item, eager: eager -%}
+          {%- else -%}
+            <article class="card card--text"><a class="card__link" href="{{ item.url }}"><div class="card__info"><h3 class="card__title">{{ item.title }}</h3><p>{{ item.content | strip_html | truncatewords: 20 }}</p></div></a></article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</section>
+{% schema %}
+{ "name": "Search results", "settings": [] }
+{% endschema %}

@@ -1,0 +1,130 @@
+{%- comment -%}
+  Header with mega menu.
+  Menus come from Online Store > Navigation. A top-level link with children opens a mega panel;
+  each child becomes a column and its children are listed under it. Built on <details>, so it
+  works with JavaScript turned off. theme.js only adds "close on outside click / Escape".
+{%- endcomment -%}
+{%- assign menu = linklists[section.settings.menu] -%}
+<header class="header{% if section.settings.sticky %} header--sticky{% endif %}">
+  <div class="header__inner page-width">
+    <details class="drawer" data-drawer>
+      <summary class="header__icon drawer__toggle" aria-label="Menu">
+        <span class="drawer__open">{%- render 'icon', name: 'menu' -%}</span>
+        <span class="drawer__close">{%- render 'icon', name: 'close' -%}</span>
+      </summary>
+      <nav class="drawer__panel" aria-label="Mobile menu">
+        <ul class="drawer__list">
+          {%- for link in menu.links -%}
+            <li>
+              {%- if link.links.size > 0 -%}
+                <details>
+                  <summary>{{ link.title }} {% render 'icon', name: 'caret' %}</summary>
+                  <ul>
+                    <li><a href="{{ link.url }}">All {{ link.title }}</a></li>
+                    {%- for child in link.links -%}
+                      <li><a href="{{ child.url }}">{{ child.title }}</a>
+                        {%- if child.links.size > 0 -%}
+                          <ul class="drawer__grandchildren">
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}">{{ grandchild.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </details>
+
+    {%- if request.page_type == 'index' -%}<h1 class="header__logo">{%- else -%}<div class="header__logo">{%- endif -%}
+      <a href="{{ routes.root_url }}">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_w2 = settings.logo_width | times: 2 -%}
+          {%- assign logo_h = settings.logo_width | divided_by: settings.logo.aspect_ratio | round -%}
+          {{ settings.logo | image_url: width: logo_w2 | image_tag:
+            width: settings.logo_width,
+            height: logo_h,
+            loading: 'eager',
+            alt: shop.name,
+            style: 'max-width: 100%; height: auto;'
+          }}
+        {%- else -%}
+          <span class="header__shop-name">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    {%- if request.page_type == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
+
+    <nav class="mega" aria-label="Main menu">
+      <ul class="mega__list">
+        {%- for link in menu.links -%}
+          <li class="mega__item">
+            {%- if link.links.size > 0 -%}
+              <details class="mega__details" data-mega>
+                <summary class="mega__top">{{ link.title }} {% render 'icon', name: 'caret' %}</summary>
+                <div class="mega__panel">
+                  <div class="mega__columns page-width">
+                    {%- for child in link.links -%}
+                      <div class="mega__col">
+                        <a class="mega__heading" href="{{ child.url }}">{{ child.title }}</a>
+                        {%- if child.links.size > 0 -%}
+                          <ul>
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}">{{ grandchild.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                    {%- if section.settings.promo_image != blank -%}
+                      <a class="mega__promo" href="{{ section.settings.promo_link | default: link.url }}">
+                        {{ section.settings.promo_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '300px', alt: section.settings.promo_text }}
+                        {%- if section.settings.promo_text != blank -%}<span>{{ section.settings.promo_text }}</span>{%- endif -%}
+                      </a>
+                    {%- endif -%}
+                    <a class="mega__all" href="{{ link.url }}">Shop all {{ link.title }} &rarr;</a>
+                  </div>
+                </div>
+              </details>
+            {%- else -%}
+              <a class="mega__top" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__icons">
+      <a class="header__icon" href="{{ routes.search_url }}" aria-label="Search">{%- render 'icon', name: 'search' -%}</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="header__icon header__icon--account" href="{{ routes.account_url }}" aria-label="Account">{%- render 'icon', name: 'account' -%}</a>
+      {%- endif -%}
+      <a class="header__icon header__cart" href="{{ routes.cart_url }}" aria-label="Cart, {{ cart.item_count }} items">
+        {%- render 'icon', name: 'cart' -%}
+        {%- if cart.item_count > 0 -%}<span class="header__count">{{ cart.item_count }}</span>{%- endif -%}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Add sub-links (and sub-sub-links) in Navigation to build the mega menu." },
+    { "type": "checkbox", "id": "sticky", "label": "Stick to top while scrolling", "default": true },
+    { "type": "header", "content": "Mega menu feature image" },
+    { "type": "image_picker", "id": "promo_image", "label": "Image" },
+    { "type": "text", "id": "promo_text", "label": "Caption" },
+    { "type": "url", "id": "promo_link", "label": "Link" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

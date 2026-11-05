@@ -1,0 +1,29 @@
+{%- comment -%} "More like this" rendered server-side from the product's first collection: no JavaScript, no extra request. {%- endcomment -%}
+{%- assign source = product.collections.first -%}
+{%- if source and source.products_count > 1 -%}
+  <section class="section page-width">
+    <div class="section__head">
+      <h2 class="section__title">{{ section.settings.heading }}</h2>
+      <a class="section__more" href="{{ source.url }}">More {{ source.title }} &rarr;</a>
+    </div>
+    <div class="grid grid--products">
+      {%- assign shown = 0 -%}
+      {%- for p in source.products limit: 13 -%}
+        {%- if p.id == product.id or p.available == false -%}{%- continue -%}{%- endif -%}
+        {%- render 'product-card', product: p -%}
+        {%- assign shown = shown | plus: 1 -%}
+        {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "More like this",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You might also dig" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,5 @@
+{%- comment -%} Lightweight placeholder used when no image has been chosen yet. {%- endcomment -%}
+<div class="placeholder{% if class %} {{ class }}{% endif %}" role="img" aria-label="{{ label | default: 'Image coming soon' }}">
+  {%- render 'icon', name: 'paw' -%}
+  {%- if label -%}<span>{{ label }}</span>{%- endif -%}
+</div>

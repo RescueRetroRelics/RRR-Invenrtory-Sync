@@ -1,0 +1,45 @@
+{%- comment -%}
+  Product card.
+  @param product - product object
+  @param eager - true for cards in the first visible row (never lazy-load above-the-fold images)
+  @param priority - true for the single most important image on the page
+{%- endcomment -%}
+{%- liquid
+  assign image = product.featured_media.preview_image
+  assign ratio_class = 'media--' | append: settings.card_image_ratio
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+  assign fetchpriority = 'auto'
+  if priority
+    assign fetchpriority = 'high'
+  endif
+-%}
+<article class="card">
+  <a href="{{ product.url }}" class="card__link">
+    <div class="card__media media {{ ratio_class }}"{% if settings.card_image_ratio == 'natural' and image %} style="--ratio: {{ image.aspect_ratio }}"{% endif %}>
+      {%- if image -%}
+        {{ image | image_url: width: 720 | image_tag:
+          widths: '180, 260, 360, 480, 600, 720',
+          sizes: '(min-width: 1100px) 300px, (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 3rem) / 2)',
+          loading: loading,
+          fetchpriority: fetchpriority,
+          alt: image.alt | default: product.title
+        }}
+      {%- else -%}
+        {%- render 'placeholder' -%}
+      {%- endif -%}
+      {%- if product.available == false -%}
+        <span class="badge badge--sold">Sold</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="badge badge--sale">Sale</span>
+      {%- endif -%}
+    </div>
+    <div class="card__info">
+      {%- if settings.card_show_vendor -%}<p class="card__vendor">{{ product.vendor }}</p>{%- endif -%}
+      <h3 class="card__title">{{ product.title }}</h3>
+      {%- render 'price', product: product -%}
+    </div>
+  </a>
+</article>

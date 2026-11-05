@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "height": "large",
+        "overlay": 20,
+        "text_position": "bottom-left",
+        "eyebrow": "Vintage with a purpose",
+        "heading": "Rescued relics. Rescued dogs.",
+        "subheading": "<p>Vintage and nostalgia hand-picked in Michigan. Every sale helps fund dog rescue, in honor of Bailee.</p>",
+        "button_label": "Shop the relics",
+        "image_alt": "Bailee the Plott hound, the heart of Rescue Retro Relics"
+      }
+    },
+    "featured": { "type": "featured-collection", "settings": { "heading": "Fresh finds", "limit": 8 } },
+    "categories": {
+      "type": "collection-list",
+      "blocks": {
+        "c1": { "type": "collection", "settings": {} },
+        "c2": { "type": "collection", "settings": {} },
+        "c3": { "type": "collection", "settings": {} },
+        "c4": { "type": "collection", "settings": {} }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": { "heading": "Dig through the crates" }
+    },
+    "mission": { "type": "image-with-text", "settings": {} },
+    "promise": { "type": "rich-text", "settings": {} }
+  },
+  "order": ["hero", "featured", "categories", "mission", "promise"]
+}
