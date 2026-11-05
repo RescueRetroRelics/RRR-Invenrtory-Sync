@@ -88,7 +88,7 @@
                         {%- if section.settings.promo_text != blank -%}<span>{{ section.settings.promo_text }}</span>{%- endif -%}
                       </a>
                     {%- endif -%}
-                    <a class="mega__all" href="{{ link.url }}">Shop all {{ link.title }} &rarr;</a>
+                    <a class="mega__all" href="{{ link.url }}">{% if link.title == 'Shop' %}See everything{% else %}Shop all {{ link.title }}{% endif %} &rarr;</a>
                   </div>
                 </div>
               </details>

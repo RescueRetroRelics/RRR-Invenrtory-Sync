@@ -9,6 +9,7 @@
   {%- if search.performed -%}
     {%- paginate search.results by 24 -%}
       <p class="facets__count">{{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }} for "{{ search.terms | escape }}"</p>
+      <h2 class="visually-hidden">Results</h2>
       <div class="grid grid--products">
         {%- for item in search.results -%}
           {%- if item.object_type == 'product' -%}

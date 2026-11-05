@@ -77,6 +77,7 @@
     </form>
 
     {%- if collection.products.size > 0 -%}
+      <h2 class="visually-hidden">Products</h2>
       <div class="grid grid--products">
         {%- for product in collection.products -%}
           {%- liquid

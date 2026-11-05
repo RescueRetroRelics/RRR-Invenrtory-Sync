@@ -56,7 +56,8 @@
     {%- form 'product', product, class: 'product__form', data-product-form: '' -%}
       {%- unless product.has_only_default_variant -%}
         <label class="field">
-          <span class="field__label">{{ product.options | join: ' / ' }}</span>
+          {%- assign opt_label = product.options | join: ' / ' -%}{%- if opt_label == 'Title' -%}{%- assign opt_label = 'Choose one' -%}{%- endif -%}
+          <span class="field__label">{{ opt_label }}</span>
           <select name="id" class="select" data-variant-select>
             {%- for variant in product.variants -%}
               <option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" data-available="{{ variant.available }}"{% if variant == current_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>

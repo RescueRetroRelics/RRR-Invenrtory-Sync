@@ -94,13 +94,14 @@ summary::-webkit-details-marker{display:none}
 /* Hero / Bailee banner */
 .hero{position:relative;display:grid;background:var(--color-text);color:#fff;overflow:hidden}
 .hero__media,.hero__content{grid-area:1/1}
-.hero__img{width:100%;height:100%;object-fit:cover}
-.hero--natural .hero__img{height:auto}
+.hero__img,.hero__media picture img{width:100%;height:100%;object-fit:cover}
+.hero--natural .hero__media img{height:auto}
 .hero--medium{min-height:min(60vh,520px)}
 .hero--large{min-height:min(78vh,720px)}
 .hero--medium .hero__media,.hero--large .hero__media{position:absolute;inset:0}
 .hero__media::after{content:"";position:absolute;inset:0;background:rgb(0 0 0 / var(--overlay));pointer-events:none}
 .hero__media{position:relative}
+.hero__media picture{display:block;width:100%;height:100%}
 .hero__content{position:relative;z-index:1;display:flex;padding-top:2rem;padding-bottom:2rem}
 .hero--text-center .hero__content{align-items:center;justify-content:center;text-align:center}
 .hero--text-bottom-left .hero__content{align-items:flex-end}
@@ -149,7 +150,7 @@ summary::-webkit-details-marker{display:none}
 .card__title{font-family:var(--font-body);font-size:.95rem;font-weight:600;line-height:1.35;margin:0 0 .35rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card__vendor,.card__date{font-size:.8rem;color:var(--color-text-soft);margin:0 0 .2rem}
 .badge{position:absolute;top:.5rem;left:.5rem;z-index:1;padding:.15rem .6rem;border-radius:2rem;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
-.badge--sale{background:var(--color-accent-3);color:#fff}
+.badge--sale{background:var(--color-accent-3);color:var(--color-text)}
 .badge--sold{background:var(--color-text);color:var(--color-bg)}
 
 /* Price */
@@ -161,7 +162,7 @@ summary::-webkit-details-marker{display:none}
 .tile{display:block;text-decoration:none;border:2px solid var(--color-text);border-radius:var(--radius);overflow:hidden;background:var(--color-surface)}
 .tile__title{display:block;padding:.75rem;font-family:var(--font-heading);font-weight:var(--font-heading-weight);text-align:center;border-top:2px solid var(--color-text)}
 .tile--1 .tile__title{background:var(--color-accent-2)}
-.tile--2 .tile__title{background:var(--color-accent-3);color:#fff}
+.tile--2 .tile__title{background:var(--color-accent-3);color:var(--color-text)}
 .tile--3 .tile__title{background:var(--color-accent-1);color:#fff}
 .tile--0 .tile__title{background:var(--color-primary);color:var(--color-primary-text)}
 .tile:hover .tile__title{text-decoration:underline}
@@ -169,6 +170,7 @@ summary::-webkit-details-marker{display:none}
 /* Split */
 .split{display:grid;background:var(--split-bg);border:2px solid var(--color-text);border-radius:var(--radius);overflow:hidden}
 .split__text{padding:1.5rem}
+.split .eyebrow{color:var(--color-text)}
 @media (min-width:750px){.split{grid-template-columns:1fr 1fr;align-items:center}.split__text{padding:3rem}.split--reverse .split__media{order:2}.split__media{height:100%}}
 .rich-text{max-width:46rem}
 .rich-text--center{text-align:center}
@@ -180,13 +182,16 @@ summary::-webkit-details-marker{display:none}
 .breadcrumbs ol{display:flex;flex-wrap:wrap;gap:.25rem;list-style:none;margin:0;padding:1rem 0 0;font-size:.85rem;color:var(--color-text-soft)}
 .breadcrumbs li+li::before{content:"/";margin-right:.25rem}
 .breadcrumbs a{text-decoration:none}
+.breadcrumbs ol{flex-wrap:nowrap;white-space:nowrap}.breadcrumbs li:last-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
 
 /* Product page */
-.product{display:grid;gap:1.5rem;padding-top:1rem;padding-bottom:2.5rem}
+.product{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem;padding-top:1rem;padding-bottom:2.5rem}
+.product>*{min-width:0}
 @media (min-width:990px){.product{grid-template-columns:minmax(0,55fr) minmax(0,45fr);gap:3rem}.product__info{position:sticky;top:6rem;align-self:start}}
 .product__main{border:2px solid var(--color-text);border-radius:var(--radius)}
 .product__thumbs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;list-style:none;margin:.75rem 0 0;padding:0}
 .product__thumbs li{border:2px solid var(--color-border);border-radius:var(--radius)}
+@media (max-width:989px){.product{gap:1rem}.product__main{aspect-ratio:auto;height:min(48vh,calc((100vw - 2rem) / var(--ratio,1)))}.product__thumbs{display:flex;gap:.5rem;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:.5rem}.product__thumbs li{flex:0 0 4.5rem;height:4.5rem;aspect-ratio:auto;scroll-snap-align:start}}
 .product__vendor{text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;color:var(--color-text-soft);margin-bottom:.3rem}
 .product__title{font-size:clamp(1.6rem,4vw,2.4rem)}
 .product .price{font-size:1.5rem;margin-bottom:.4rem}

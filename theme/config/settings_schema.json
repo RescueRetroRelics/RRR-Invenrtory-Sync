@@ -22,9 +22,9 @@
       { "type": "color", "id": "color_background", "label": "Background", "default": "#FFF8EE" },
       { "type": "color", "id": "color_surface", "label": "Card / panel background", "default": "#FFFFFF" },
       { "type": "color", "id": "color_text", "label": "Text", "default": "#2B1D14" },
-      { "type": "color", "id": "color_primary", "label": "Primary (buttons)", "default": "#C8501E" },
+      { "type": "color", "id": "color_primary", "label": "Primary (buttons)", "default": "#B5441A" },
       { "type": "color", "id": "color_primary_text", "label": "Primary button text", "default": "#FFFFFF" },
-      { "type": "color", "id": "color_accent_1", "label": "Accent 1 (teal)", "default": "#1F7A78" },
+      { "type": "color", "id": "color_accent_1", "label": "Accent 1 (teal)", "default": "#1A6866" },
       { "type": "color", "id": "color_accent_2", "label": "Accent 2 (mustard)", "default": "#F2B33D" },
       { "type": "color", "id": "color_accent_3", "label": "Accent 3 (bubblegum)", "default": "#E8618C" },
       { "type": "color", "id": "color_sale", "label": "Sale price", "default": "#B3261E" }

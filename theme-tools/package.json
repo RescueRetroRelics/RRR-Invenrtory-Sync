@@ -1,0 +1,14 @@
+{
+  "name": "rrr-theme-tools",
+  "private": true,
+  "description": "Local preview, Theme Check and screenshot helpers for the RRR Relic theme",
+  "scripts": {
+    "check": "node check.js ../theme",
+    "preview": "node render.js ../theme"
+  },
+  "dependencies": {
+    "@shopify/theme-check-node": "*",
+    "liquidjs": "^10.30.1",
+    "lighthouse": "*"
+  }
+}
