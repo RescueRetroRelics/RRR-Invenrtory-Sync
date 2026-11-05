@@ -227,8 +227,8 @@ Switching over from Flow:
 1. Add the `write_products` scope to the RRR Inventory Sync app in the Dev Dashboard, release a new
    version, and approve it on the store.
 2. Run the dry run and check that the list looks right.
-3. Schedule `run_new_tags.bat` in Windows Task Scheduler to repeat **every 1 hour**, the same way as
-   `run_sync.bat`.
+3. Schedule `run_store_upkeep.bat` in Windows Task Scheduler to repeat **every 1 hour**, the same way as
+   `run_sync.bat`. It runs this job and the alt-text job below. (`run_new_tags.bat` runs just this one.)
 4. Watch `data\new_tags_runs.log` for a day. While both run, Flow and this job agree, so nothing fights.
 5. Turn off the Flow workflow, then uninstall Flow.
 
@@ -248,3 +248,35 @@ python -m rrr_sync fix-dog-pronouns --apply    # make the changes
 Needs the `write_products` scope, the same one the New Finds tagger needs. Before changing anything it saves
 every original description to `data\pronoun_fix_backup.json`. Only the description changes. A listing that was
 edited since the scan is skipped and reported, never guessed at. Running it twice is harmless.
+
+
+## Alt text for product photos (replaces Alt Text King)
+
+Alt text is the short description Google Images and screen readers use for each photo. Today almost every
+photo already has one. This job keeps new listings covered once Alt Text King is gone:
+
+- Finds product photos with **no** alt text, by default only in products from the last 30 days.
+  Existing alt text is never changed.
+- Claude looks at each photo and writes a description in the same style ("A7 sticker photo album planner
+  with translucent orange cover and cartoon sticker sheet"): under 125 characters, no "image of", never
+  "vintage" or "one-of-a-kind".
+- With no Claude key it uses the product title ("... - photo 2 of 5"), so nothing stays blank.
+
+```bash
+python -m rrr_sync alt-text            # dry run: shows what it would write
+python -m rrr_sync alt-text --apply    # save it
+python -m rrr_sync alt-text --all      # check the whole catalog, not just the last 30 days
+```
+
+Setup:
+
+1. Get a Claude API key at https://console.anthropic.com (Settings → API Keys) and add a small
+   monthly spend limit there. Put the key in `.env` as `ANTHROPIC_API_KEY=...`.
+   Optional: `ALT_TEXT_MODEL=` to pick a different model (default `claude-haiku-5-5`, the cheapest).
+2. Add the `write_files` scope to the RRR Inventory Sync app (alt text is saved through Shopify's file API),
+   and release and approve the new version.
+3. Run the dry run, read a few descriptions, then `--apply`.
+4. It's already in `run_store_upkeep.bat` (hourly, at most 100 photos per run).
+5. Once a day of new listings comes out right, cancel Alt Text King.
+
+Cost: one small model call per new photo. At a few dozen new photos a day that's pennies a month.

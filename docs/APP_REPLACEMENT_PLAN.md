@@ -31,6 +31,15 @@ that doesn't touch the storefront wasn't visible to this scan.
 - **Switch-over:** see README → *New Finds tagger*. In short: add the `write_products` scope, do a dry run,
   schedule it, watch for a day, then turn off Flow.
 
+### Alt Text King → `python -m rrr_sync alt-text` ✅ BUILT
+- Store check (Nov 5): a 60-listing sample had **0 of 419 photos missing alt text**, so Alt Text King has done
+  its job. The replacement only needs to cover **new** photos going forward.
+- Claude looks at each new photo and writes a description in the same style. It never overwrites existing
+  alt text, falls back to the product title if Claude is unavailable, and caps photos per run.
+- Runs hourly in `run_store_upkeep.bat` alongside the New Finds tagger.
+- Needs a Claude API key (pennies a month) and the `write_files` scope. See README → *Alt text*.
+- 15 tests. Not yet run against the real store or the real Claude API: do the dry run first.
+
 ### Hoppy Trust Badges → theme code ✅ BUILT
 - The new theme's product page has a trust row (Secure checkout · Every sale helps Detroit rescue dogs · Packed with
   love in Michigan) plus payment icons pulled automatically from the payment methods turned on in Shopify. The

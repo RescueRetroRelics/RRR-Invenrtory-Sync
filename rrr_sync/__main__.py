@@ -105,6 +105,14 @@ def cmd_fix_dog_pronouns(cfg, args):
     return 1 if errors else 0
 
 
+def cmd_alt_text(cfg, args):
+    from . import alt_text
+    from .shopify import Shopify
+    _, errors = alt_text.run(Shopify(cfg), cfg, do_apply=args.apply, days=args.days,
+                             scan_all=args.all, max_images=args.max)
+    return 1 if any("Claude failed" not in e for e in errors) else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -125,6 +133,11 @@ def main(argv=None):
     nt.add_argument("--tag", default="new item", help="the tag the New Finds collection uses (default 'new item')")
     fp = sub.add_parser("fix-dog-pronouns", help="one-time: fix he/him/his -> she/her for Casey, Savannah, Bailee (dry run by default)")
     fp.add_argument("--apply", action="store_true", help="actually update the descriptions (backs them up first)")
+    at = sub.add_parser("alt-text", help="replace Alt Text King: describe photos that have no alt text (dry run by default)")
+    at.add_argument("--apply", action="store_true", help="actually save the alt text")
+    at.add_argument("--days", type=int, default=30, help="only products listed in the last N days (default 30)")
+    at.add_argument("--all", action="store_true", help="scan the whole catalog instead")
+    at.add_argument("--max", type=int, default=200, help="most photos to do per run (default 200)")
 
     args = p.parse_args(argv)
     cfg = Config.load()
