@@ -56,6 +56,7 @@
             style: 'max-width: 100%; height: auto;'
           }}
         {%- else -%}
+          {%- render 'asset-image', name: 'logo-main', widths: '160,320', ratio: 1, sizes: '80px', loading: 'eager', alt: '', class: 'header__logo-img' -%}
           <span class="header__shop-name">{{ shop.name }}</span>
         {%- endif -%}
       </a>

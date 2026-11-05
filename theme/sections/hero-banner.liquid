@@ -1,18 +1,30 @@
 {%- comment -%}
-  Full-width banner built for the Bailee artwork.
-  This is the page's biggest image (LCP), so it is NEVER lazy-loaded: loading="eager" + fetchpriority="high".
-  Optional separate mobile image so phones download a smaller, better-cropped file.
+  The Bailee banner. Three layouts:
+  - sunburst (default): retro sunburst + Bailee artwork framed like a polaroid, artwork never covered by text
+  - overlay: full-bleed artwork with text over it
+  - below: full-bleed artwork, text underneath
+  The artwork is the page's biggest image (LCP), so it is NEVER lazy-loaded: loading="eager" + fetchpriority="high".
 {%- endcomment -%}
 {%- liquid
   assign img = section.settings.image
   assign mobile_img = section.settings.mobile_image | default: img
-  assign is_first = false
-  if section.index == 1 or section.index0 == 0
-    assign is_first = true
+  assign layout = section.settings.layout
+  assign heading_tag = 'h2'
+  if request.page_type != 'index'
+    assign heading_tag = 'h1'
+  endif
+  if layout == 'sunburst'
+    assign img_sizes = '(min-width: 990px) 46vw, 88vw'
+    assign img_widths = '400, 550, 700, 900, 1100, 1400'
+    assign img_max = 1400
+  else
+    assign img_sizes = '100vw'
+    assign img_widths = '500, 750, 1000, 1300, 1600, 2000, 2400, 3000'
+    assign img_max = 3000
   endif
 -%}
-<section class="hero hero--{{ section.settings.height }} hero--text-{{ section.settings.text_position }}" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}">
-  <div class="hero__media">
+<section class="hero hero--{{ layout }} hero--{{ section.settings.height }} hero--text-{{ section.settings.text_position }}" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}">
+  {%- capture artwork -%}
     {%- if img != blank -%}
       <picture>
         {%- if section.settings.mobile_image != blank -%}
@@ -22,9 +34,9 @@
             {{ mobile_img | image_url: width: 1000 }} 1000w,
             {{ mobile_img | image_url: width: 1500 }} 1500w" sizes="100vw" width="{{ mobile_img.width }}" height="{{ mobile_img.height }}">
         {%- endif -%}
-        {{ img | image_url: width: 3000 | image_tag:
-          widths: '500, 750, 1000, 1300, 1600, 2000, 2400, 3000',
-          sizes: '100vw',
+        {{ img | image_url: width: img_max | image_tag:
+          widths: img_widths,
+          sizes: img_sizes,
           loading: 'eager',
           fetchpriority: 'high',
           alt: section.settings.image_alt | default: img.alt,
@@ -33,26 +45,52 @@
         }}
       </picture>
     {%- else -%}
-      {%- render 'placeholder', class: 'hero__placeholder', label: 'Add the Bailee artwork in the theme editor' -%}
+      {%- render 'asset-image', name: 'hero-bailee', widths: '480,720,853', ratio: 0.598, sizes: img_sizes, loading: 'eager', fetchpriority: 'high', alt: section.settings.image_alt, class: 'hero__img' -%}
     {%- endif -%}
-  </div>
-  {%- if section.settings.heading != blank or section.settings.subheading != blank or section.settings.button_label != blank -%}
-    <div class="hero__content page-width">
-      <div class="hero__box">
-        {%- if section.settings.eyebrow != blank -%}<p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          {%- if is_first and request.page_type != 'index' -%}
-            <h1 class="hero__heading">{{ section.settings.heading }}</h1>
-          {%- else -%}
-            <h2 class="hero__heading">{{ section.settings.heading }}</h2>
-          {%- endif -%}
-        {%- endif -%}
-        {%- if section.settings.subheading != blank -%}<div class="hero__sub">{{ section.settings.subheading }}</div>{%- endif -%}
-        {%- if section.settings.button_label != blank -%}
-          <a class="button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+  {%- endcapture -%}
+
+  {%- capture copy -%}
+    {%- if section.settings.eyebrow != blank -%}<p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <{{ heading_tag }} class="hero__heading">
+        {{- section.settings.heading -}}
+        {%- if section.settings.heading_accent != blank %} <span class="hero__accent">{{ section.settings.heading_accent }}</span>{%- endif -%}
+      </{{ heading_tag }}>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}<div class="hero__sub">{{ section.settings.subheading }}</div>{%- endif -%}
+    <div class="hero__buttons">
+      {%- if section.settings.button_label != blank -%}
+        <a class="button button--big" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+      {%- if section.settings.button2_label != blank -%}
+        <a class="button button--big button--ghost" href="{{ section.settings.button2_link | default: '/pages/meet-the-team' }}">{{ section.settings.button2_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+
+  {%- if layout == 'sunburst' -%}
+    <div class="hero__burst" aria-hidden="true"></div>
+    <div class="hero__grid page-width">
+      <div class="hero__copy">{{ copy }}</div>
+      <div class="hero__frame-wrap">
+        <figure class="hero__frame">
+          <div class="hero__frame-media">{{ artwork }}</div>
+          {%- if section.settings.caption != blank -%}<figcaption class="hero__caption">{{ section.settings.caption }}</figcaption>{%- endif -%}
+        </figure>
+        {%- if section.settings.sticker != blank -%}
+          <p class="sticker hero__sticker">{%- render 'icon', name: 'paw' -%}<span>{{ section.settings.sticker }}</span></p>
         {%- endif -%}
       </div>
     </div>
+    <svg class="wave wave--bottom" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120 25 240 25 360 0s240-25 360 0 240 25 360 0 240-25 360 0v30H0Z"/></svg>
+  {%- else -%}
+    <div class="hero__media">{{ artwork }}</div>
+    <div class="hero__content page-width">
+      <div class="hero__box">{{ copy }}</div>
+    </div>
+    {%- if section.settings.sticker != blank and layout == 'overlay' -%}
+      <p class="sticker hero__sticker hero__sticker--corner">{%- render 'icon', name: 'paw' -%}<span>{{ section.settings.sticker }}</span></p>
+    {%- endif -%}
   {%- endif -%}
 </section>
 
@@ -62,25 +100,31 @@
   "tag": "div",
   "class": "section-hero",
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "Banner image", "info": "Recommended: 2400 x 1000px or wider. This loads first and fast, it is never lazy-loaded." },
-    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)", "info": "A taller crop for phones, e.g. 1000 x 1250px." },
-    { "type": "text", "id": "image_alt", "label": "Image description (for Google + screen readers)", "default": "Bailee the Plott hound, the heart of Rescue Retro Relics" },
-    { "type": "select", "id": "height", "label": "Height", "default": "large", "options": [
-      { "value": "natural", "label": "Fit the image" },
-      { "value": "medium", "label": "Medium" },
-      { "value": "large", "label": "Large" }
+    { "type": "select", "id": "layout", "label": "Layout", "default": "sunburst", "options": [
+      { "value": "sunburst", "label": "Retro sunburst + framed artwork" },
+      { "value": "overlay", "label": "Full-width artwork, text on top" },
+      { "value": "below", "label": "Full-width artwork, text below" }
     ] },
-    { "type": "range", "id": "overlay", "label": "Darken image behind text", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 20 },
-    { "type": "select", "id": "text_position", "label": "Text position", "default": "bottom-left", "options": [
-      { "value": "center", "label": "Center" },
-      { "value": "bottom-left", "label": "Bottom left" },
-      { "value": "below", "label": "Below the image (keeps artwork clear)" }
+    { "type": "image_picker", "id": "image", "label": "Bailee artwork", "info": "Loads first and fast, never lazy-loaded. Sunburst layout: ~1400px wide. Full-width layouts: 2400px+ wide." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)" },
+    { "type": "text", "id": "image_alt", "label": "Image description (for Google + screen readers)", "default": "Bailee the Plott hound, the heart and soul of Rescue Retro Relics" },
+    { "type": "text", "id": "caption", "label": "Polaroid caption (sunburst layout)", "default": "Bailee, the reason for all of it" },
+    { "type": "text", "id": "sticker", "label": "Sticker badge", "default": "Every sale helps Detroit rescue dogs" },
+    { "type": "select", "id": "height", "label": "Height (full-width layouts)", "default": "large", "options": [
+      { "value": "natural", "label": "Fit the image" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }
     ] },
-    { "type": "text", "id": "eyebrow", "label": "Small text above heading", "default": "Vintage with a purpose" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Rescued relics. Rescued dogs." },
-    { "type": "richtext", "id": "subheading", "label": "Text", "default": "<p>Vintage and nostalgia hand-picked in Michigan. Every sale helps fund dog rescue, in honor of Bailee.</p>" },
+    { "type": "range", "id": "overlay", "label": "Darken image behind text (overlay layout)", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 25 },
+    { "type": "select", "id": "text_position", "label": "Text position (overlay layout)", "default": "bottom-left", "options": [
+      { "value": "center", "label": "Center" }, { "value": "bottom-left", "label": "Bottom left" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Small text above heading", "default": "Retro finds. Real rescue." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Rescued relics." },
+    { "type": "text", "id": "heading_accent", "label": "Heading, colored second line", "default": "Rescued dogs." },
+    { "type": "richtext", "id": "subheading", "label": "Text", "default": "<p>Retro-inspired collectibles that feel like a 90s Friday night, hand-picked by a Michigan girl and her rescue pack. Every sale helps fund Detroit dog rescue, in honor of Bailee.</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the relics" },
     { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "button2_label", "label": "Second button label", "default": "Meet the crew" },
+    { "type": "url", "id": "button2_link", "label": "Second button link" },
     { "type": "text", "id": "focal_css", "label": "Advanced: image CSS", "info": "Optional, e.g. object-position: 30% 40%;" }
   ],
   "presets": [{ "name": "Bailee banner" }]

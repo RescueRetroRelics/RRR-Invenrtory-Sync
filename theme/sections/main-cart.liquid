@@ -37,12 +37,12 @@
           <p class="cart__note-small">Shipping and taxes calculated at checkout.</p>
           <button type="submit" name="update" class="button button--secondary button--small">Update cart</button>
           <button type="submit" name="checkout" class="button button--full">Check out</button>
-          <p class="cart__mission">{%- render 'icon', name: 'paw' -%} Part of this order helps fund dog rescue.</p>
+          <p class="cart__mission">{%- render 'icon', name: 'paw' -%} This order helps fund Detroit dog rescue.</p>
         </div>
       </div>
     </form>
   {%- else -%}
-    <p class="empty">Your cart is empty. <a href="{{ routes.all_products_collection_url }}">Go dig for treasure &rarr;</a></p>
+    <p class="empty">Your cart is empty. <a href="{{ routes.all_products_collection_url }}">Go find something rad &rarr;</a></p>
   {%- endif -%}
 </section>
 {% schema %}

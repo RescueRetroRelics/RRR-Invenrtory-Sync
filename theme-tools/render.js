@@ -72,7 +72,7 @@ engine.registerFilter('money_with_currency', (c) => money(c) + ' USD');
 engine.registerFilter('money_without_currency', (c) => (Number(c || 0) / 100).toFixed(2));
 engine.registerFilter('font_url', () => '/fonts/arvo_n7.woff2');
 engine.registerFilter('font_face', () => `@font-face{font-family:Arvo;font-weight:700;font-style:normal;font-display:swap;src:url(/fonts/arvo_n7.woff2) format("woff2")}`);
-engine.registerFilter('preload_tag', (u, ...a) => `<link rel="preload" href="${u}" as="font" crossorigin="anonymous">`);
+engine.registerFilter('preload_tag', (u, ...a) => `<link rel="preload" href="${u}" as="font" type="font/woff2" crossorigin="anonymous">`);
 engine.registerFilter('json', (v) => JSON.stringify(v));
 engine.registerFilter('color_mix', (a, b, p) => { const h = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16)); const A = h(a), B = h(b); return '#' + A.map((v, i) => Math.round(v * p / 100 + B[i] * (1 - p / 100)).toString(16).padStart(2, '0')).join(''); });
 engine.registerFilter('structured_data', (p) => JSON.stringify({ '@context': 'http://schema.org/', '@type': 'Product', name: p.title, url: ORIGIN + p.url, image: p.featured_image && p.featured_image.src, offers: p.variants.map((v) => ({ '@type': 'Offer', price: (v.price / 100).toFixed(2), priceCurrency: 'USD', availability: v.available ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock' })) }));
@@ -132,11 +132,11 @@ async function page(name, pageType, template, extra, overrides = {}) {
 }
 
 (async () => {
-  for (const f of ['base.css', 'theme.js']) fs.copyFileSync(path.join(THEME, 'assets', f), path.join(OUT, 'assets', f));
+  for (const f of fs.readdirSync(path.join(THEME, 'assets'))) fs.copyFileSync(path.join(THEME, 'assets', f), path.join(OUT, 'assets', f));
   const heroStandIn = collection.products[0].featured_image; // stand-in for the Bailee artwork
   const cats = collections.slice(0, 4);
   await page('home', 'index', 'index', { page_title: 'Rescue Retro Relics', page_description: 'Vintage and nostalgia that funds dog rescue.' }, {
-    hero: { settings: { image: heroStandIn } }, featured: { settings: { collection } }, categories: { blocks: cats.map((c) => ({ collection: c })) }, mission: { settings: { image: collection.products[3].featured_image } },
+    featured: { settings: { collection } }, categories: { blocks: cats.map((c) => ({ collection: c })) },
   });
   await page('product', 'product', 'product', { page_title: product.title, page_description: 'Vintage find', page_image: product.featured_image });
   await page('collection', 'collection', 'collection', { collection, page_title: collection.title });

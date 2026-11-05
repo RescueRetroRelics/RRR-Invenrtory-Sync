@@ -86,7 +86,7 @@
     {%- endform -%}
 
     {%- if current_variant.available and current_variant.inventory_quantity == 1 -%}
-      <p class="product__one-of-one">{%- render 'icon', name: 'paw' -%} One of a kind. When it's gone, it's gone.</p>
+      <p class="product__one-of-one">{%- render 'icon', name: 'paw' -%} Only 1 left. When it's gone, it's gone.</p>
     {%- endif -%}
 
     <div class="product__description rte">{{ product.description }}</div>
@@ -110,7 +110,7 @@
     { "type": "checkbox", "id": "show_sku", "label": "Show SKU", "default": false },
     { "type": "checkbox", "id": "show_quantity", "label": "Show quantity box (only when more than 1 in stock)", "default": true },
     { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Buy-it-now / Shop Pay button", "info": "Off by default: it loads extra Shopify scripts that slow the page.", "default": false },
-    { "type": "richtext", "id": "mission_text", "label": "Mission note", "default": "<p><strong>This purchase helps dogs.</strong> A portion of every sale funds dog rescue, in honor of Bailee.</p>" }
+    { "type": "richtext", "id": "mission_text", "label": "Mission note", "default": "<p><strong>This purchase helps Detroit rescue dogs.</strong> Every sale funds transport runs, medical bills and fosters, in honor of Bailee.</p>" }
   ]
 }
 {% endschema %}

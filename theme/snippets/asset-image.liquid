@@ -1,0 +1,24 @@
+{%- comment -%}
+  Responsive image for art shipped inside the theme (assets/<name>-<width>.webp).
+  @param name - file prefix, e.g. 'crew-casey'
+  @param widths - comma list of generated widths, e.g. '180,360'
+  @param ratio - height / width (for width/height attributes, prevents layout shift)
+  @param sizes, loading, fetchpriority, alt, class
+{%- endcomment -%}
+{%- liquid
+  assign ws = widths | split: ','
+  assign largest = ws | last | strip
+  assign h = largest | times: ratio | round
+  assign srcset = ''
+  for w in ws
+    assign ww = w | strip
+    assign file = name | append: '-' | append: ww | append: '.webp'
+    assign file_url = file | asset_url
+    assign srcset = srcset | append: file_url | append: ' ' | append: ww | append: 'w'
+    unless forloop.last
+      assign srcset = srcset | append: ', '
+    endunless
+  endfor
+  assign main_file = name | append: '-' | append: largest | append: '.webp'
+-%}
+<img src="{{ main_file | asset_url }}" srcset="{{ srcset }}" sizes="{{ sizes | default: '100vw' }}" width="{{ largest }}" height="{{ h }}" alt="{{ alt | escape }}" loading="{{ loading | default: 'lazy' }}"{% if fetchpriority %} fetchpriority="{{ fetchpriority }}"{% endif %}{% if class %} class="{{ class }}"{% endif %} decoding="async">

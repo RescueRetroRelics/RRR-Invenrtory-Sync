@@ -1,28 +1,85 @@
-<section class="section page-width team">
-  <header class="team__intro">
-    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
-    <h1>{{ section.settings.heading }}</h1>
-    {%- if section.settings.intro != blank -%}<div class="rte">{{ section.settings.intro }}</div>{%- endif -%}
+{%- comment -%}
+  Meet the Crew. Bailee (or any member marked "featured") gets a full-width memorial card;
+  everyone else gets a polaroid-style card with colored tape. Each card has an anchor (#name) so the
+  homepage crew strip can link straight to it. The first photo is eager-loaded (it's the LCP); the rest lazy-load.
+{%- endcomment -%}
+<section class="team">
+  <header class="team__hero">
+    <div class="hero__burst hero__burst--soft" aria-hidden="true"></div>
+    <div class="page-width team__intro">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="display">{{ section.settings.heading }}</h1>
+      {%- if section.settings.intro != blank -%}<div class="rte team__lede">{{ section.settings.intro }}</div>{%- endif -%}
+    </div>
+    <svg class="wave wave--bottom wave--cream" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120 25 240 25 360 0s240-25 360 0 240 25 360 0 240-25 360 0v30H0Z"/></svg>
   </header>
-  <div class="team__grid">
+
+  {%- if section.settings.story != blank -%}
+    <div class="page-width team__story">
+      <div class="story-card">
+        {%- if section.settings.story_heading != blank -%}<h2 class="display">{{ section.settings.story_heading }}</h2>{%- endif -%}
+        <div class="rte">{{ section.settings.story }}</div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.crew_heading != blank -%}
+    <div class="page-width"><h2 class="display team__crew-heading">{{ section.settings.crew_heading }}</h2></div>
+  {%- endif -%}
+  <div class="page-width team__grid">
     {%- for block in section.blocks -%}
-      <article class="member{% if block.settings.featured %} member--featured{% endif %} member--{{ forloop.index | modulo: 4 }}" {{ block.shopify_attributes }}>
-        <div class="member__photo media {% if block.settings.featured %}media--landscape{% else %}media--square{% endif %}">
-          {%- if block.settings.photo != blank -%}
-            {%- if forloop.first -%}
-              {{ block.settings.photo | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1400', sizes: '(min-width: 750px) 66vw, 100vw', alt: block.settings.name }}
+      {%- assign anchor = block.settings.name | handle -%}
+      <article id="{{ anchor }}" class="member member--{{ block.settings.color }}{% if block.settings.featured %} member--featured{% endif %}" {{ block.shopify_attributes }}>
+        <div class="member__polaroid">
+          <span class="member__tape" aria-hidden="true"></span>
+          <div class="member__photo media {% if block.settings.featured %}media--portrait{% else %}media--square{% endif %}">
+            {%- if block.settings.photo != blank -%}
+              {%- if forloop.first -%}
+                {{ block.settings.photo | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1400', sizes: '(min-width: 750px) 55vw, 92vw', alt: block.settings.photo_alt | default: block.settings.name }}
+              {%- else -%}
+                {{ block.settings.photo | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 400, 600, 800', sizes: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 92vw', alt: block.settings.photo_alt | default: block.settings.name }}
+              {%- endif -%}
+            {%- elsif block.settings.builtin_art != blank -%}
+              {%- liquid
+                assign bw = '400,700'
+                assign br = 1
+                if block.settings.builtin_art == 'team-bailee'
+                  assign bw = '480,800,1145'
+                  assign br = 1.2
+                endif
+                assign bl = 'lazy'
+                if forloop.first
+                  assign bl = 'eager'
+                endif
+                assign balt = block.settings.photo_alt | default: block.settings.name
+              -%}
+              {%- if forloop.first -%}
+                {%- render 'asset-image', name: block.settings.builtin_art, widths: bw, ratio: br, sizes: '(min-width: 750px) 40vw, 92vw', loading: bl, fetchpriority: 'high', alt: balt -%}
+              {%- else -%}
+                {%- render 'asset-image', name: block.settings.builtin_art, widths: bw, ratio: br, sizes: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 92vw', loading: bl, alt: balt -%}
+              {%- endif -%}
             {%- else -%}
-              {{ block.settings.photo | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 400, 600, 800', sizes: '(min-width: 750px) 33vw, 100vw', alt: block.settings.name }}
+              {%- render 'placeholder', label: block.settings.name -%}
             {%- endif -%}
-          {%- else -%}
-            {%- render 'placeholder', label: block.settings.name -%}
-          {%- endif -%}
+          </div>
+          {%- if block.settings.nickname != blank -%}<p class="member__nickname">{{ block.settings.nickname }}</p>{%- endif -%}
         </div>
         <div class="member__body">
-          {%- if block.settings.badge != blank -%}<p class="member__badge">{{ block.settings.badge }}</p>{%- endif -%}
+          {%- if block.settings.badge != blank -%}
+            <p class="member__badge">{%- if block.settings.featured -%}{%- render 'icon', name: 'star' -%}{%- endif -%}{{ block.settings.badge }}</p>
+          {%- endif -%}
           <h2 class="member__name">{{ block.settings.name }}</h2>
           {%- if block.settings.role != blank -%}<p class="member__role">{{ block.settings.role }}</p>{%- endif -%}
-          <div class="rte">{{ block.settings.bio }}</div>
+          {%- if block.settings.species != blank or block.settings.joined != blank -%}
+            <ul class="member__facts">
+              {%- if block.settings.species != blank -%}<li>{{ block.settings.species }}</li>{%- endif -%}
+              {%- if block.settings.joined != blank -%}<li>{{ block.settings.joined }}</li>{%- endif -%}
+            </ul>
+          {%- endif -%}
+          <div class="rte member__bio">{{ block.settings.bio }}</div>
+          {%- if block.settings.fun_fact != blank -%}
+            <p class="member__fact">{%- render 'icon', name: 'paw' -%}<span>{{ block.settings.fun_fact }}</span></p>
+          {%- endif -%}
         </div>
       </article>
     {%- endfor -%}
@@ -31,26 +88,38 @@
 
 {% schema %}
 {
-  "name": "Meet the team",
+  "name": "Meet the crew",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Small text", "default": "The pack behind the relics" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Meet the Team" },
-    { "type": "richtext", "id": "intro", "label": "Intro" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Meet the Crew" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "text", "id": "story_heading", "label": "Story heading", "default": "Why We Exist" },
+    { "type": "richtext", "id": "story", "label": "Story" },
+    { "type": "text", "id": "crew_heading", "label": "Crew heading", "default": "The Crew" }
   ],
   "blocks": [
     {
       "type": "member",
-      "name": "Team member",
+      "name": "Crew member",
       "settings": [
         { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "text", "id": "photo_alt", "label": "Photo description" },
+        { "type": "text", "id": "builtin_art", "label": "Built-in art (used when no photo is picked)", "info": "team-bailee, team-savannah or team-casey" },
         { "type": "text", "id": "name", "label": "Name", "default": "Name" },
-        { "type": "text", "id": "role", "label": "Role" },
-        { "type": "text", "id": "badge", "label": "Badge", "info": "e.g. In loving memory, Rescued 2024" },
-        { "type": "richtext", "id": "bio", "label": "Bio" },
-        { "type": "checkbox", "id": "featured", "label": "Feature (full width)", "default": false }
+        { "type": "text", "id": "nickname", "label": "Polaroid caption / nickname" },
+        { "type": "text", "id": "role", "label": "Title" },
+        { "type": "text", "id": "badge", "label": "Badge", "info": "e.g. In loving memory, Rescued" },
+        { "type": "text", "id": "species", "label": "Species / breed" },
+        { "type": "text", "id": "joined", "label": "Joined the crew", "info": "e.g. Rescued April 13, 2024" },
+        { "type": "richtext", "id": "bio", "label": "Story" },
+        { "type": "text", "id": "fun_fact", "label": "Fun fact" },
+        { "type": "select", "id": "color", "label": "Card color", "default": "orange", "options": [
+          { "value": "orange", "label": "Retro orange" }, { "value": "teal", "label": "Teal" }, { "value": "mustard", "label": "Mustard" }, { "value": "raspberry", "label": "Raspberry" }
+        ] },
+        { "type": "checkbox", "id": "featured", "label": "Feature (full width, memorial style)", "default": false }
       ]
     }
   ],
-  "presets": [{ "name": "Meet the team", "blocks": [{ "type": "member" }, { "type": "member" }, { "type": "member" }] }]
+  "presets": [{ "name": "Meet the crew", "blocks": [{ "type": "member" }, { "type": "member" }, { "type": "member" }] }]
 }
 {% endschema %}

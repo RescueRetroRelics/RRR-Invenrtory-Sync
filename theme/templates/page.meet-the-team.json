@@ -7,50 +7,144 @@
           "type": "member",
           "settings": {
             "name": "Bailee",
-            "role": "Founder, muse & forever Chief Inspiration Officer",
-            "badge": "In loving memory",
+            "role": "2016 – April 7, 2024 · She Who Started All of This",
+            "bio": "<p>Bailee came to Stephanie on April 10, 2021. She was about five years old. She'd been at the rescue long enough that nobody seemed to want her, and she hated other dogs with the kind of intensity that makes people nervous. She became Stephanie's soul dog on day one.</p><p>They had three years. Bailee was diagnosed with cutaneous lymphoma. She passed on April 7, 2024 — three days before her third gotcha day — at around eight years old.</p><p>RRR exists in her honor. Everything here is for her.</p>",
             "featured": true,
-            "bio": "<p>Bailee was a Plott hound with a big voice and an even bigger heart, and the reason this shop exists. Every relic we rescue and every dollar we send to dog rescue carries Bailee's name with it.</p>"
-          }
-        },
-        "casey": {
-          "type": "member",
-          "settings": {
-            "name": "Casey",
-            "role": "Quality control & snack inspector",
-            "badge": "Rescued",
-            "bio": "<p>Casey came to us after being let down by people. Now Casey supervises every box that comes through the door.</p>"
+            "badge": "In loving memory",
+            "species": "Plott hound",
+            "joined": "Gotcha day April 10, 2021",
+            "color": "orange",
+            "builtin_art": "team-bailee",
+            "nickname": "Bailee & Stephanie",
+            "photo_alt": "Stephanie and Bailee, cuddled up together"
           }
         },
         "savannah": {
           "type": "member",
           "settings": {
-            "name": "Savannah",
-            "role": "Head of comfort & couch operations",
+            "name": "Savannah Bananas",
+            "role": "Head of Quality Control, Mostly Sniffing",
+            "bio": "<p>Savannah arrived on April 13, 2024 — six days after Bailee passed, sent via a Petfinder email that appeared on Stephanie's phone at a restaurant while she was sitting in silence trying not to look at anything. She looked exactly like Bailee. She'd been at the rescue a long time and nobody had wanted her. Stephanie knew.</p><p>Savannah is the boss of this house. She's about two-thirds of Casey's size and is in charge of all of it. She's the one who taught Casey to be a dog — a project still in progress — and her inspection process for all incoming inventory is thorough and deeply nose-led. She takes her role seriously.</p>",
+            "featured": false,
             "badge": "Rescued",
-            "bio": "<p>Savannah is proof that a second chance changes everything. She keeps the whole crew calm on packing days.</p>"
+            "joined": "Joined April 13, 2024",
+            "color": "raspberry",
+            "builtin_art": "team-savannah",
+            "nickname": "Savannah, superhero",
+            "photo_alt": "Savannah as a comic-book superhero in a pink cape"
           }
         },
-        "stephanie": {
+        "casey": {
           "type": "member",
           "settings": {
-            "name": "Stephanie",
-            "role": "Owner, picker & human",
-            "bio": "<p>Stephanie finds, cleans, photographs and ships every relic from Sterling Heights, Michigan, and runs the shop so more dogs get the second chance Casey and Savannah got.</p>"
+            "name": "Casey McBasey",
+            "role": "Director of Naps and Customer Relations",
+            "bio": "<p>Casey arrived July 17, 2024, full of love and significant gaps in her dog education. Savannah has been working hard on this. The lessons are ongoing.</p><p>Casey's signature move: when belly rubs stop, she bares her teeth and makes a sound that could genuinely alarm a stranger. She has absolutely no idea it looks scary. It is entirely a compliment. She's just trying to ask nicely for more.</p><p>She takes her Director of Naps responsibilities with unwavering commitment.</p>",
+            "featured": false,
+            "badge": "Rescued",
+            "joined": "Joined July 17, 2024",
+            "color": "teal",
+            "builtin_art": "team-casey",
+            "nickname": "Casey, superhero pup",
+            "photo_alt": "Casey as a comic-book superhero in a red cape"
+          }
+        },
+        "mr_proper": {
+          "type": "member",
+          "settings": {
+            "name": "Mr. Proper",
+            "role": "Also: Mr. P · Chief Inspector of Tight Spaces",
+            "bio": "<p>Mr. Proper is an 18-inch ribbon snake and the most conscientious inspector of shipping boxes and tight spaces on the team.</p><p>He came to the crew on November 23, 2020 — making him the longest-tenured rescue on the roster, predating the dogs, predating RRR itself. Stephanie found him at a warehouse on a freakishly warm late-fall day, just a baby: about six inches long and thinner than half a finger. She knew the warmth wouldn't hold, that he'd already gone into brumation, and that another freeze would be the end of him. She brought him home in a box and had a full tank set up the next day.</p><p>As a baby he ate earthworms, tilapia, and calcium powder. Now he eats thawed pinky mice like a professional.</p><p>He has escaped twice. Once, he ended up in bubble wrap in the basement — Stephanie's dad found him. Once, he turned up under the front room table. Both times he was fine and appeared completely unbothered.</p><p>His mouth is too small to bite. He shows affection by bumping you gently with his nose.</p>",
+            "featured": false,
+            "badge": "Rescued",
+            "species": "Ribbon snake, 18 inches",
+            "joined": "Joined November 23, 2020",
+            "color": "mustard"
+          }
+        },
+        "mrs_pb": {
+          "type": "member",
+          "settings": {
+            "name": "Mrs. Peanut Butter",
+            "role": "Head of Human Resources and Acorn Compliance",
+            "bio": "<p>Mrs. Peanut Butter is a black squirrel who lives in one of the two maple trees in the front yard — three stories tall, branches over the roof, which she uses as a personal skyway. She likely had babies in the summer or early fall of 2026. She has decided the porch is hers. She is not wrong.</p><p>It started in July 2026, when Bella left out bread — expired bread, because if the date had passed, it shouldn't be eaten, obviously. The bread became nuts. The nuts became routine. Now Mrs. Peanut Butter comes up on the porch and sits on laps. Jory and Bella can pet her. She solved an eight-compartment dog puzzle toy in approximately five minutes. She does not run from delivery drivers.</p><p>She has a pet water fountain. She prefers raw unsalted walnuts and cashews. (Texas Roadhouse shell peanuts were an early experiment. Everyone learned something.)</p><p>When a hawk roughly the size of Savannah showed up in the maple and gave chase, Stephanie built her a two-story shelter by hand: hinged lid for cleaning access, multiple connected chambers, interior climbing slats, a slatted perch, a dedicated nesting box, entry/exit holes at every level, mounted on iron legs. Mrs. Peanut Butter's house is better than some apartments.</p><p>She runs HR with the precision of someone who has memorized every nut stash within three yards.</p>",
+            "featured": false,
+            "badge": "Backyard crew",
+            "species": "Black squirrel",
+            "joined": "Joined July 2026",
+            "color": "teal"
+          }
+        },
+        "bella": {
+          "type": "member",
+          "settings": {
+            "name": "Bella",
+            "role": "Chief Rescue Officer (Unpaid, Allegedly Thrilled)",
+            "bio": "<p>Bella is Stephanie's daughter and the best transport riding buddy in the business. She goes on every run. It is her favorite thing.</p><p>At home, she's the inventory queen. Stephanie texts her a photo of what needs to ship and which box it's in. Bella finds it and brings it upstairs, every time, without fail.</p><p>She also introduced Mrs. Peanut Butter to expired bread, which started the whole relationship. We don't hold it against her.</p>",
+            "featured": false,
+            "badge": "Human crew",
+            "color": "raspberry"
+          }
+        },
+        "jory": {
+          "type": "member",
+          "settings": {
+            "name": "Jory",
+            "role": "Head of Action Figure Operations, RRR Action Figure Division (Coming Soon)",
+            "bio": "<p>Jory is Stephanie's partner and the person who keeps her head in the game when she's sourcing. Is this worth it? Is this good? Jory is the voice of reason she checks with. He has gone on more than a few transport runs. He has opinions about action figures that will one day become their own entire division of this company.</p><p>He was at the restaurant the day Bailee died — the one who eventually said they had to stop and eat. He was right. The email came in while they were there.</p>",
+            "featured": false,
+            "badge": "Human crew",
+            "color": "orange"
           }
         }
       },
-      "block_order": ["bailee", "casey", "savannah", "stephanie"],
+      "block_order": [
+        "bailee",
+        "savannah",
+        "casey",
+        "mr_proper",
+        "mrs_pb",
+        "bella",
+        "jory"
+      ],
       "settings": {
         "eyebrow": "The pack behind the relics",
-        "heading": "Meet the Team",
-        "intro": "<p>Rescue Retro Relics is a small shop with a big mission: give vintage treasures a new home and help dogs find theirs.</p>"
+        "heading": "Meet the Crew",
+        "intro": "<p>Rescued dogs, a snake, a squirrel and two very patient humans. This is who keeps the relics moving and the mission going.</p>",
+        "story_heading": "Why We Exist",
+        "story": "<p>Rescue Retro Relics started the way most good things start: with a conversation with a dad.</p><p>Stephanie had been hunting for Snoopy collectibles and kept running into dead ends. The really good stuff, it turned out, was overseas. She started finding it and told her dad about the deals. His advice was simple: buy two and sell one, and you get yours for free. She started doing exactly that.</p><p>Then something clicked. Other people wanted this stuff just as much as she did. She was in a position to bring more in. And she knew exactly where the extra money could go — dog rescue. Transport runs. Medical bills. Fosters. Getting dogs out of kill shelters and into families who wanted them.</p><p>She was also still grieving. Bailee had been her soul dog, and the grief didn't quietly fade. Building RRR was a way to do something with that love — to channel it into something that kept saving dogs like Bailee, long after she was gone.</p><p><strong>Bailee is why RRR exists.</strong> She saved Stephanie's life when she came into it. They only had three years together — Bailee was diagnosed with cutaneous lymphoma and passed on April 7, 2024, three days before her third gotcha day — but she was Stephanie's soul dog from the very first day.</p><p>The day Bailee died, after Lap of Love left the house, Stephanie and Jory drove for hours because she couldn't stay home without her. Eventually they stopped to eat. Sitting in the restaurant, not wanting to look at anything that reminded her of what she'd just lost, Stephanie opened her phone. A Petfinder email had come in. She opened it. There was Savannah — who looked exactly like Bailee — a dog who'd been at the rescue a long time and nobody had wanted. Stephanie knew. Bailee had sent her.</p><p>This is for everyone who ever felt like adopting a new dog was a betrayal of the one they lost. Bailee hated other dogs — passionately, fiercely, with everything she had. And Stephanie knows with complete certainty that she would still want her to keep saving them.</p>",
+        "crew_heading": "The Crew"
       }
     },
-    "cta": {
+    "transport": {
       "type": "rich-text",
-      "settings": { "heading": "Shop with purpose", "text": "<p>Every relic you buy helps fund dog rescue. <a href=\"/collections/all\">Start digging &rarr;</a></p>", "align": "center" }
+      "settings": {
+        "heading": "The Transport Work",
+        "text": "<p>The shop funds the mission, and the mission is dogs.</p><p>Stephanie coordinates and runs transport — picking up dogs from shelters and bringing them to foster families and rescues across Michigan. Runs have taken her as far as Eaton, Ohio, for dogs at the Preble County Animal Shelter: a nine-hour round trip, not counting pickups and drop-offs. She usually takes four at a time, though she's moved eight dogs in a single run from Detroit Animal Care and Control.</p><p>Any rescue can call. As long as she's able — and most of the time, especially now, she is — she'll go.</p><p>Detroit Animal Care and Control is the hardest. The dogs she takes make a dent. The ones she has to leave behind don't leave her.</p><p>When a rescue is weighing a medical case and hesitating over the cost, knowing there's some financial backing from RRR sales can make the difference between a yes and a no. That's the point.</p><p>Bella goes on every transport run. It is, without question, her favorite thing.</p>",
+        "align": "left",
+        "style": "story"
+      }
+    },
+    "ticker": {
+      "type": "marquee",
+      "settings": {
+        "style": "teal"
+      }
+    },
+    "closing": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "",
+        "text": "<p><em>Saving one dog may not fix the problem. But it means the world to that one dog.</em></p>",
+        "align": "center",
+        "style": "quote"
+      }
     }
   },
-  "order": ["team", "cta"]
+  "order": [
+    "team",
+    "transport",
+    "ticker",
+    "closing"
+  ]
 }

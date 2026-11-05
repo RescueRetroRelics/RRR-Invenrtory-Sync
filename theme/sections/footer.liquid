@@ -1,8 +1,10 @@
 <footer class="footer">
+  <svg class="wave wave--top" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120 25 240 25 360 0s240-25 360 0 240 25 360 0 240-25 360 0v30H0Z"/></svg>
   <div class="footer__inner page-width">
     <div class="footer__mission">
       <p class="footer__brand">{%- render 'icon', name: 'paw' -%} {{ shop.name }}</p>
       <p>{{ settings.mission_statement }}</p>
+      {%- if section.settings.tagline != blank -%}<p class="footer__tagline">{%- render 'icon', name: 'shamrock' -%} {{ section.settings.tagline }}</p>{%- endif -%}
       <ul class="footer__social" aria-label="Follow us">
         {%- if settings.social_facebook != blank -%}<li><a href="{{ settings.social_facebook }}" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a></li>{%- endif -%}
         {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a></li>{%- endif -%}
@@ -40,7 +42,8 @@
   "name": "Footer",
   "class": "section-footer",
   "settings": [
-    { "type": "text", "id": "small_print", "label": "Small print", "default": "Rescued relics, rescued dogs." },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Irish roots. Michigan heart. Rescue soul." },
+    { "type": "text", "id": "small_print", "label": "Small print", "default": "Rescued relics. Rescued dogs." },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true }
   ],
   "blocks": [

@@ -3,30 +3,136 @@
     "hero": {
       "type": "hero-banner",
       "settings": {
-        "height": "large",
-        "overlay": 20,
-        "text_position": "bottom-left",
-        "eyebrow": "Vintage with a purpose",
-        "heading": "Rescued relics. Rescued dogs.",
-        "subheading": "<p>Vintage and nostalgia hand-picked in Michigan. Every sale helps fund dog rescue, in honor of Bailee.</p>",
-        "button_label": "Shop the relics",
-        "image_alt": "Bailee the Plott hound, the heart of Rescue Retro Relics"
+        "layout": "sunburst"
       }
     },
-    "featured": { "type": "featured-collection", "settings": { "heading": "Fresh finds", "limit": 8 } },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Fresh finds",
+        "limit": 8
+      }
+    },
     "categories": {
       "type": "collection-list",
       "blocks": {
-        "c1": { "type": "collection", "settings": {} },
-        "c2": { "type": "collection", "settings": {} },
-        "c3": { "type": "collection", "settings": {} },
-        "c4": { "type": "collection", "settings": {} }
+        "c1": {
+          "type": "collection",
+          "settings": {}
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {}
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {}
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {}
+        }
       },
-      "block_order": ["c1", "c2", "c3", "c4"],
-      "settings": { "heading": "Dig through the crates" }
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "heading": "Dig through the crates"
+      }
     },
-    "mission": { "type": "image-with-text", "settings": {} },
-    "promise": { "type": "rich-text", "settings": {} }
+    "mission": {
+      "type": "image-with-text",
+      "settings": {
+        "heading": "Shop retro. Save dogs.",
+        "eyebrow": "Our mission",
+        "text": "<p>We bring home the retro collectibles that make you feel like it's a 90s Friday night, and send the money where it matters most: Detroit dog rescue. Transport runs, medical bills and fosters.</p>",
+        "button_label": "Meet the crew",
+        "button_link": "/pages/meet-the-team",
+        "builtin_art": "mission-qc-team",
+        "image_alt": "Bailee, Savannah and Casey running the Rescue Retro Relics quality control team"
+      }
+    },
+    "promise": {
+      "type": "rich-text",
+      "settings": {
+        "style": "quote",
+        "align": "center"
+      }
+    },
+    "ticker": {
+      "type": "marquee",
+      "settings": {
+        "style": "mustard"
+      }
+    },
+    "crew": {
+      "type": "crew-strip",
+      "blocks": {
+        "b1": {
+          "type": "crew",
+          "settings": {
+            "name": "Bailee",
+            "title": "Soul dog & the reason why",
+            "color": "orange",
+            "halo": true,
+            "builtin_art": "crew-bailee"
+          }
+        },
+        "b2": {
+          "type": "crew",
+          "settings": {
+            "name": "Savannah Bananas",
+            "title": "Head of Quality Control",
+            "color": "pink",
+            "builtin_art": "crew-savannah"
+          }
+        },
+        "b3": {
+          "type": "crew",
+          "settings": {
+            "name": "Casey McBasey",
+            "title": "Director of Naps",
+            "color": "teal",
+            "builtin_art": "crew-casey"
+          }
+        },
+        "b4": {
+          "type": "crew",
+          "settings": {
+            "name": "Mr. Proper",
+            "title": "Chief Inspector of Tight Spaces",
+            "color": "mustard"
+          }
+        },
+        "b5": {
+          "type": "crew",
+          "settings": {
+            "name": "Mrs. Peanut Butter",
+            "title": "Head of HR & Acorn Compliance",
+            "color": "teal"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ],
+      "settings": {}
+    }
   },
-  "order": ["hero", "featured", "categories", "mission", "promise"]
+  "order": [
+    "hero",
+    "ticker",
+    "featured",
+    "crew",
+    "categories",
+    "mission",
+    "promise"
+  ]
 }

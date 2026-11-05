@@ -22,11 +22,7 @@
 
     {%- render 'meta-tags' -%}
 
-    {%- unless settings.type_heading_font.system? -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-      {{ settings.type_heading_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
-    {%- endunless -%}
-
+    {{ 'font-luckiest-guy.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- render 'css-variables' -%}
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
