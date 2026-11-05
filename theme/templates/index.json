@@ -104,7 +104,8 @@
           "settings": {
             "name": "Mr. Proper",
             "title": "Chief Inspector of Tight Spaces",
-            "color": "mustard"
+            "color": "mustard",
+            "builtin_art": "crew-mrproper"
           }
         },
         "b5": {
@@ -112,7 +113,8 @@
           "settings": {
             "name": "Mrs. Peanut Butter",
             "title": "Head of HR & Acorn Compliance",
-            "color": "teal"
+            "color": "teal",
+            "builtin_art": "crew-mrspb"
           }
         }
       },

@@ -59,7 +59,10 @@
             "badge": "Rescued",
             "species": "Ribbon snake, 18 inches",
             "joined": "Joined November 23, 2020",
-            "color": "mustard"
+            "color": "mustard",
+            "builtin_art": "team-mrproper",
+            "nickname": "Mr. P, all grown up (he started at 6 inches)",
+            "photo_alt": "Mr. Proper the ribbon snake stretched along Stephanie's arm, yellow stripe glowing"
           }
         },
         "mrs_pb": {
@@ -72,7 +75,10 @@
             "badge": "Backyard crew",
             "species": "Black squirrel",
             "joined": "Joined July 2026",
-            "color": "teal"
+            "color": "teal",
+            "builtin_art": "team-mrspb",
+            "nickname": "Mrs. Peanut Butter, porch inspector",
+            "photo_alt": "Mrs. Peanut Butter the black squirrel eating a snack on the porch table next to a lantern"
           }
         },
         "bella": {
