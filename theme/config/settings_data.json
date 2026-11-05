@@ -1,5 +1,10 @@
 {
-  "current": "Default",
+  "current": {
+    "social_instagram": "https://www.instagram.com/rescueretrosteph",
+    "social_tiktok": "https://www.tiktok.com/@rescueretrorelics",
+    "social_pinterest": "https://www.pinterest.com/rescueretrorelics",
+    "social_x": "https://x.com/ShopRescueRetro"
+  },
   "presets": {
     "Default": {}
   }

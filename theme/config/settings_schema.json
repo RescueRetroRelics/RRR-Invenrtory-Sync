@@ -203,6 +203,11 @@
         "type": "url",
         "id": "social_pinterest",
         "label": "Pinterest"
+      },
+      {
+        "type": "url",
+        "id": "social_x",
+        "label": "X (Twitter)"
       }
     ]
   }
