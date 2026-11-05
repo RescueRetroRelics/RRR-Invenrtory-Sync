@@ -98,6 +98,13 @@ def cmd_new_tags(cfg, args):
     return 1 if errors else 0
 
 
+def cmd_fix_dog_pronouns(cfg, args):
+    from . import pronoun_fix
+    from .shopify import Shopify
+    _, errors = pronoun_fix.run(Shopify(cfg), do_apply=args.apply)
+    return 1 if errors else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -116,6 +123,8 @@ def main(argv=None):
     nt.add_argument("--apply", action="store_true", help="actually add/remove tags")
     nt.add_argument("--days", type=int, default=14, help="how long a listing counts as new (default 14)")
     nt.add_argument("--tag", default="new item", help="the tag the New Finds collection uses (default 'new item')")
+    fp = sub.add_parser("fix-dog-pronouns", help="one-time: fix he/him/his -> she/her for Casey, Savannah, Bailee (dry run by default)")
+    fp.add_argument("--apply", action="store_true", help="actually update the descriptions (backs them up first)")
 
     args = p.parse_args(argv)
     cfg = Config.load()

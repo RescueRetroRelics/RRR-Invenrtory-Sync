@@ -233,3 +233,18 @@ Switching over from Flow:
 5. Turn off the Flow workflow, then uninstall Flow.
 
 Timing: Flow tagged a listing the instant it was created. This job tags it at the next hourly run.
+
+## One-time fix: Casey, Savannah and Bailee are girls
+
+Some listings called the dogs "he/him/his". Every listing was read and each pronoun checked by hand. Pronouns
+about characters (Garfield, Woody, Snoopy...) are not touched. The exact fixes are in
+`rrr_sync/data/dog_pronoun_fixes.json` (57 phrases in 55 listings, 77 words).
+
+```bash
+python -m rrr_sync fix-dog-pronouns            # dry run: shows every change
+python -m rrr_sync fix-dog-pronouns --apply    # make the changes
+```
+
+Needs the `write_products` scope, the same one the New Finds tagger needs. Before changing anything it saves
+every original description to `data\pronoun_fix_backup.json`. Only the description changes. A listing that was
+edited since the scan is skipped and reported, never guessed at. Running it twice is harmless.
