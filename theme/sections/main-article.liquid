@@ -1,16 +1,88 @@
-<article class="section page-width article">
-  <header>
-    <p class="card__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
-    <h1>{{ article.title }}</h1>
+{%- comment -%}
+  Blog post. Big title, date + reading time, featured image (eager: it's the LCP), the story in a
+  readable column, tags, "Shop this story" products, the mission box, and previous/next links.
+  Article schema comes from snippets/structured-data.
+{%- endcomment -%}
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  assign minutes = words | divided_by: 200 | at_least: 1
+  assign shop_col = section.settings.collection
+  for tag in article.tags
+    assign tag_handle = tag | handleize
+    if collections[tag_handle].products_count > 0
+      assign shop_col = collections[tag_handle]
+      break
+    endif
+  endfor
+-%}
+<article class="article-page">
+  <nav class="breadcrumbs page-width" aria-label="Breadcrumb">
+    <ol><li><a href="{{ routes.root_url }}">Home</a></li><li><a href="{{ blog.url }}">{{ blog.title }}</a></li><li><span aria-current="page">{{ article.title }}</span></li></ol>
+  </nav>
+  <header class="article-page__head page-width">
+    {%- if article.tags.size > 0 -%}<p class="eyebrow">{{ article.tags | join: ' · ' }}</p>{%- endif -%}
+    <h1 class="display">{{ article.title }}</h1>
+    <p class="article-page__meta">By {{ article.author | default: 'Stephanie' }} · {{ article.published_at | date: '%B %-d, %Y' }} · {{ minutes }} min read</p>
   </header>
   {%- if article.image -%}
-    <div class="article__image media media--natural" style="--ratio: {{ article.image.aspect_ratio }}">
-      {{ article.image | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 800, 1200, 1600', sizes: '(min-width: 900px) 860px, 100vw', alt: article.image.alt | default: article.title }}
+    <div class="page-width article-page__hero">
+      <figure class="hero__frame article-page__frame">
+        <div class="media media--natural" style="--ratio: {{ article.image.aspect_ratio }}">
+          {{ article.image | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 800, 1200, 1600', sizes: '(min-width: 900px) 860px, 92vw', alt: article.image.alt | default: article.title }}
+        </div>
+      </figure>
     </div>
   {%- endif -%}
-  <div class="rte">{{ article.content }}</div>
-  <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
+  <div class="page-width article-page__body">
+    <div class="story-card rte article-page__content">{{ article.content }}</div>
+
+    {%- if section.settings.show_mission -%}
+      <aside class="product__mission">
+        {%- render 'icon', name: 'paw' -%}
+        <div class="rte">{{ section.settings.mission_text }}</div>
+      </aside>
+    {%- endif -%}
+
+    {%- if section.settings.show_share -%}
+      {%- assign share_url = request.origin | append: article.url | url_encode -%}
+      {%- assign share_title = article.title | url_encode -%}
+      <p class="article-page__share">Share this story:
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}" target="_blank" rel="noopener">Facebook</a> ·
+        <a href="https://pinterest.com/pin/create/button/?url={{ share_url }}&description={{ share_title }}" target="_blank" rel="noopener">Pinterest</a> ·
+        <a href="https://x.com/intent/post?url={{ share_url }}&text={{ share_title }}" target="_blank" rel="noopener">X</a>
+      </p>
+    {%- endif -%}
+
+    <nav class="article-page__nav" aria-label="More stories">
+      {%- if blog.previous_article -%}<a class="button button--secondary button--small" href="{{ blog.previous_article }}">&larr; Older story</a>{%- endif -%}
+      <a class="button button--small" href="{{ blog.url }}">All stories</a>
+      {%- if blog.next_article -%}<a class="button button--secondary button--small" href="{{ blog.next_article }}">Newer story &rarr;</a>{%- endif -%}
+    </nav>
+  </div>
 </article>
+
+{%- if shop_col != blank and shop_col.products_count > 0 -%}
+  <section class="section page-width">
+    <div class="section__head">
+      <h2 class="section__title">{{ section.settings.shop_heading }}</h2>
+      <a class="section__more" href="{{ shop_col.url }}">Shop {{ shop_col.title }} &rarr;</a>
+    </div>
+    <div class="grid grid--products">
+      {%- for product in shop_col.products limit: 4 -%}{%- render 'product-card', product: product -%}{%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
 {% schema %}
-{ "name": "Blog post", "settings": [] }
+{
+  "name": "Blog post",
+  "settings": [
+    { "type": "paragraph", "content": "\"Shop this story\" shows products from a collection whose handle matches one of the post's tags (e.g. tag a post 'betty-boop'). Otherwise it uses the collection below." },
+    { "type": "collection", "id": "collection", "label": "Default collection for \"Shop this story\"" },
+    { "type": "text", "id": "shop_heading", "label": "Products heading", "default": "Shop this story" },
+    { "type": "checkbox", "id": "show_share", "label": "Show share links", "default": true },
+    { "type": "checkbox", "id": "show_mission", "label": "Show mission box", "default": true },
+    { "type": "richtext", "id": "mission_text", "label": "Mission text", "default": "<p><strong>Every sale helps Detroit rescue dogs.</strong> Transport runs, medical bills and fosters, in honor of Bailee.</p>" }
+  ]
+}
 {% endschema %}

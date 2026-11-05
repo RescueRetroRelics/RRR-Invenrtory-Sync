@@ -75,10 +75,11 @@ engine.registerFilter('font_face', () => `@font-face{font-family:Arvo;font-weigh
 engine.registerFilter('preload_tag', (u, ...a) => `<link rel="preload" href="${u}" as="font" type="font/woff2" crossorigin="anonymous">`);
 engine.registerFilter('json', (v) => JSON.stringify(v));
 engine.registerFilter('color_mix', (a, b, p) => { const h = (x) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16)); const A = h(a), B = h(b); return '#' + A.map((v, i) => Math.round(v * p / 100 + B[i] * (1 - p / 100)).toString(16).padStart(2, '0')).join(''); });
-engine.registerFilter('structured_data', (p) => JSON.stringify({ '@context': 'http://schema.org/', '@type': 'Product', name: p.title, url: ORIGIN + p.url, image: p.featured_image && p.featured_image.src, offers: p.variants.map((v) => ({ '@type': 'Offer', price: (v.price / 100).toFixed(2), priceCurrency: 'USD', availability: v.available ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock' })) }));
+engine.registerFilter('structured_data', (p) => !p.variants ? JSON.stringify({ '@context': 'http://schema.org/', '@type': 'Article', headline: p.title }) : JSON.stringify({ '@context': 'http://schema.org/', '@type': 'Product', name: p.title, url: ORIGIN + p.url, image: p.featured_image && p.featured_image.src, offers: p.variants.map((v) => ({ '@type': 'Offer', price: (v.price / 100).toFixed(2), priceCurrency: 'USD', availability: v.available ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock' })) }));
 engine.registerFilter('payment_type_svg_tag', () => '');
 engine.registerFilter('pluralize', (n, a, b) => (n == 1 ? a : b));
 engine.registerFilter('t', (k) => k.split('.').pop());
+engine.registerFilter('handleize', (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 engine.registerFilter('handle', (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 engine.registerFilter('default_errors', () => '');
 engine.registerFilter('format_code', (s) => s);
@@ -143,4 +144,11 @@ async function page(name, pageType, template, extra, overrides = {}) {
   await page('team', 'page', 'page.meet-the-team', { page_title: 'Meet the Team' });
   await page('faq', 'page', 'page.faq', { page_title: 'FAQ' });
   await page('about', 'page', 'page.about', { page_title: 'About' });
+  const savImg = { src: '/assets/team-savannah-grievance-700.webp', width: 700, height: 700, aspect_ratio: 1, alt: 'Savannah with her paw over her nose' };
+  const body = '<p>Every business needs a Head of Quality Control. Ours is Savannah Bananas, and this week she filed a grievance.</p><p><strong>The incident.</strong> After a software update, a few of our listings briefly called Casey he. Casey received apology snacks. Extra ones.</p><blockquote>Savannah was not wronged. Savannah received no snacks.</blockquote><p><strong>The ruling.</strong> Management has reviewed the case.</p>';
+  const mk = (i, title, tags, img) => ({ title, url: '/blogs/news/post-' + i, tags, image: img, published_at: '2026-11-0' + i, author: 'Stephanie', content: body, excerpt_or_content: body });
+  const arts = [mk(5, 'Savannah Files a Formal Grievance', ['Crew News'], savImg), mk(4, 'Snoopy Hippers: Every Figure in the Series', ['Collector Guides'], collection.products[2].featured_image), mk(3, 'What a Dog Transport Run Actually Looks Like', ['Rescue Stories'], null), mk(2, 'Gift Guide: Gifts for the Garfield Fan', ['Collector Guides'], collection.products[5].featured_image)];
+  const blog = { title: 'Pack Tales', url: '/blogs/news', all_tags: ['Collector Guides', 'Crew News', 'Rescue Stories'], articles: arts, previous_article: '/blogs/news/post-4', next_article: null };
+  await page('blog', 'blog', 'blog', { blog, current_tags: null, page_title: 'Pack Tales' });
+  await page('article', 'article', 'article', { blog, article: arts[0], page_title: arts[0].title });
 })().catch((e) => { console.error(e); process.exit(1); });

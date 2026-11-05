@@ -1,28 +1,81 @@
-<section class="section page-width">
-  <h1>{{ blog.title }}</h1>
-  {%- paginate blog.articles by 12 -%}
-    <div class="grid grid--articles">
-      {%- for article in blog.articles -%}
-        <article class="card">
-          <a class="card__link" href="{{ article.url }}">
-            <div class="card__media media media--landscape">
-              {%- if article.image -%}
-                {%- if forloop.index <= 2 -%}{%- assign l = 'eager' -%}{%- else -%}{%- assign l = 'lazy' -%}{%- endif -%}
-                {{ article.image | image_url: width: 800 | image_tag: loading: l, widths: '300, 500, 800', sizes: '(min-width: 750px) 33vw, 100vw', alt: article.title }}
-              {%- else -%}{%- render 'placeholder' -%}{%- endif -%}
-            </div>
-            <div class="card__info">
-              <h2 class="card__title">{{ article.title }}</h2>
-              <p class="card__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
-              <p>{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
-            </div>
-          </a>
-        </article>
-      {%- endfor -%}
+{%- comment -%}
+  Blog index. Comic-burst header, topic filter pills (from post tags), a big featured post,
+  then a grid. First images load eagerly; the rest lazy-load.
+{%- endcomment -%}
+<section class="blog">
+  <header class="team__hero blog__hero">
+    <div class="hero__burst hero__burst--soft" aria-hidden="true"></div>
+    <div class="page-width team__intro">
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1 class="display">{{ blog.title }}</h1>
+      {%- if section.settings.intro != blank -%}<div class="rte team__lede">{{ section.settings.intro }}</div>{%- endif -%}
     </div>
-    {%- render 'pagination', paginate: paginate -%}
-  {%- endpaginate -%}
+    <svg class="wave wave--bottom" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120 25 240 25 360 0s240-25 360 0 240 25 360 0 240-25 360 0v30H0Z"/></svg>
+  </header>
+
+  <div class="page-width section blog__body">
+    {%- if blog.all_tags.size > 0 -%}
+      <nav class="blog__tags" aria-label="Topics">
+        <a class="pill{% if current_tags == blank %} pill--active{% endif %}" href="{{ blog.url }}">All posts</a>
+        {%- for tag in blog.all_tags -%}
+          <a class="pill{% if current_tags contains tag %} pill--active{% endif %}" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    {%- paginate blog.articles by 12 -%}
+      {%- if blog.articles.size == 0 -%}
+        <p class="empty">New stories are on the way. Check back soon!</p>
+      {%- endif -%}
+      <div class="blog__grid">
+        {%- for article in blog.articles -%}
+          {%- liquid
+            assign featured = false
+            if forloop.first and paginate.current_page == 1 and current_tags == blank
+              assign featured = true
+            endif
+            assign loading = 'lazy'
+            if forloop.index <= 3
+              assign loading = 'eager'
+            endif
+            assign words = article.content | strip_html | split: ' ' | size
+            assign minutes = words | divided_by: 200 | at_least: 1
+          -%}
+          <article class="post-card{% if featured %} post-card--featured{% endif %} post-card--{{ forloop.index | modulo: 4 }}">
+            <a class="post-card__link" href="{{ article.url }}">
+              <div class="post-card__media media media--landscape">
+                {%- if article.image -%}
+                  {%- if featured -%}
+                    {{ article.image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 700, 1000, 1400', sizes: '(min-width: 990px) 60vw, 100vw', alt: article.image.alt | default: article.title }}
+                  {%- else -%}
+                    {{ article.image | image_url: width: 800 | image_tag: loading: loading, widths: '300, 500, 800', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', alt: article.image.alt | default: article.title }}
+                  {%- endif -%}
+                {%- else -%}
+                  {%- render 'placeholder', label: article.title -%}
+                {%- endif -%}
+              </div>
+              <div class="post-card__body">
+                {%- if article.tags.size > 0 -%}<p class="post-card__tag">{{ article.tags.first }}</p>{%- endif -%}
+                <h2 class="post-card__title">{{ article.title }}</h2>
+                <p class="post-card__meta">{{ article.published_at | date: '%B %-d, %Y' }} · {{ minutes }} min read</p>
+                <p class="post-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 28 }}</p>
+                <span class="post-card__more">Read the story &rarr;</span>
+              </div>
+            </a>
+          </article>
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
 </section>
+
 {% schema %}
-{ "name": "Blog posts", "settings": [] }
+{
+  "name": "Blog posts",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Stories from the pack" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Collector guides, rescue transport stories and the occasional formal grievance from Savannah.</p>" }
+  ]
+}
 {% endschema %}
