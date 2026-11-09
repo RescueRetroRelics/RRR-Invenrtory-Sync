@@ -9,6 +9,10 @@ Keeps stock counts for **Rescue Retro Relics** the same on eBay and Shopify, and
 - Exports eBay orders since 2026-01-01 (or any date up to two years back) to CSV + JSON.
 - Pure Python 3.10+ standard library. Nothing to `pip install`.
 
+## Photo Shrinker (phone)
+
+Shrink listing photos before uploading to Shopify: see [`photo_compressor/README.md`](photo_compressor/README.md).
+
 ## Setup
 
 ```bash

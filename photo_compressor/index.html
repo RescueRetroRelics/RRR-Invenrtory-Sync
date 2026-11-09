@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RRR Photo Shrinker</title>
+<style>
+  :root {
+    --bg: #faf7f2; --card: #ffffff; --ink: #1f1b16; --muted: #6b635a;
+    --accent: #b5462f; --accent-ink: #ffffff; --line: #e6dfd5; --ok: #2f7a4a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #17140f; --card: #221e18; --ink: #f3ede4; --muted: #a89f93;
+            --accent: #e0694f; --accent-ink: #17140f; --line: #3a332a; --ok: #6cc28d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--ink); }
+  main { max-width: 560px; margin: 0 auto; padding: 18px 16px 48px; }
+  h1 { font-size: 1.35rem; margin: 4px 0 2px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .pick { display: block; text-align: center; background: var(--accent); color: var(--accent-ink);
+          font-weight: 700; font-size: 1.1rem; padding: 18px; border-radius: 12px; cursor: pointer; }
+  .pick input { display: none; }
+  label.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+  label.row + label.row { border-top: 1px solid var(--line); }
+  select, input[type=text] { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+                             background: var(--bg); color: var(--ink); max-width: 55%; }
+  input[type=range] { width: 50%; }
+  input[type=checkbox] { width: 22px; height: 22px; }
+  .hint { color: var(--muted); font-size: .85rem; }
+  .btn { font: inherit; font-weight: 700; padding: 14px; border-radius: 12px; border: 0; width: 100%;
+         background: var(--accent); color: var(--accent-ink); cursor: pointer; margin-top: 8px; }
+  .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn:disabled { opacity: .5; }
+  .summary { font-weight: 700; color: var(--ok); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: .8rem; }
+  .tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: var(--line); }
+  .tile .meta { padding: 6px 8px; }
+  .tile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .tile button { font: inherit; width: 100%; border: 0; border-top: 1px solid var(--line); padding: 8px;
+                 background: transparent; color: var(--accent); font-weight: 700; cursor: pointer; }
+  .msg { margin-top: 8px; font-size: .9rem; color: var(--muted); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>RRR Photo Shrinker 🐾</h1>
+  <p class="sub">Shrink listing photos <b>before</b> they go to Shopify. Everything happens on this
+    phone. Photos never get uploaded anywhere by this page.</p>
+
+  <div class="card">
+    <label class="pick">📷 Choose photos
+      <input id="files" type="file" accept="image/*" multiple>
+    </label>
+  </div>
+
+  <div class="card">
+    <label class="row"><span>Longest side</span>
+      <select id="maxSide">
+        <option value="2048" selected>2048 px (best)</option>
+        <option value="1600">1600 px (smaller)</option>
+        <option value="2400">2400 px (more zoom)</option>
+      </select>
+    </label>
+    <label class="row"><span>Quality <span id="qVal" class="hint">82</span></span>
+      <input id="quality" type="range" min="60" max="95" value="82">
+    </label>
+    <label class="row"><span>Make square (white padding)<br><span class="hint">Keeps your collection grid even</span></span>
+      <input id="square" type="checkbox">
+    </label>
+    <label class="row"><span>Name prefix<br><span class="hint">e.g. SKU or item, optional</span></span>
+      <input id="prefix" type="text" placeholder="pyrex-butterprint" autocapitalize="off" autocorrect="off">
+    </label>
+    <p class="hint">Also strips GPS location from the photos, so your home address doesn't ride along.</p>
+  </div>
+
+  <div id="results" class="card hidden">
+    <div id="summary" class="summary"></div>
+    <button id="saveAll" class="btn">Save all to phone</button>
+    <button id="zipAll" class="btn secondary">Download all as one ZIP</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const out = []; // {name, blob, url, before, after}
+  let downloadsCap = null;
+
+  // Inside a Claude artifact, saving goes through the downloads capability.
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then((d) => { downloadsCap = d; }).catch(() => {});
+  }
+
+  $("quality").addEventListener("input", (e) => { $("qVal").textContent = e.target.value; });
+
+  const kb = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB";
+  const slug = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const msg = (t) => { $("msg").textContent = t; };
+
+  async function decode(file) {
+    if ("createImageBitmap" in window) {
+      try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch (e) {}
+    }
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = url;
+      await img.decode();
+      return img;
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  async function shrink(file, opts) {
+    const src = await decode(file);
+    const w0 = src.width, h0 = src.height;
+    const scale = Math.min(1, opts.maxSide / Math.max(w0, h0)); // never upscale
+    const w = Math.round(w0 * scale), h = Math.round(h0 * scale);
+    const side = Math.max(w, h);
+    const canvas = document.createElement("canvas");
+    canvas.width = opts.square ? side : w;
+    canvas.height = opts.square ? side : h;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff"; // JPEG has no transparency; white beats black for PNG cutouts
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(src, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    if (src.close) src.close();
+    const blob = await new Promise((res, rej) =>
+      canvas.toBlob((b) => b ? res(b) : rej(new Error("encode failed")), "image/jpeg", opts.quality));
+    canvas.width = canvas.height = 0; // free memory on phones
+    return blob;
+  }
+
+  function addTile(item, i) {
+    const t = document.createElement("div");
+    t.className = "tile";
+    t.innerHTML = `<img alt=""><div class="meta"><div class="name"></div><div class="hint"></div></div><button>Save</button>`;
+    t.querySelector("img").src = item.url;
+    t.querySelector(".name").textContent = item.name;
+    t.querySelector(".hint").textContent = `${kb(item.before)} → ${kb(item.after)}`;
+    t.querySelector("button").addEventListener("click", () => saveFiles([item]));
+    $("grid").appendChild(t);
+  }
+
+  async function saveFiles(items) {
+    msg("");
+    try {
+      if (downloadsCap) {
+        for (const it of items) await downloadsCap.save({ filename: it.name, data: it.blob });
+        msg(items.length > 1 ? `Saved ${items.length} photos.` : "Saved.");
+        return;
+      }
+      const files = items.map((it) => new File([it.blob], it.name, { type: "image/jpeg" }));
+      if (navigator.canShare && navigator.canShare({ files })) {
+        await navigator.share({ files }); // iPhone: pick "Save N Images" to put them in Photos
+        return;
+      }
+      for (const it of items) {
+        const a = document.createElement("a");
+        a.href = it.url; a.download = it.name;
+        document.body.appendChild(a); a.click(); a.remove();
+        await new Promise((r) => setTimeout(r, 300));
+      }
+    } catch (e) {
+      if (e && e.name === "AbortError") return; // she closed the share sheet
+      msg("Couldn't save that way. Try the ZIP button, or long-press a photo and choose Save.");
+    }
+  }
+
+  $("saveAll").addEventListener("click", () => saveFiles(out));
+
+  $("zipAll").addEventListener("click", async () => {
+    if (!window.JSZip) { msg("ZIP helper didn't load. Use Save all instead."); return; }
+    msg("Building ZIP…");
+    const zip = new JSZip();
+    out.forEach((it) => zip.file(it.name, it.blob));
+    const blob = await zip.generateAsync({ type: "blob" });
+    const name = `${slug($("prefix").value) || "rrr-photos"}.zip`;
+    await saveFiles([{ name, blob, url: URL.createObjectURL(blob) }]);
+  });
+
+  $("files").addEventListener("change", async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    out.forEach((it) => URL.revokeObjectURL(it.url));
+    out.length = 0;
+    $("grid").innerHTML = "";
+    $("results").classList.remove("hidden");
+    $("saveAll").disabled = $("zipAll").disabled = true;
+    msg("");
+
+    const opts = {
+      maxSide: +$("maxSide").value,
+      quality: +$("quality").value / 100,
+      square: $("square").checked,
+    };
+    const prefix = slug($("prefix").value);
+    let before = 0, after = 0, failed = 0;
+
+    for (let i = 0; i < files.length; i++) {
+      $("summary").textContent = `Shrinking ${i + 1} of ${files.length}…`;
+      const f = files[i];
+      try {
+        const blob = await shrink(f, opts);
+        const base = prefix ? `${prefix}-${String(i + 1).padStart(2, "0")}`
+                            : (slug(f.name.replace(/\.[^.]+$/, "")) || `photo-${i + 1}`);
+        const item = { name: `${base}.jpg`, blob, url: URL.createObjectURL(blob), before: f.size, after: blob.size };
+        out.push(item);
+        before += f.size; after += blob.size;
+        addTile(item, i);
+      } catch (err) {
+        failed++;
+      }
+    }
+
+    const pct = before ? Math.round((1 - after / before) * 100) : 0;
+    $("summary").textContent = out.length
+      ? `✅ ${out.length} photo${out.length > 1 ? "s" : ""}: ${kb(before)} → ${kb(after)} (${pct}% smaller)` +
+        (failed ? ` · ${failed} couldn't be read` : "")
+      : "Couldn't read those photos. If they're HEIC, try picking them from the Photos app.";
+    $("saveAll").disabled = $("zipAll").disabled = !out.length;
+    e.target.value = ""; // allow picking the same photos again
+  });
+})();
+</script>
+</body>
+</html>
