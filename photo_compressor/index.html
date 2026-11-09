@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RRR Photo Shrinker</title>
+<style>
+  :root {
+    --bg: #faf7f2; --card: #ffffff; --ink: #1f1b16; --muted: #6b635a;
+    --accent: #b5462f; --accent-ink: #ffffff; --line: #e6dfd5; --ok: #2f7a4a; --warn: #a15c00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #17140f; --card: #221e18; --ink: #f3ede4; --muted: #a89f93;
+            --accent: #e0694f; --accent-ink: #17140f; --line: #3a332a; --ok: #6cc28d; --warn: #f0b054; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--ink); }
+  main { max-width: 560px; margin: 0 auto; padding: 18px 16px 48px; }
+  h1 { font-size: 1.35rem; margin: 4px 0 2px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .pick { display: block; text-align: center; background: var(--accent); color: var(--accent-ink);
+          font-weight: 700; font-size: 1.1rem; padding: 18px; border-radius: 12px; cursor: pointer; }
+  .pick input { display: none; }
+  label.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+  label.row + label.row { border-top: 1px solid var(--line); }
+  select, input[type=text] { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+                             background: var(--bg); color: var(--ink); max-width: 55%; }
+  .hint { color: var(--muted); font-size: .85rem; }
+  .btn { font: inherit; font-weight: 700; padding: 14px; border-radius: 12px; border: 0; width: 100%;
+         background: var(--accent); color: var(--accent-ink); cursor: pointer; margin-top: 8px; }
+  .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn:disabled { opacity: .5; }
+  .summary { font-weight: 700; color: var(--ok); }
+  .warn { color: var(--warn); font-size: .9rem; margin-top: 6px; }
+  progress { width: 100%; height: 10px; margin-top: 8px; accent-color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: .75rem; }
+  .tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: var(--line); }
+  .tile .meta { padding: 4px 6px; }
+  .tile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .tile button { font: inherit; width: 100%; border: 0; border-top: 1px solid var(--line); padding: 6px;
+                 background: transparent; color: var(--accent); font-weight: 700; cursor: pointer; }
+  .msg { margin-top: 8px; font-size: .9rem; color: var(--muted); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>RRR Photo Shrinker 🐾</h1>
+  <p class="sub">Makes listing photos Google- and Shopify-ready <b>before</b> you upload:
+    1500×1500 square, under 1 MB each. Everything happens on this phone.</p>
+
+  <div class="card">
+    <label class="pick">📷 Choose photos (up to 50)
+      <input id="files" type="file" accept="image/*" multiple>
+    </label>
+  </div>
+
+  <div class="card">
+    <label class="row"><span>Size</span>
+      <select id="size">
+        <option value="1500" selected>1500 × 1500 (recommended)</option>
+        <option value="2048">2048 × 2048 (more zoom)</option>
+        <option value="1000">1000 × 1000 (smallest)</option>
+      </select>
+    </label>
+    <label class="row"><span>Square style<br><span class="hint">Pad keeps the whole item</span></span>
+      <select id="fit">
+        <option value="pad" selected>Pad with white</option>
+        <option value="crop">Crop to fill</option>
+      </select>
+    </label>
+    <label class="row"><span>Format</span>
+      <select id="format">
+        <option value="image/jpeg" selected>JPEG (.jpg)</option>
+        <option value="image/webp">WebP (.webp)</option>
+      </select>
+    </label>
+    <label class="row"><span>Name prefix<br><span class="hint">e.g. SKU or item, optional</span></span>
+      <input id="prefix" type="text" placeholder="pyrex-butterprint" autocapitalize="off" autocorrect="off">
+    </label>
+    <p class="hint">Each photo is squeezed until it's under 1 MB. GPS location is stripped too, so your
+      home address doesn't ride along.</p>
+  </div>
+
+  <div id="results" class="card hidden">
+    <div id="summary" class="summary"></div>
+    <progress id="progress" value="0" max="1"></progress>
+    <div id="warn" class="warn hidden"></div>
+    <button id="saveAll" class="btn">Save all to phone</button>
+    <button id="shareAll" class="btn secondary hidden">Share to an app…</button>
+    <button id="zipAll" class="btn secondary">Download all as one ZIP</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(() => {
+  const MAX_FILES = 50;
+  const TARGET_BYTES = 1024 * 1024;      // aim: under 1 MB
+  const GOOGLE_MIN = 500;                // Google Merchant Center minimum
+  const QUALITY_STEPS = [0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
+
+  const $ = (id) => document.getElementById(id);
+  const out = []; // {name, blob, thumbUrl, before, after}
+  let downloadsCap = null;
+
+  // Inside a Claude artifact, saving goes through the downloads capability.
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then((d) => { downloadsCap = d; }).catch(() => {});
+  }
+
+  const kb = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB";
+  const slug = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const msg = (t) => { $("msg").textContent = t; };
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const canShareFiles = !!(navigator.canShare &&
+    navigator.canShare({ files: [new File([""], "x.jpg", { type: "image/jpeg" })] }));
+  const toBlob = (canvas, type, q) => new Promise((res, rej) =>
+    canvas.toBlob((b) => b ? res(b) : rej(new Error("encode failed")), type, q));
+
+  async function decode(file) {
+    if ("createImageBitmap" in window) {
+      try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch (e) {}
+    }
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      return img;
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  // Some browsers (older iPhones) can't write WebP and silently hand back PNG.
+  let webpOk = null;
+  async function canWriteWebp() {
+    if (webpOk === null) {
+      const c = document.createElement("canvas"); c.width = c.height = 2;
+      try { webpOk = (await toBlob(c, "image/webp", 0.8)).type === "image/webp"; } catch (e) { webpOk = false; }
+    }
+    return webpOk;
+  }
+
+  async function process(file, opts) {
+    const src = await decode(file);
+    const w0 = src.width, h0 = src.height;
+    const S = opts.size;
+    const scale = opts.fit === "crop" ? S / Math.min(w0, h0) : S / Math.max(w0, h0);
+    const w = w0 * scale, h = h0 * scale;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = S;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, S, S);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(src, (S - w) / 2, (S - h) / 2, w, h);
+    if (src.close) src.close();
+
+    // Step quality down until it's under 1 MB.
+    let blob;
+    for (const q of QUALITY_STEPS) {
+      blob = await toBlob(canvas, opts.type, q);
+      if (blob.size <= TARGET_BYTES) break;
+    }
+
+    // Small thumbnail for the grid, so 50 full-size previews don't crash the phone.
+    const t = document.createElement("canvas");
+    t.width = t.height = 240;
+    t.getContext("2d").drawImage(canvas, 0, 0, 240, 240);
+    const thumb = await toBlob(t, "image/jpeg", 0.7);
+    canvas.width = canvas.height = 0; t.width = t.height = 0; // free memory
+
+    return { blob, thumb, small: Math.max(w0, h0) < GOOGLE_MIN };
+  }
+
+  function addTile(item) {
+    const t = document.createElement("div");
+    t.className = "tile";
+    t.innerHTML = `<img alt=""><div class="meta"><div class="name"></div><div class="hint"></div></div><button>Save</button>`;
+    t.querySelector("img").src = item.thumbUrl;
+    t.querySelector(".name").textContent = item.name;
+    t.querySelector(".hint").textContent = `${kb(item.before)} → ${kb(item.after)}`;
+    t.querySelector("button").addEventListener("click", () => saveFiles([item]));
+    $("grid").appendChild(t);
+  }
+
+  function download(items) {
+    // Android: lands in Downloads, which shows up in Samsung Gallery / Google Photos.
+    return items.reduce((p, it) => p.then(() => {
+      const url = URL.createObjectURL(it.blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = it.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      return new Promise((r) => setTimeout(r, 350));
+    }), Promise.resolve());
+  }
+
+  async function saveFiles(items, mode) {
+    msg("");
+    try {
+      if (downloadsCap && mode !== "share") {
+        for (const it of items) await downloadsCap.save({ filename: it.name, data: it.blob });
+        msg(items.length > 1 ? `Saved ${items.length} files.` : "Saved.");
+        return;
+      }
+      if (isAndroid && mode !== "share") {
+        await download(items);
+        msg(items.length > 1
+          ? `Saved ${items.length} files to Downloads. If Chrome asks to allow multiple downloads, tap Allow.`
+          : "Saved to Downloads.");
+        return;
+      }
+      const files = items.map((it) => new File([it.blob], it.name, { type: it.blob.type }));
+      if (navigator.canShare && navigator.canShare({ files })) {
+        await navigator.share({ files }); // iPhone: pick "Save N Images" to put them in Photos
+        return;
+      }
+      await download(items);
+    } catch (e) {
+      if (e && e.name === "AbortError") return; // closed the share sheet
+      msg("Couldn't save that way. Try the ZIP button, or long-press a photo and choose Save.");
+    }
+  }
+
+  $("saveAll").addEventListener("click", () => {
+    if (downloadsCap && out.length > 5) { msg("Lots of photos: the ZIP button saves them in one go."); }
+    saveFiles(out);
+  });
+  $("shareAll").addEventListener("click", () => saveFiles(out, "share"));
+
+  $("zipAll").addEventListener("click", async () => {
+    if (!window.JSZip) { msg("ZIP helper didn't load. Use Save all instead."); return; }
+    msg("Building ZIP…");
+    const zip = new JSZip();
+    out.forEach((it) => zip.file(it.name, it.blob));
+    const blob = await zip.generateAsync({ type: "blob" });
+    await saveFiles([{ name: `${slug($("prefix").value) || "rrr-photos"}.zip`, blob }]);
+  });
+
+  $("files").addEventListener("change", async (e) => {
+    let files = Array.from(e.target.files || []);
+    e.target.value = ""; // allow picking the same photos again
+    if (!files.length) return;
+
+    out.forEach((it) => URL.revokeObjectURL(it.thumbUrl));
+    out.length = 0;
+    $("grid").innerHTML = "";
+    $("results").classList.remove("hidden");
+    $("saveAll").disabled = $("zipAll").disabled = true;
+    msg("");
+
+    const notes = [];
+    if (files.length > MAX_FILES) {
+      notes.push(`Picked ${files.length}; doing the first ${MAX_FILES}. Run the rest as a second batch.`);
+      files = files.slice(0, MAX_FILES);
+    }
+
+    let type = $("format").value;
+    if (type === "image/webp" && !(await canWriteWebp())) {
+      type = "image/jpeg";
+      notes.push("This phone's browser can't make WebP, so these were saved as JPEG (Google takes both).");
+    }
+    const ext = type === "image/webp" ? "webp" : "jpg";
+    const opts = { size: +$("size").value, fit: $("fit").value, type };
+    const prefix = slug($("prefix").value);
+
+    let before = 0, after = 0, failed = 0, small = 0, over = 0;
+    $("progress").max = files.length;
+
+    for (let i = 0; i < files.length; i++) {
+      $("summary").textContent = `Shrinking ${i + 1} of ${files.length}…`;
+      $("progress").value = i;
+      const f = files[i];
+      try {
+        const r = await process(f, opts);
+        const base = prefix ? `${prefix}-${String(i + 1).padStart(2, "0")}`
+                            : (slug(f.name.replace(/\.[^.]+$/, "")) || `photo-${i + 1}`);
+        const item = { name: `${base}.${ext}`, blob: r.blob, thumbUrl: URL.createObjectURL(r.thumb),
+                       before: f.size, after: r.blob.size };
+        out.push(item);
+        before += f.size; after += r.blob.size;
+        if (r.small) small++;
+        if (r.blob.size > TARGET_BYTES) over++;
+        addTile(item);
+      } catch (err) {
+        failed++;
+      }
+    }
+    $("progress").value = files.length;
+
+    if (small) notes.push(`${small} photo${small > 1 ? "s were" : " was"} under 500 px to start with, so ${small > 1 ? "they" : "it"} may look soft. Retake if you can.`);
+    if (over) notes.push(`${over} photo${over > 1 ? "s are" : " is"} still a bit over 1 MB (still well under Google's 16 MB limit).`);
+    if (failed) notes.push(`${failed} couldn't be read. They may be HEIC: on iPhone pick them from the Photos app; on Samsung turn off Camera settings → Advanced picture options → High efficiency pictures.`);
+    $("warn").textContent = notes.join(" ");
+    $("warn").classList.toggle("hidden", !notes.length);
+
+    const pct = before ? Math.round((1 - after / before) * 100) : 0;
+    $("summary").textContent = out.length
+      ? `✅ ${out.length} photo${out.length > 1 ? "s" : ""} at ${opts.size}×${opts.size}: ${kb(before)} → ${kb(after)} (${pct}% smaller)`
+      : "Couldn't read those photos.";
+    $("saveAll").disabled = $("zipAll").disabled = !out.length;
+    $("shareAll").classList.toggle("hidden", !(isAndroid && canShareFiles && !downloadsCap && out.length));
+  });
+})();
+</script>
+</body>
+</html>
