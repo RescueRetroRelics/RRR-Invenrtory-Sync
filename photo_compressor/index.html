@@ -7,11 +7,11 @@
 <style>
   :root {
     --bg: #faf7f2; --card: #ffffff; --ink: #1f1b16; --muted: #6b635a;
-    --accent: #b5462f; --accent-ink: #ffffff; --line: #e6dfd5; --ok: #2f7a4a;
+    --accent: #b5462f; --accent-ink: #ffffff; --line: #e6dfd5; --ok: #2f7a4a; --warn: #a15c00;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #17140f; --card: #221e18; --ink: #f3ede4; --muted: #a89f93;
-            --accent: #e0694f; --accent-ink: #17140f; --line: #3a332a; --ok: #6cc28d; }
+            --accent: #e0694f; --accent-ink: #17140f; --line: #3a332a; --ok: #6cc28d; --warn: #f0b054; }
   }
   * { box-sizing: border-box; }
   body { margin: 0; font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -27,20 +27,20 @@
   label.row + label.row { border-top: 1px solid var(--line); }
   select, input[type=text] { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
                              background: var(--bg); color: var(--ink); max-width: 55%; }
-  input[type=range] { width: 50%; }
-  input[type=checkbox] { width: 22px; height: 22px; }
   .hint { color: var(--muted); font-size: .85rem; }
   .btn { font: inherit; font-weight: 700; padding: 14px; border-radius: 12px; border: 0; width: 100%;
          background: var(--accent); color: var(--accent-ink); cursor: pointer; margin-top: 8px; }
   .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   .btn:disabled { opacity: .5; }
   .summary { font-weight: 700; color: var(--ok); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: .8rem; }
+  .warn { color: var(--warn); font-size: .9rem; margin-top: 6px; }
+  progress { width: 100%; height: 10px; margin-top: 8px; accent-color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: .75rem; }
   .tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: var(--line); }
-  .tile .meta { padding: 6px 8px; }
+  .tile .meta { padding: 4px 6px; }
   .tile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
-  .tile button { font: inherit; width: 100%; border: 0; border-top: 1px solid var(--line); padding: 8px;
+  .tile button { font: inherit; width: 100%; border: 0; border-top: 1px solid var(--line); padding: 6px;
                  background: transparent; color: var(--accent); font-weight: 700; cursor: pointer; }
   .msg { margin-top: 8px; font-size: .9rem; color: var(--muted); }
   .hidden { display: none; }
@@ -49,37 +49,46 @@
 <body>
 <main>
   <h1>RRR Photo Shrinker 🐾</h1>
-  <p class="sub">Shrink listing photos <b>before</b> they go to Shopify. Everything happens on this
-    phone. Photos never get uploaded anywhere by this page.</p>
+  <p class="sub">Makes listing photos Google- and Shopify-ready <b>before</b> you upload:
+    1500×1500 square, under 1 MB each. Everything happens on this phone.</p>
 
   <div class="card">
-    <label class="pick">📷 Choose photos
+    <label class="pick">📷 Choose photos (up to 50)
       <input id="files" type="file" accept="image/*" multiple>
     </label>
   </div>
 
   <div class="card">
-    <label class="row"><span>Longest side</span>
-      <select id="maxSide">
-        <option value="2048" selected>2048 px (best)</option>
-        <option value="1600">1600 px (smaller)</option>
-        <option value="2400">2400 px (more zoom)</option>
+    <label class="row"><span>Size</span>
+      <select id="size">
+        <option value="1500" selected>1500 × 1500 (recommended)</option>
+        <option value="2048">2048 × 2048 (more zoom)</option>
+        <option value="1000">1000 × 1000 (smallest)</option>
       </select>
     </label>
-    <label class="row"><span>Quality <span id="qVal" class="hint">82</span></span>
-      <input id="quality" type="range" min="60" max="95" value="82">
+    <label class="row"><span>Square style<br><span class="hint">Pad keeps the whole item</span></span>
+      <select id="fit">
+        <option value="pad" selected>Pad with white</option>
+        <option value="crop">Crop to fill</option>
+      </select>
     </label>
-    <label class="row"><span>Make square (white padding)<br><span class="hint">Keeps your collection grid even</span></span>
-      <input id="square" type="checkbox">
+    <label class="row"><span>Format</span>
+      <select id="format">
+        <option value="image/jpeg" selected>JPEG (.jpg)</option>
+        <option value="image/webp">WebP (.webp)</option>
+      </select>
     </label>
     <label class="row"><span>Name prefix<br><span class="hint">e.g. SKU or item, optional</span></span>
       <input id="prefix" type="text" placeholder="pyrex-butterprint" autocapitalize="off" autocorrect="off">
     </label>
-    <p class="hint">Also strips GPS location from the photos, so your home address doesn't ride along.</p>
+    <p class="hint">Each photo is squeezed until it's under 1 MB. GPS location is stripped too, so your
+      home address doesn't ride along.</p>
   </div>
 
   <div id="results" class="card hidden">
     <div id="summary" class="summary"></div>
+    <progress id="progress" value="0" max="1"></progress>
+    <div id="warn" class="warn hidden"></div>
     <button id="saveAll" class="btn">Save all to phone</button>
     <button id="zipAll" class="btn secondary">Download all as one ZIP</button>
     <div id="msg" class="msg"></div>
@@ -91,8 +100,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (() => {
+  const MAX_FILES = 50;
+  const TARGET_BYTES = 1024 * 1024;      // aim: under 1 MB
+  const GOOGLE_MIN = 500;                // Google Merchant Center minimum
+  const QUALITY_STEPS = [0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
+
   const $ = (id) => document.getElementById(id);
-  const out = []; // {name, blob, url, before, after}
+  const out = []; // {name, blob, thumbUrl, before, after}
   let downloadsCap = null;
 
   // Inside a Claude artifact, saving goes through the downloads capability.
@@ -100,11 +114,11 @@
     window.claude.use("downloads").then((d) => { downloadsCap = d; }).catch(() => {});
   }
 
-  $("quality").addEventListener("input", (e) => { $("qVal").textContent = e.target.value; });
-
   const kb = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB";
   const slug = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const msg = (t) => { $("msg").textContent = t; };
+  const toBlob = (canvas, type, q) => new Promise((res, rej) =>
+    canvas.toBlob((b) => b ? res(b) : rej(new Error("encode failed")), type, q));
 
   async function decode(file) {
     if ("createImageBitmap" in window) {
@@ -113,40 +127,61 @@
     const url = URL.createObjectURL(file);
     try {
       const img = new Image();
-      img.decoding = "async";
       img.src = url;
       await img.decode();
       return img;
     } finally { URL.revokeObjectURL(url); }
   }
 
-  async function shrink(file, opts) {
-    const src = await decode(file);
-    const w0 = src.width, h0 = src.height;
-    const scale = Math.min(1, opts.maxSide / Math.max(w0, h0)); // never upscale
-    const w = Math.round(w0 * scale), h = Math.round(h0 * scale);
-    const side = Math.max(w, h);
-    const canvas = document.createElement("canvas");
-    canvas.width = opts.square ? side : w;
-    canvas.height = opts.square ? side : h;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff"; // JPEG has no transparency; white beats black for PNG cutouts
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(src, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-    if (src.close) src.close();
-    const blob = await new Promise((res, rej) =>
-      canvas.toBlob((b) => b ? res(b) : rej(new Error("encode failed")), "image/jpeg", opts.quality));
-    canvas.width = canvas.height = 0; // free memory on phones
-    return blob;
+  // Some browsers (older iPhones) can't write WebP and silently hand back PNG.
+  let webpOk = null;
+  async function canWriteWebp() {
+    if (webpOk === null) {
+      const c = document.createElement("canvas"); c.width = c.height = 2;
+      try { webpOk = (await toBlob(c, "image/webp", 0.8)).type === "image/webp"; } catch (e) { webpOk = false; }
+    }
+    return webpOk;
   }
 
-  function addTile(item, i) {
+  async function process(file, opts) {
+    const src = await decode(file);
+    const w0 = src.width, h0 = src.height;
+    const S = opts.size;
+    const scale = opts.fit === "crop" ? S / Math.min(w0, h0) : S / Math.max(w0, h0);
+    const w = w0 * scale, h = h0 * scale;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = S;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, S, S);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(src, (S - w) / 2, (S - h) / 2, w, h);
+    if (src.close) src.close();
+
+    // Step quality down until it's under 1 MB.
+    let blob;
+    for (const q of QUALITY_STEPS) {
+      blob = await toBlob(canvas, opts.type, q);
+      if (blob.size <= TARGET_BYTES) break;
+    }
+
+    // Small thumbnail for the grid, so 50 full-size previews don't crash the phone.
+    const t = document.createElement("canvas");
+    t.width = t.height = 240;
+    t.getContext("2d").drawImage(canvas, 0, 0, 240, 240);
+    const thumb = await toBlob(t, "image/jpeg", 0.7);
+    canvas.width = canvas.height = 0; t.width = t.height = 0; // free memory
+
+    return { blob, thumb, small: Math.max(w0, h0) < GOOGLE_MIN };
+  }
+
+  function addTile(item) {
     const t = document.createElement("div");
     t.className = "tile";
     t.innerHTML = `<img alt=""><div class="meta"><div class="name"></div><div class="hint"></div></div><button>Save</button>`;
-    t.querySelector("img").src = item.url;
+    t.querySelector("img").src = item.thumbUrl;
     t.querySelector(".name").textContent = item.name;
     t.querySelector(".hint").textContent = `${kb(item.before)} → ${kb(item.after)}`;
     t.querySelector("button").addEventListener("click", () => saveFiles([item]));
@@ -158,27 +193,32 @@
     try {
       if (downloadsCap) {
         for (const it of items) await downloadsCap.save({ filename: it.name, data: it.blob });
-        msg(items.length > 1 ? `Saved ${items.length} photos.` : "Saved.");
+        msg(items.length > 1 ? `Saved ${items.length} files.` : "Saved.");
         return;
       }
-      const files = items.map((it) => new File([it.blob], it.name, { type: "image/jpeg" }));
+      const files = items.map((it) => new File([it.blob], it.name, { type: it.blob.type }));
       if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({ files }); // iPhone: pick "Save N Images" to put them in Photos
         return;
       }
       for (const it of items) {
+        const url = URL.createObjectURL(it.blob);
         const a = document.createElement("a");
-        a.href = it.url; a.download = it.name;
+        a.href = url; a.download = it.name;
         document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
         await new Promise((r) => setTimeout(r, 300));
       }
     } catch (e) {
-      if (e && e.name === "AbortError") return; // she closed the share sheet
+      if (e && e.name === "AbortError") return; // closed the share sheet
       msg("Couldn't save that way. Try the ZIP button, or long-press a photo and choose Save.");
     }
   }
 
-  $("saveAll").addEventListener("click", () => saveFiles(out));
+  $("saveAll").addEventListener("click", () => {
+    if (downloadsCap && out.length > 5) { msg("Lots of photos: the ZIP button saves them in one go."); }
+    saveFiles(out);
+  });
 
   $("zipAll").addEventListener("click", async () => {
     if (!window.JSZip) { msg("ZIP helper didn't load. Use Save all instead."); return; }
@@ -186,51 +226,71 @@
     const zip = new JSZip();
     out.forEach((it) => zip.file(it.name, it.blob));
     const blob = await zip.generateAsync({ type: "blob" });
-    const name = `${slug($("prefix").value) || "rrr-photos"}.zip`;
-    await saveFiles([{ name, blob, url: URL.createObjectURL(blob) }]);
+    await saveFiles([{ name: `${slug($("prefix").value) || "rrr-photos"}.zip`, blob }]);
   });
 
   $("files").addEventListener("change", async (e) => {
-    const files = Array.from(e.target.files || []);
+    let files = Array.from(e.target.files || []);
+    e.target.value = ""; // allow picking the same photos again
     if (!files.length) return;
-    out.forEach((it) => URL.revokeObjectURL(it.url));
+
+    out.forEach((it) => URL.revokeObjectURL(it.thumbUrl));
     out.length = 0;
     $("grid").innerHTML = "";
     $("results").classList.remove("hidden");
     $("saveAll").disabled = $("zipAll").disabled = true;
     msg("");
 
-    const opts = {
-      maxSide: +$("maxSide").value,
-      quality: +$("quality").value / 100,
-      square: $("square").checked,
-    };
+    const notes = [];
+    if (files.length > MAX_FILES) {
+      notes.push(`Picked ${files.length}; doing the first ${MAX_FILES}. Run the rest as a second batch.`);
+      files = files.slice(0, MAX_FILES);
+    }
+
+    let type = $("format").value;
+    if (type === "image/webp" && !(await canWriteWebp())) {
+      type = "image/jpeg";
+      notes.push("This phone's browser can't make WebP, so these were saved as JPEG (Google takes both).");
+    }
+    const ext = type === "image/webp" ? "webp" : "jpg";
+    const opts = { size: +$("size").value, fit: $("fit").value, type };
     const prefix = slug($("prefix").value);
-    let before = 0, after = 0, failed = 0;
+
+    let before = 0, after = 0, failed = 0, small = 0, over = 0;
+    $("progress").max = files.length;
 
     for (let i = 0; i < files.length; i++) {
       $("summary").textContent = `Shrinking ${i + 1} of ${files.length}…`;
+      $("progress").value = i;
       const f = files[i];
       try {
-        const blob = await shrink(f, opts);
+        const r = await process(f, opts);
         const base = prefix ? `${prefix}-${String(i + 1).padStart(2, "0")}`
                             : (slug(f.name.replace(/\.[^.]+$/, "")) || `photo-${i + 1}`);
-        const item = { name: `${base}.jpg`, blob, url: URL.createObjectURL(blob), before: f.size, after: blob.size };
+        const item = { name: `${base}.${ext}`, blob: r.blob, thumbUrl: URL.createObjectURL(r.thumb),
+                       before: f.size, after: r.blob.size };
         out.push(item);
-        before += f.size; after += blob.size;
-        addTile(item, i);
+        before += f.size; after += r.blob.size;
+        if (r.small) small++;
+        if (r.blob.size > TARGET_BYTES) over++;
+        addTile(item);
       } catch (err) {
         failed++;
       }
     }
+    $("progress").value = files.length;
+
+    if (small) notes.push(`${small} photo${small > 1 ? "s were" : " was"} under 500 px to start with, so ${small > 1 ? "they" : "it"} may look soft. Retake if you can.`);
+    if (over) notes.push(`${over} photo${over > 1 ? "s are" : " is"} still a bit over 1 MB (still well under Google's 16 MB limit).`);
+    if (failed) notes.push(`${failed} couldn't be read. If they're HEIC, pick them from the Photos app.`);
+    $("warn").textContent = notes.join(" ");
+    $("warn").classList.toggle("hidden", !notes.length);
 
     const pct = before ? Math.round((1 - after / before) * 100) : 0;
     $("summary").textContent = out.length
-      ? `✅ ${out.length} photo${out.length > 1 ? "s" : ""}: ${kb(before)} → ${kb(after)} (${pct}% smaller)` +
-        (failed ? ` · ${failed} couldn't be read` : "")
-      : "Couldn't read those photos. If they're HEIC, try picking them from the Photos app.";
+      ? `✅ ${out.length} photo${out.length > 1 ? "s" : ""} at ${opts.size}×${opts.size}: ${kb(before)} → ${kb(after)} (${pct}% smaller)`
+      : "Couldn't read those photos.";
     $("saveAll").disabled = $("zipAll").disabled = !out.length;
-    e.target.value = ""; // allow picking the same photos again
   });
 })();
 </script>
