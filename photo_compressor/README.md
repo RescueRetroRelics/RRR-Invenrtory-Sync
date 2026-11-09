@@ -15,5 +15,5 @@ A one-page tool to shrink listing photos on your phone **before** they go to Sho
 3. In the Shopify app, add those shrunk photos to the product.
 
 Open it in a normal browser from:
-https://raw.githack.com/RescueRetroRelics/RRR-Invenrtory-Sync/main/photo_compressor/index.html
-(works once this is merged to `main`).
+https://raw.githack.com/RescueRetroRelics/RRR-Invenrtory-Sync/claude/rrr-ebay-shopify-sync-0efnu0/photo_compressor/index.html
+(works once this is merged).
