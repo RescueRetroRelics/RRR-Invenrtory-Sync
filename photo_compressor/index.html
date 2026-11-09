@@ -90,6 +90,7 @@
     <progress id="progress" value="0" max="1"></progress>
     <div id="warn" class="warn hidden"></div>
     <button id="saveAll" class="btn">Save all to phone</button>
+    <button id="shareAll" class="btn secondary hidden">Share to an app…</button>
     <button id="zipAll" class="btn secondary">Download all as one ZIP</button>
     <div id="msg" class="msg"></div>
   </div>
@@ -117,6 +118,9 @@
   const kb = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB";
   const slug = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const msg = (t) => { $("msg").textContent = t; };
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const canShareFiles = !!(navigator.canShare &&
+    navigator.canShare({ files: [new File([""], "x.jpg", { type: "image/jpeg" })] }));
   const toBlob = (canvas, type, q) => new Promise((res, rej) =>
     canvas.toBlob((b) => b ? res(b) : rej(new Error("encode failed")), type, q));
 
@@ -188,12 +192,31 @@
     $("grid").appendChild(t);
   }
 
-  async function saveFiles(items) {
+  function download(items) {
+    // Android: lands in Downloads, which shows up in Samsung Gallery / Google Photos.
+    return items.reduce((p, it) => p.then(() => {
+      const url = URL.createObjectURL(it.blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = it.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      return new Promise((r) => setTimeout(r, 350));
+    }), Promise.resolve());
+  }
+
+  async function saveFiles(items, mode) {
     msg("");
     try {
-      if (downloadsCap) {
+      if (downloadsCap && mode !== "share") {
         for (const it of items) await downloadsCap.save({ filename: it.name, data: it.blob });
         msg(items.length > 1 ? `Saved ${items.length} files.` : "Saved.");
+        return;
+      }
+      if (isAndroid && mode !== "share") {
+        await download(items);
+        msg(items.length > 1
+          ? `Saved ${items.length} files to Downloads. If Chrome asks to allow multiple downloads, tap Allow.`
+          : "Saved to Downloads.");
         return;
       }
       const files = items.map((it) => new File([it.blob], it.name, { type: it.blob.type }));
@@ -201,14 +224,7 @@
         await navigator.share({ files }); // iPhone: pick "Save N Images" to put them in Photos
         return;
       }
-      for (const it of items) {
-        const url = URL.createObjectURL(it.blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = it.name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        await new Promise((r) => setTimeout(r, 300));
-      }
+      await download(items);
     } catch (e) {
       if (e && e.name === "AbortError") return; // closed the share sheet
       msg("Couldn't save that way. Try the ZIP button, or long-press a photo and choose Save.");
@@ -219,6 +235,7 @@
     if (downloadsCap && out.length > 5) { msg("Lots of photos: the ZIP button saves them in one go."); }
     saveFiles(out);
   });
+  $("shareAll").addEventListener("click", () => saveFiles(out, "share"));
 
   $("zipAll").addEventListener("click", async () => {
     if (!window.JSZip) { msg("ZIP helper didn't load. Use Save all instead."); return; }
@@ -282,7 +299,7 @@
 
     if (small) notes.push(`${small} photo${small > 1 ? "s were" : " was"} under 500 px to start with, so ${small > 1 ? "they" : "it"} may look soft. Retake if you can.`);
     if (over) notes.push(`${over} photo${over > 1 ? "s are" : " is"} still a bit over 1 MB (still well under Google's 16 MB limit).`);
-    if (failed) notes.push(`${failed} couldn't be read. If they're HEIC, pick them from the Photos app.`);
+    if (failed) notes.push(`${failed} couldn't be read. They may be HEIC: on iPhone pick them from the Photos app; on Samsung turn off Camera settings → Advanced picture options → High efficiency pictures.`);
     $("warn").textContent = notes.join(" ");
     $("warn").classList.toggle("hidden", !notes.length);
 
@@ -291,6 +308,7 @@
       ? `✅ ${out.length} photo${out.length > 1 ? "s" : ""} at ${opts.size}×${opts.size}: ${kb(before)} → ${kb(after)} (${pct}% smaller)`
       : "Couldn't read those photos.";
     $("saveAll").disabled = $("zipAll").disabled = !out.length;
+    $("shareAll").classList.toggle("hidden", !(isAndroid && canShareFiles && !downloadsCap && out.length));
   });
 })();
 </script>

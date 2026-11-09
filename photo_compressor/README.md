@@ -17,6 +17,11 @@ A one-page tool to shrink listing photos on your phone **before** they go to Sho
 2. Tap **Save all to phone**. On iPhone choose **Save N Images** so they land in Photos.
 3. In the Shopify app, add those shrunk photos to the product.
 
+**Android (Galaxy):** step 2 saves straight to the **Downloads** folder (shows up in Samsung Gallery
+and Google Photos). If Chrome asks to allow multiple downloads, tap Allow. **Share to an app…** sends
+them to another app instead. If photos won't load, turn off Camera → Settings → Advanced picture
+options → High efficiency pictures (HEIF), which Chrome on Android can't read.
+
 Open it in a normal browser from:
 https://raw.githack.com/RescueRetroRelics/RRR-Invenrtory-Sync/claude/rrr-ebay-shopify-sync-0efnu0/photo_compressor/index.html
 (works once this is merged).
