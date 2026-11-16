@@ -106,9 +106,18 @@ Needs Python 3.10+ and `pip install mcp` (1.x or 2.x both work).
 | `ebay_get_active_offers`   | every offer, published or not (loops SKU by SKU; eBay has no list-all) |
 | `ebay_create_draft`        | Shopify product → eBay inventory item + unpublished offer |
 | `ebay_publish_offer`       | attaches photos + RRR policies, then publishes. Photos default to the Shopify product's |
+| `ebay_get_listing`         | everything about one listing (by offer ID, eBay item number/link, or SKU) |
+| `ebay_update_listing`      | change anything: title, description, price, quantity, photos, item specifics, condition, category, shipping/payment/return policy, per-listing shipping cost, Best Offer thresholds, package size, and raw eBay fields. Live listings update immediately |
+| `ebay_list_policies`       | your shipping, payment and return policies with their IDs |
+| `ebay_end_listing`         | take a live listing down (kept as a draft, can be relisted) |
+| `ebay_delete_draft`        | delete an unpublished offer, e.g. a duplicate |
 | `ebay_suggest_category`    | eBay's suggested leaf categories for a product (fixes "not a leaf category") |
 | `ebay_get_active_listings` | all live listings, including Seller Hub ones |
 | `ebay_get_orders`          | orders since a date |
+
+Listings created through these tools can't be edited in Seller Hub (eBay's rule for
+API-created listings), so edit them with `ebay_update_listing`. Seller Hub-made listings
+and business policies themselves are still edited in Seller Hub.
 
 Built-in rules: price = Shopify + $2.00, Best Offer on (no floor), condition NEW, SKU = Shopify
 product number, policies 284028239015 / 283965435015 / 291780816015 (override with

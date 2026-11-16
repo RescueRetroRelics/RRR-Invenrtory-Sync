@@ -45,7 +45,10 @@ class FakeEbay:
                 raise http.HttpError(404, json.dumps({"errors": [{"errorId": 25713, "message": "This Offer is not available."}]}), url)
             return 200, json.dumps({"offers": found, "total": len(found)})
         if method == "GET" and route.startswith("/offer/"):
-            return 200, json.dumps(self.offers[route.split("/")[2]])
+            offer_id = route.split("/")[2]
+            if offer_id not in self.offers:
+                raise http.HttpError(404, json.dumps({"errors": [{"errorId": 25713, "message": "This Offer is not available."}]}), url)
+            return 200, json.dumps(self.offers[offer_id])
         if method == "GET" and route.startswith("/inventory_item/"):
             return 200, json.dumps(self.items[route.split("/")[2]])
         if method == "PUT":
@@ -131,6 +134,189 @@ class InventoryApiTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "No photos"):
                 el.publish(cfg(), "308888822011")
         self.assertFalse(self.fake.bodies("PUT", "/offer/"))
+
+
+class LiveFakeEbay(FakeEbay):
+    """FakeEbay with the Mickey offer already live, plus withdraw/delete/Account API."""
+
+    def __init__(self):
+        super().__init__()
+        mickey = self.offers["308888822011"]
+        mickey.update(status="PUBLISHED", listing={"listingId": "227566100694"})
+        mickey["listingPolicies"] = {
+            "fulfillmentPolicyId": "284028239015", "paymentPolicyId": "283965435015",
+            "returnPolicyId": "291780816015", "bestOfferTerms": {"bestOfferEnabled": True},
+            "shippingCostOverrides": [{"priority": 1, "shippingServiceType": "DOMESTIC",
+                                       "shippingCost": {"value": "5.00", "currency": "USD"}}],
+        }
+        self.items["15420259402024"]["product"].update(
+            imageUrls=["https://cdn/a.jpg"], aspects={"Brand": ["Funko"], "Type": ["Mini"]})
+        self.items["15420259402024"]["availability"]["shipToLocationAvailability"]["quantity"] = 3
+        mickey["availableQuantity"] = 3
+        self.offers["308888324011"] = {"offerId": "308888324011", "sku": "999999", "status": "UNPUBLISHED"}
+
+    def __call__(self, method, url, headers=None, body=None, **kw):
+        if "/sell/account/v1/" in url:
+            self.calls.append((method, url, headers, body))
+            route = url.split("/sell/account/v1", 1)[1].partition("?")[0]
+            return 200, json.dumps({
+                "/fulfillment_policy": {"fulfillmentPolicies": [{
+                    "fulfillmentPolicyId": "284028239015", "name": "USPS GA 8.99",
+                    "handlingTime": {"value": 1, "unit": "DAY"},
+                    "shippingOptions": [{"optionType": "DOMESTIC", "costType": "FLAT_RATE",
+                                         "shippingServices": [{"sortOrder": 1, "shippingServiceCode": "USPSGroundAdvantage",
+                                                               "shippingCost": {"value": "8.99"}}]}]}]},
+                "/payment_policy": {"paymentPolicies": [{"paymentPolicyId": "283965435015", "name": "Managed"}]},
+                "/return_policy": {"returnPolicies": [{"returnPolicyId": "291780816015", "name": "No returns",
+                                                       "returnsAccepted": False}]},
+            }[route])
+        if method == "POST" and url.endswith("/withdraw"):
+            self.calls.append((method, url, headers, body))
+            return 200, json.dumps({"listingId": "227566100694"})
+        if method == "DELETE":
+            self.calls.append((method, url, headers, body))
+            return 204, ""
+        return super().__call__(method, url, headers, body, **kw)
+
+
+class EditListingTest(unittest.TestCase):
+    def setUp(self):
+        self.fake = LiveFakeEbay()
+        for p in (mock.patch.object(http, "request", self.fake),
+                  mock.patch.object(inv, "get_access_token", lambda c: "TOKEN")):
+            p.start()
+            self.addCleanup(p.stop)
+
+    def offer_put(self):
+        return self.fake.bodies("PUT", "/offer/308888822011")
+
+    def item_put(self):
+        return self.fake.bodies("PUT", "/inventory_item/15420259402024")
+
+    def test_get_listing_by_item_number_or_link(self):
+        for ref in ("227566100694", "https://www.ebay.com/itm/227566100694", "308888822011"):
+            got = el.get_listing(cfg(), ref)
+            self.assertEqual(got["offer_id"], "308888822011")
+        self.assertEqual(got["status"], "PUBLISHED")
+        self.assertEqual(got["fulfillment_policy_id"], "284028239015")
+        self.assertEqual(got["quantity"], 3)
+        self.assertEqual(got["aspects"]["Brand"], ["Funko"])
+
+    def test_unknown_listing_explains_seller_hub(self):
+        with self.assertRaisesRegex(RuntimeError, "Seller Hub"):
+            el.get_listing(cfg(), "111111111111")
+
+    def test_title_only_touches_item(self):
+        r = el.update_listing(cfg(), "308888822011", title="New title")
+        self.assertTrue(r["live_listing_updated"])
+        self.assertEqual(self.item_put()[0]["product"]["title"], "New title")
+        self.assertEqual(self.offer_put(), [])
+
+    def test_description_goes_to_item_and_offer(self):
+        el.update_listing(cfg(), "308888822011", description="<p>Hi</p>")
+        self.assertEqual(self.item_put()[0]["product"]["description"], "<p>Hi</p>")
+        self.assertEqual(self.offer_put()[0]["listingDescription"], "<p>Hi</p>")
+
+    def test_price_and_shipping_override(self):
+        el.update_listing(cfg(), "308888822011", price=12.5, shipping_cost=0)
+        offer = self.offer_put()[0]
+        self.assertEqual(offer["pricingSummary"]["price"]["value"], "12.50")
+        self.assertEqual(offer["listingPolicies"]["shippingCostOverrides"][0]["shippingCost"]["value"], "0.00")
+        self.assertNotIn("status", offer)   # read-only fields stripped
+
+    def test_shipping_default_removes_override(self):
+        el.update_listing(cfg(), "308888822011", shipping_cost="default")
+        self.assertNotIn("shippingCostOverrides", self.offer_put()[0]["listingPolicies"])
+
+    def test_new_shipping_policy_drops_old_override(self):
+        r = el.update_listing(cfg(), "308888822011", fulfillment_policy_id="999")
+        pol = self.offer_put()[0]["listingPolicies"]
+        self.assertEqual(pol["fulfillmentPolicyId"], "999")
+        self.assertNotIn("shippingCostOverrides", pol)
+        self.assertEqual(pol["paymentPolicyId"], "283965435015")
+        self.assertTrue(any("override" in n for n in r["notes"]))
+
+    def test_quantity_lowered_updates_offer_before_item(self):
+        el.update_listing(cfg(), "308888822011", quantity=1)
+        puts = [u for m, u, h, b in self.fake.calls if m == "PUT"]
+        self.assertIn("/offer/", puts[0])
+        self.assertIn("/inventory_item/", puts[1])
+        self.assertEqual(self.offer_put()[0]["availableQuantity"], 1)
+        self.assertEqual(self.item_put()[0]["availability"]["shipToLocationAvailability"]["quantity"], 1)
+
+    def test_quantity_raised_updates_item_first(self):
+        el.update_listing(cfg(), "308888822011", quantity=5)
+        puts = [u for m, u, h, b in self.fake.calls if m == "PUT"]
+        self.assertIn("/inventory_item/", puts[0])
+
+    def test_aspects_merge_and_remove(self):
+        el.update_listing(cfg(), "308888822011", aspects={"Shade": "Red"}, remove_aspects="Type")
+        aspects = self.item_put()[0]["product"]["aspects"]
+        self.assertEqual(aspects, {"Brand": ["Funko"], "Shade": ["Red"]})
+
+    def test_best_offer_thresholds(self):
+        el.update_listing(cfg(), "308888822011", auto_accept_price=40, auto_decline_price=30)
+        terms = self.offer_put()[0]["listingPolicies"]["bestOfferTerms"]
+        self.assertEqual(terms["autoAcceptPrice"]["value"], "40.00")
+        self.assertEqual(terms["autoDeclinePrice"]["value"], "30.00")
+        el.update_listing(cfg(), "308888822011", best_offer=False)
+        self.assertEqual(self.offer_put()[1]["listingPolicies"]["bestOfferTerms"], {"bestOfferEnabled": False})
+
+    def test_condition_and_package(self):
+        el.update_listing(cfg(), "308888822011", condition="used good", weight_oz=6,
+                          length_in=4, width_in=3, height_in=2)
+        item = self.item_put()[0]
+        self.assertEqual(item["condition"], "USED_GOOD")
+        self.assertEqual(item["packageWeightAndSize"]["weight"], {"value": 6.0, "unit": "OUNCE"})
+        self.assertEqual(item["packageWeightAndSize"]["dimensions"]["unit"], "INCH")
+        with self.assertRaisesRegex(RuntimeError, "Unknown condition"):
+            el.update_listing(cfg(), "308888822011", condition="mint")
+        with self.assertRaisesRegex(RuntimeError, "length, width and height"):
+            el.update_listing(cfg(), "308888822011", length_in=4)
+
+    def test_raw_fields_escape_hatch(self):
+        el.update_listing(cfg(), "308888822011", offer_fields={"lotSize": 2},
+                          item_fields={"product": {"subtitle": "Rare"}})
+        self.assertEqual(self.offer_put()[0]["lotSize"], 2)
+        product = self.item_put()[0]["product"]
+        self.assertEqual(product["subtitle"], "Rare")
+        self.assertEqual(product["title"], "Funko Classic Mickey 1/6")   # merged, not replaced
+
+    def test_nothing_to_change(self):
+        with self.assertRaisesRegex(RuntimeError, "Nothing to change"):
+            el.update_listing(cfg(), "308888822011")
+
+    def test_sync_price_from_shopify(self):
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            el.update_listing(cfg(), "308888822011", sync_price_from_shopify=True)
+        self.assertEqual(self.offer_put()[0]["pricingSummary"]["price"]["value"], "10.99")
+
+    def test_end_listing_and_delete_draft(self):
+        r = el.end_listing(cfg(), "227566100694")
+        self.assertEqual(r["ended_listing_id"], "227566100694")
+        with self.assertRaisesRegex(RuntimeError, "is live"):
+            el.delete_draft(cfg(), "308888822011")
+        el.delete_draft(cfg(), "308888324011")
+        self.assertTrue(any(m == "DELETE" and u.endswith("/offer/308888324011") for m, u, h, b in self.fake.calls))
+
+    def test_publish_keeps_chosen_policies(self):
+        self.fake.offers["308888822011"]["listingPolicies"] = {
+            "fulfillmentPolicyId": "555", "bestOfferTerms": {"bestOfferEnabled": True,
+                                                             "autoAcceptPrice": {"value": "9.00", "currency": "USD"}}}
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            el.publish(cfg(), "308888822011")
+        pol = self.offer_put()[0]["listingPolicies"]
+        self.assertEqual(pol["fulfillmentPolicyId"], "555")              # kept
+        self.assertEqual(pol["paymentPolicyId"], "283965435015")         # default filled in
+        self.assertEqual(pol["bestOfferTerms"]["autoAcceptPrice"]["value"], "9.00")
+
+    def test_business_policies_summary(self):
+        got = inv.business_policies(cfg())
+        self.assertEqual(got["shipping"][0]["services"][0]["cost"], "8.99")
+        self.assertEqual(got["shipping"][0]["handling_days"], 1)
+        self.assertEqual(got["returns"][0]["returns_accepted"], False)
+        account_calls = [u for m, u, h, b in self.fake.calls if "/sell/account/v1/" in u]
+        self.assertTrue(all("marketplace_id=EBAY_US" in u for u in account_calls))
 
 
 class CategoryAndConfigTest(unittest.TestCase):

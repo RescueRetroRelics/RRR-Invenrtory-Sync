@@ -7,6 +7,9 @@ Gotchas this module handles:
     all_offers() walks every inventory item and asks for its offers one SKU
     at a time. A SKU with no offers comes back as a 404, which means "none".
   * POST /offer/{id}/publish takes no body but still needs Content-Length: 0.
+  * Listings made through this API can't be edited in Seller Hub. Changing the
+    inventory item or the offer of a PUBLISHED offer revises the live listing,
+    so every edit goes through here.
 """
 
 import json
@@ -16,6 +19,7 @@ from . import http
 from .ebay_auth import get_access_token
 
 API = "https://api.ebay.com/sell/inventory/v1"
+ACCOUNT_API = "https://api.ebay.com/sell/account/v1"
 MARKETPLACE_ID = "EBAY_US"
 OFFER_NOT_FOUND = 25713  # "This Offer is not available." (a SKU with no offers)
 
@@ -65,9 +69,9 @@ def headers(token):
     }
 
 
-def call(cfg, method, path, params=None, payload=None):
-    """One Inventory API call. Returns parsed JSON ({} for 204 No Content)."""
-    url = API + path
+def call(cfg, method, path, params=None, payload=None, base=API):
+    """One Sell API call (Inventory by default). Returns parsed JSON ({} for 204 No Content)."""
+    url = base + path
     if params:
         url += "?" + urllib.parse.urlencode(params)
     body = json.dumps(payload) if payload is not None else ("" if method in ("POST", "PUT") else None)
@@ -154,6 +158,52 @@ def publish_offer(cfg, offer_id):
     """Publish (or re-publish, which revises the live listing). Returns the response
     with listingId and any warnings."""
     return call(cfg, "POST", f"/offer/{offer_id}/publish")
+
+
+def withdraw_offer(cfg, offer_id):
+    """End the live listing. The offer goes back to UNPUBLISHED and can be republished."""
+    return call(cfg, "POST", f"/offer/{offer_id}/withdraw")
+
+
+def delete_offer(cfg, offer_id):
+    return call(cfg, "DELETE", f"/offer/{offer_id}")
+
+
+# --- business policies (Account API, read-only scope) -------------------------
+
+def business_policies(cfg):
+    """The seller's shipping, payment and return policies, summarized."""
+    params = {"marketplace_id": MARKETPLACE_ID}
+    shipping = []
+    for p in call(cfg, "GET", "/fulfillment_policy", params, base=ACCOUNT_API).get("fulfillmentPolicies", []):
+        services = []
+        for opt in p.get("shippingOptions", []):
+            for svc in sorted(opt.get("shippingServices", []), key=lambda s: s.get("sortOrder", 0)):
+                services.append({
+                    "type": opt.get("optionType"),           # DOMESTIC / INTERNATIONAL
+                    "cost_type": opt.get("costType"),        # FLAT_RATE / CALCULATED
+                    "service": svc.get("shippingServiceCode"),
+                    "cost": svc.get("shippingCost", {}).get("value"),
+                    "free": svc.get("freeShipping", False),
+                    "priority": svc.get("sortOrder"),
+                })
+        shipping.append({
+            "id": p.get("fulfillmentPolicyId"),
+            "name": p.get("name"),
+            "description": p.get("description", ""),
+            "handling_days": p.get("handlingTime", {}).get("value"),
+            "services": services,
+        })
+    payment = [
+        {"id": p.get("paymentPolicyId"), "name": p.get("name"), "description": p.get("description", "")}
+        for p in call(cfg, "GET", "/payment_policy", params, base=ACCOUNT_API).get("paymentPolicies", [])
+    ]
+    returns = [
+        {"id": p.get("returnPolicyId"), "name": p.get("name"), "returns_accepted": p.get("returnsAccepted"),
+         "description": p.get("description", "")}
+        for p in call(cfg, "GET", "/return_policy", params, base=ACCOUNT_API).get("returnPolicies", [])
+    ]
+    return {"shipping": shipping, "payment": payment, "returns": returns}
 
 
 # --- locations ---------------------------------------------------------------
