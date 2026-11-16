@@ -319,6 +319,53 @@ class EditListingTest(unittest.TestCase):
         self.assertTrue(all("marketplace_id=EBAY_US" in u for u in account_calls))
 
 
+class SlowLookupTest(unittest.TestCase):
+    """An eBay item number passed where an offer ID is expected (the 80-second hang)."""
+
+    def setUp(self):
+        self.fake = LiveFakeEbay()
+        real_call = self.fake.__call__
+        def answer_500_for_unknown_offers(method, url, headers=None, body=None, **kw):
+            if method == "GET" and "/offer/227566100694" in url:
+                self.fake.calls.append((method, url, headers, body))
+                raise http.HttpError(500, json.dumps({"errors": [{"errorId": 25001, "message": "A system error has occurred."}]}), url)
+            return real_call(method, url, headers, body, **kw)
+        self.sleeps = []
+        for p in (mock.patch.object(http, "request", answer_500_for_unknown_offers),
+                  mock.patch.object(inv, "get_access_token", lambda c: "TOKEN")):
+            p.start()
+            self.addCleanup(p.stop)
+
+    def test_item_number_falls_back_to_scan_after_one_try(self):
+        got = el.get_listing(cfg(), "227566100694")
+        self.assertEqual(got["offer_id"], "308888822011")
+        probes = [u for m, u, h, b in self.fake.calls if u.endswith("/offer/227566100694")]
+        self.assertEqual(len(probes), 1)
+
+    def test_probe_asks_for_no_retries_and_short_timeout(self):
+        seen = []
+        real = inv.get_offer
+        def spy(cfg_, offer_id, **kw):
+            seen.append(kw)
+            return real(cfg_, offer_id, **kw)
+        with mock.patch.object(inv, "get_offer", spy):
+            el.resolve_offer_id(cfg(), "https://www.ebay.com/itm/227566100694?hash=x")
+        self.assertEqual(seen[0], {"retries": 0, "timeout": 10})
+
+
+class HttpTimeoutTest(unittest.TestCase):
+    def test_no_reply_is_retried_then_reported(self):
+        attempts = []
+        def no_reply(req, timeout):
+            attempts.append(timeout)
+            raise TimeoutError("timed out")
+        with mock.patch("urllib.request.urlopen", no_reply), mock.patch("time.sleep"), \
+             mock.patch.object(inv, "get_access_token", lambda c: "TOKEN"):
+            with self.assertRaisesRegex(inv.EbayApiError, "No reply from eBay"):
+                inv.call(cfg(), "GET", "/offer/1")
+        self.assertEqual(attempts, [inv.READ_TIMEOUT] * (inv.RETRIES + 1))
+
+
 class CategoryAndConfigTest(unittest.TestCase):
     def test_category_suggestions_returns_ids_and_paths(self):
         body = {"categorySuggestions": [{

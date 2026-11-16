@@ -345,13 +345,14 @@ def _deep_merge(base, extra):
 
 def resolve_offer_id(cfg, ref):
     """Accept an offer ID, the eBay item number from a listing's URL, or a SKU."""
-    ref = str(ref).strip().rstrip("/").split("/")[-1]   # tolerate a pasted ebay.com/itm/... link
+    ref = str(ref).strip().rstrip("/").split("/")[-1].split("?")[0]   # tolerate a pasted ebay.com/itm/... link
     try:
-        inv.get_offer(cfg, ref)
+        # One quick try, no retries: eBay answers an unknown ID (such as an item
+        # number) with an error, sometimes a 500, and retrying that only burns time.
+        inv.get_offer(cfg, ref, retries=0, timeout=10)
         return ref
-    except inv.EbayApiError as e:
-        if e.status not in (400, 404):
-            raise
+    except inv.EbayApiError:
+        pass
     offers, _ = inv.all_offers(cfg)
     for o in offers:
         if ref in (o.get("listing", {}).get("listingId"), o.get("sku")):

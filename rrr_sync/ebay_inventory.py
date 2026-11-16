@@ -13,12 +13,19 @@ Gotchas this module handles:
 """
 
 import json
+import logging
+import time
 import urllib.parse
 
 from . import http
 from .ebay_auth import get_access_token
 
 API = "https://api.ebay.com/sell/inventory/v1"
+log = logging.getLogger("rrr-ebay")
+
+# Claude Desktop gives up on a tool call after about a minute, so keep each eBay
+# request short and retry once rather than waiting minutes on a slow reply.
+READ_TIMEOUT, WRITE_TIMEOUT, RETRIES = 20, 45, 1
 ACCOUNT_API = "https://api.ebay.com/sell/account/v1"
 MARKETPLACE_ID = "EBAY_US"
 OFFER_NOT_FOUND = 25713  # "This Offer is not available." (a SKU with no offers)
@@ -52,7 +59,8 @@ class EbayApiError(RuntimeError):
             if params:
                 msg += f" ({', '.join(params)})"
             msgs.append(msg)
-        super().__init__(f"eBay HTTP {status}: " + (" | ".join(msgs) or url))
+        prefix = f"eBay HTTP {status}: " if status else "eBay: "
+        super().__init__(prefix + (" | ".join(msgs) or url))
 
     def has_error_id(self, error_id):
         return any(e.get("errorId") == error_id for e in self.errors)
@@ -69,20 +77,33 @@ def headers(token):
     }
 
 
-def call(cfg, method, path, params=None, payload=None, base=API):
-    """One Sell API call (Inventory by default). Returns parsed JSON ({} for 204 No Content)."""
+def call(cfg, method, path, params=None, payload=None, base=API, retries=RETRIES, timeout=None):
+    """One Sell API call (Inventory by default). Returns parsed JSON ({} for 204 No Content).
+
+    Each request is logged to stderr with its time, which Claude Desktop saves in
+    its MCP log (mcp-server-rrr-ebay.log) for diagnosing slow calls.
+    """
     url = base + path
     if params:
         url += "?" + urllib.parse.urlencode(params)
     body = json.dumps(payload) if payload is not None else ("" if method in ("POST", "PUT") else None)
+    if timeout is None:
+        timeout = READ_TIMEOUT if method == "GET" else WRITE_TIMEOUT
+    started = time.monotonic()
     try:
-        _, text = http.request(method, url, headers=headers(get_access_token(cfg)), body=body)
+        _, text = http.request(method, url, headers=headers(get_access_token(cfg)), body=body,
+                               retries=retries, timeout=timeout)
     except http.HttpError as e:
+        log.info("eBay %s %s -> %s in %.1fs", method, path, e.status, time.monotonic() - started)
         try:
             errors = json.loads(e.body).get("errors", [])
         except ValueError:
             errors = [{"message": e.body[:500]}]
         raise EbayApiError(e.status, errors, url) from None
+    except (OSError, TimeoutError) as e:
+        log.info("eBay %s %s -> no reply (%s) in %.1fs", method, path, e, time.monotonic() - started)
+        raise EbayApiError(0, [{"message": f"No reply from eBay ({e}). Try again in a minute."}], url) from None
+    log.info("eBay %s %s -> ok in %.1fs", method, path, time.monotonic() - started)
     return json.loads(text) if text.strip() else {}
 
 
@@ -140,8 +161,8 @@ def all_offers(cfg):
     return offers, errors
 
 
-def get_offer(cfg, offer_id):
-    return call(cfg, "GET", f"/offer/{offer_id}")
+def get_offer(cfg, offer_id, **kw):
+    return call(cfg, "GET", f"/offer/{offer_id}", **kw)
 
 
 def create_offer(cfg, payload):

@@ -27,7 +27,7 @@ def request(method, url, headers=None, body=None, retries=3, timeout=60):
                 time.sleep(2 ** (attempt + 1))
                 continue
             raise HttpError(e.code, text, url) from None
-        except urllib.error.URLError:
+        except (urllib.error.URLError, TimeoutError):   # no connection, or no reply in time
             if attempt < retries:
                 time.sleep(2 ** (attempt + 1))
                 continue
