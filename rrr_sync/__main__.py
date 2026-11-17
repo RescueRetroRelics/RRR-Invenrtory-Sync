@@ -91,6 +91,35 @@ def cmd_orders(cfg, args):
     print(f"  {csv_path}\n  {json_path}")
 
 
+def cmd_new_tags(cfg, args):
+    from . import new_tags
+    from .shopify import Shopify
+    _, errors = new_tags.run(Shopify(cfg), do_apply=args.apply, days=args.days, tag=args.tag)
+    return 1 if errors else 0
+
+
+def cmd_fix_dog_pronouns(cfg, args):
+    from . import pronoun_fix
+    from .shopify import Shopify
+    _, errors = pronoun_fix.run(Shopify(cfg), do_apply=args.apply)
+    return 1 if errors else 0
+
+
+def cmd_alt_text(cfg, args):
+    from . import alt_text
+    from .shopify import Shopify
+    _, errors = alt_text.run(Shopify(cfg), cfg, do_apply=args.apply, days=args.days,
+                             scan_all=args.all, max_images=args.max)
+    return 1 if any("Claude failed" not in e for e in errors) else 0
+
+
+def cmd_set_vendors(cfg, args):
+    from . import vendors
+    from .shopify import Shopify
+    _, errors = vendors.run(Shopify(cfg), args.csv, do_apply=args.apply)
+    return 1 if errors else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="rrr_sync", description="RRR eBay <-> Shopify inventory sync")
     sub = p.add_subparsers(dest="command", required=True)
@@ -105,6 +134,20 @@ def main(argv=None):
     sub.add_parser("notify-test", help="send a test phone notification")
     od = sub.add_parser("orders", help="export eBay orders to data/")
     od.add_argument("--since", default="2026-01-01", help="YYYY-MM-DD (default 2026-01-01)")
+    nt = sub.add_parser("new-tags", help="replace Shopify Flow: tag new listings, untag after 14 days (dry run by default)")
+    nt.add_argument("--apply", action="store_true", help="actually add/remove tags")
+    nt.add_argument("--days", type=int, default=14, help="how long a listing counts as new (default 14)")
+    nt.add_argument("--tag", default="new item", help="the tag the New Finds collection uses (default 'new item')")
+    fp = sub.add_parser("fix-dog-pronouns", help="one-time: fix he/him/his -> she/her for Casey, Savannah, Bailee (dry run by default)")
+    fp.add_argument("--apply", action="store_true", help="actually update the descriptions (backs them up first)")
+    at = sub.add_parser("alt-text", help="replace Alt Text King: describe photos that have no alt text (dry run by default)")
+    at.add_argument("--apply", action="store_true", help="actually save the alt text")
+    at.add_argument("--days", type=int, default=30, help="only products listed in the last N days (default 30)")
+    at.add_argument("--all", action="store_true", help="scan the whole catalog instead")
+    at.add_argument("--max", type=int, default=200, help="most photos to do per run (default 200)")
+    sv = sub.add_parser("set-vendors", help="set product vendors from a CSV (dry run by default)")
+    sv.add_argument("csv", help="CSV with new_vendor plus product_gid, product_id or handle")
+    sv.add_argument("--apply", action="store_true", help="actually change the vendors (backs up old ones first)")
 
     args = p.parse_args(argv)
     cfg = Config.load()

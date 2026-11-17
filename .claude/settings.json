@@ -1,0 +1,63 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "WebSearch",
+      "Grep",
+      "Glob",
+      "LS",
+      "MultiEdit",
+      "TodoRead",
+      "TodoWrite",
+      "mcp__Shopify",
+      "Bash(git push -u origin claude/elegant-meitner-ev2drv)",
+      "Bash(git push origin claude/elegant-meitner-ev2drv)"
+    ],
+    "ask": [
+      "Bash(git push origin main*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(rm:*)",
+      "Bash(shopify theme push:*)",
+      "Bash(shopify theme publish:*)",
+      "Bash(shopify theme delete:*)",
+      "Bash(shopify app deploy:*)",
+      "Bash(*deploy*)",
+      "Bash(*delete*)",
+      "Bash(*purchase*)",
+      "mcp__Shopify__bulk-update-product-status",
+      "mcp__Shopify__update-product",
+      "mcp__Shopify__update-collection",
+      "mcp__Shopify__set-inventory",
+      "mcp__Shopify__add-to-collection",
+      "mcp__Shopify__create-collection"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/.secrets/**)",
+      "Read(**/.tokens.json)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*credentials*)",
+      "Read(**/*secret*)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/.secrets/**)",
+      "Edit(**/.tokens.json)",
+      "Edit(**/*credentials*)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/.secrets/**)",
+      "Write(**/.tokens.json)",
+      "Write(**/*credentials*)",
+      "Bash(cat *.env*)",
+      "Bash(printenv*)",
+      "Bash(env)"
+    ]
+  }
+}

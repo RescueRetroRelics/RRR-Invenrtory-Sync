@@ -61,6 +61,8 @@ class Config:
     shopify_location_id: str
     shopify_api_version: str
     ntfy_topic: str = ""
+    anthropic_api_key: str = ""
+    alt_text_model: str = "claude-haiku-5-5"
 
     @classmethod
     def load(cls):
@@ -80,6 +82,8 @@ class Config:
             shopify_location_id=env("SHOPIFY_LOCATION_ID", ""),
             shopify_api_version=env("SHOPIFY_API_VERSION", "2026-07"),
             ntfy_topic=env("NTFY_TOPIC", ""),
+            anthropic_api_key=env("ANTHROPIC_API_KEY", ""),
+            alt_text_model=env("ALT_TEXT_MODEL", "claude-haiku-5-5"),
         )
 
     def require(self, *names):

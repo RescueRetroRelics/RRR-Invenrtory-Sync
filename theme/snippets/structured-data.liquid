@@ -1,0 +1,36 @@
+{%- comment -%} Schema.org data for Google. Product pages use Shopify's own Product schema generator. {%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "OnlineStore",
+    "name": {{ shop.name | json }},
+    "url": {{ request.origin | append: '/' | json }},
+    {%- if settings.logo != blank %}
+    "logo": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }},
+    {%- endif %}
+    "description": {{ shop.description | default: settings.mission_statement | json }}
+  }
+</script>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
+    "url": {{ request.origin | append: '/' | json }},
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {{ request.origin | append: routes.search_url | append: '?q={search_term_string}' | json }},
+      "query-input": "required name=search_term_string"
+    }
+  }
+</script>
+{%- elsif request.page_type == 'product' -%}
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+{%- elsif request.page_type == 'article' -%}
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+{%- endif -%}

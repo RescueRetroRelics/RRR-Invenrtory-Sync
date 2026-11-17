@@ -1,0 +1,33 @@
+{%- comment -%} Visible breadcrumbs + BreadcrumbList schema (helps Google show the path in results). {%- endcomment -%}
+{%- liquid
+  assign crumb_collection = collection
+  if request.page_type == 'product' and collection == blank
+    assign crumb_collection = product.collections.first
+  endif
+-%}
+<nav class="breadcrumbs page-width" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    {%- if crumb_collection -%}
+      <li><a href="{{ crumb_collection.url }}"{% if request.page_type == 'collection' %} aria-current="page"{% endif %}>{{ crumb_collection.title }}</a></li>
+    {%- endif -%}
+    {%- if request.page_type == 'product' -%}
+      <li><span aria-current="page">{{ product.title }}</span></li>
+    {%- endif -%}
+  </ol>
+</nav>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": {{ request.origin | append: routes.root_url | json }} }
+      {%- if crumb_collection -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ crumb_collection.title | json }}, "item": {{ request.origin | append: crumb_collection.url | json }} }
+      {%- endif -%}
+      {%- if request.page_type == 'product' -%}
+      ,{ "@type": "ListItem", "position": {% if crumb_collection %}3{% else %}2{% endif %}, "name": {{ product.title | json }}, "item": {{ request.origin | append: product.url | json }} }
+      {%- endif -%}
+    ]
+  }
+</script>

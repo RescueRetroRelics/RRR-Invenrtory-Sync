@@ -1,0 +1,59 @@
+{%- comment -%} Homepage "Meet the crew" mascot strip: round sticker-style portraits that link to the team page. {%- endcomment -%}
+<section class="section crew-strip">
+  <div class="page-width">
+    <div class="section__head section__head--center">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section__title display">{{ section.settings.heading }}</h2>
+    </div>
+    <ul class="crew-strip__list">
+      {%- for block in section.blocks -%}
+        <li class="crew-strip__item crew--{{ block.settings.color }}" {{ block.shopify_attributes }}>
+          <a href="{{ section.settings.link | default: '/pages/meet-the-team' }}#{{ block.settings.name | handle }}">
+            <span class="crew-strip__photo">
+              {%- if block.settings.photo != blank -%}
+                {{ block.settings.photo | image_url: width: 360 | image_tag: loading: 'lazy', widths: '180, 270, 360', sizes: '180px', alt: block.settings.name }}
+              {%- elsif block.settings.builtin_art != blank -%}
+                {%- render 'asset-image', name: block.settings.builtin_art, widths: '180,360', ratio: 1, sizes: '180px', alt: block.settings.name -%}
+              {%- else -%}
+                {%- render 'icon', name: 'paw' -%}
+              {%- endif -%}
+              {%- if block.settings.halo -%}<span class="crew-strip__halo" aria-hidden="true"></span>{%- endif -%}
+            </span>
+            <span class="crew-strip__name">{{ block.settings.name }}</span>
+            {%- if block.settings.title != blank -%}<span class="crew-strip__title">{{ block.settings.title }}</span>{%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    <p class="crew-strip__cta"><a class="button button--secondary" href="{{ section.settings.link | default: '/pages/meet-the-team' }}">{{ section.settings.button_label }}</a></p>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Meet the crew strip",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "The pack behind the relics" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Meet the crew" },
+    { "type": "url", "id": "link", "label": "Team page link", "default": "/pages/meet-the-team" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Hear all our stories" }
+  ],
+  "blocks": [
+    {
+      "type": "crew",
+      "name": "Crew member",
+      "limit": 8,
+      "settings": [
+        { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "text", "id": "builtin_art", "label": "Built-in art (used when no photo is picked)", "info": "crew-bailee, crew-savannah or crew-casey" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Name" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "select", "id": "color", "label": "Ring color", "default": "orange", "options": [
+          { "value": "orange", "label": "Retro orange" }, { "value": "teal", "label": "Teal" }, { "value": "mustard", "label": "Mustard" }, { "value": "pink", "label": "Raspberry" }
+        ] },
+        { "type": "checkbox", "id": "halo", "label": "Angel halo (in loving memory)", "default": false }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Meet the crew strip" }]
+}
+{% endschema %}

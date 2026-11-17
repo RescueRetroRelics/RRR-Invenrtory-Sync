@@ -1,0 +1,29 @@
+{%- comment -%} Retro scrolling ticker. Pure CSS; stops moving for visitors who prefer reduced motion. {%- endcomment -%}
+{%- liquid
+  assign items = section.settings.items | split: '|'
+-%}
+<div class="marquee marquee--{{ section.settings.style }}" role="region" aria-label="{{ items | join: ', ' | strip }}">
+  <div class="marquee__track" aria-hidden="true">
+    {%- for n in (1..4) -%}
+      <span class="marquee__group">
+        {%- for item in items -%}
+          <span class="marquee__item">{{ item | strip }}</span>
+          {%- assign m = forloop.index | modulo: 3 -%}
+          {%- if m == 1 -%}{%- render 'icon', name: 'paw' -%}{%- elsif m == 2 -%}{%- render 'icon', name: 'star' -%}{%- else -%}{%- render 'icon', name: 'shamrock' -%}{%- endif -%}
+        {%- endfor -%}
+      </span>
+    {%- endfor -%}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Ticker",
+  "settings": [
+    { "type": "text", "id": "items", "label": "Phrases (separate with |)", "default": "Rescued relics | Rescued dogs | Bailee approved | 90s Friday night energy | QC by Savannah | Naps by Casey | Every sale helps Detroit rescue dogs" },
+    { "type": "select", "id": "style", "label": "Color", "default": "mustard", "options": [
+      { "value": "mustard", "label": "Mustard" }, { "value": "orange", "label": "Retro orange" }, { "value": "teal", "label": "Teal" }, { "value": "pink", "label": "Raspberry" }
+    ] }
+  ],
+  "presets": [{ "name": "Ticker" }]
+}
+{% endschema %}

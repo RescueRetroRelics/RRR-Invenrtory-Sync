@@ -1,0 +1,54 @@
+{%- comment -%}
+  FAQ accordion. Plain <details>, no JavaScript and no app.
+  Also outputs FAQPage schema so Google can show answers right in search results.
+{%- endcomment -%}
+<section class="section page-width faq">
+  <header class="faq__head">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    {%- if section.index == 1 -%}<h1 class="display">{{ section.settings.heading }}</h1>{%- else -%}<h2 class="display">{{ section.settings.heading }}</h2>{%- endif -%}
+    {%- if section.settings.intro != blank -%}<div class="rte">{{ section.settings.intro }}</div>{%- endif -%}
+  </header>
+  <div class="faq__list">
+    {%- for block in section.blocks -%}
+      <details class="faq__item faq__item--{{ forloop.index | modulo: 4 }}"{% if forloop.first and section.settings.open_first %} open{% endif %} {{ block.shopify_attributes }}>
+        <summary>{%- render 'icon', name: 'paw' -%}<span>{{ block.settings.question }}</span>{%- render 'icon', name: 'caret' -%}</summary>
+        <div class="rte faq__answer">{{ block.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+  {%- if section.settings.contact_text != blank -%}
+    <p class="faq__contact">{{ section.settings.contact_text }}</p>
+  {%- endif -%}
+</section>
+{%- if section.blocks.size > 0 -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {%- for block in section.blocks -%}
+      { "@type": "Question", "name": {{ block.settings.question | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | json }} } }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Got questions?" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently Asked Questions" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "checkbox", "id": "open_first", "label": "Open the first question", "default": true },
+    { "type": "inline_richtext", "id": "contact_text", "label": "Text under the questions" }
+  ],
+  "blocks": [
+    { "type": "question", "name": "Question", "settings": [
+      { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+      { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" }
+    ] }
+  ],
+  "presets": [{ "name": "FAQ", "blocks": [{ "type": "question" }, { "type": "question" }] }]
+}
+{% endschema %}
