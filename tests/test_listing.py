@@ -92,7 +92,9 @@ class PreflightTest(Base):
         self.assertEqual(problems, [])
         self.assertEqual((plan["ebay_category"], plan["category_confirmed"], plan["shelf"]), ("13516", True, "/Snoopy"))
         self.assertEqual([f.name for f in plan["photos"]], ["a.jpg", "b.jpg"])
-        mf = {m["key"]: json.loads(m["value"]) for m in plan["metafields"]}
+        mf = {m["key"]: json.loads(m["value"]) for m in plan["metafields"] if m["namespace"] == "shopify"}
+        google = {m["key"]: m["value"] for m in plan["metafields"] if m["namespace"] == "mm-google-shopping"}
+        self.assertEqual(google, {"custom_product": "false", "condition": "new", "age_group": "adult"})
         self.assertEqual(mf["age-group"], ["gid://shopify/Metaobject/227424174376"])
         self.assertEqual(len(mf["color-pattern"]), 2)
         self.assertEqual(plan["specifics"], {"Brand": ["Funko"], "Color": ["White", "Black"],
@@ -118,6 +120,22 @@ class PreflightTest(Base):
         with mock.patch.object(inv, "category_suggestions", return_value=[{"category_id": "1", "path": "Sports > Golf Clubs"}]):
             _, problems = pub.Publisher(self.cfg, self.path).preflight(sheet_io.read(self.path)[0])
         self.assertTrue(any("could not be found" in x for x in problems))
+
+
+class CategoryFieldsTest(Base):
+    def test_other_fields_map_to_store_values_and_unknowns_only_warn(self):
+        self.put({**GOOD, "Other category fields": "Power source: Battery-powered; Solar | Mystery field: x",
+                  "Weight (lb)": "0.5"})
+        p = pub.Publisher(self.cfg, self.path)
+        p._store_fields = {"power source": {"name": "Power source", "key": "power-source",
+                                            "values": {"Battery-powered": "gid://shopify/Metaobject/655549235496"}}}
+        plan, problems = p.preflight(sheet_io.read(self.path)[0])
+        self.assertEqual(problems, [])
+        ps = [m for m in plan["metafields"] if m["key"] == "power-source"][0]
+        self.assertEqual(json.loads(ps["value"]), ["gid://shopify/Metaobject/655549235496"])
+        self.assertTrue(any("Solar" in w for w in plan["warnings"]))
+        self.assertTrue(any("Mystery field" in w for w in plan["warnings"]))
+        self.assertEqual(plan["weight"], 0.5)
 
 
 class RunTest(Base):
@@ -165,6 +183,7 @@ class RunTest(Base):
         self.assertEqual(inp["seo"], {"title": "Funko Snoopy Figure", "description": "Funko Snoopy figure for Peanuts fans."})
         self.assertEqual(inp["variants"][0]["price"], "15.99")
         self.assertEqual(inp["variants"][0]["inventoryQuantities"][0]["quantity"], 2)
+        self.assertNotIn("measurement", inp["variants"][0]["inventoryItem"])   # no weight given
         self.assertIn("Bailee's Legacy", inp["tags"])
         self.assertEqual(inp["descriptionHtml"], "<p>Line one</p><p>Line two</p>")
         self.assertEqual(len(p._shop.published), 2)

@@ -41,6 +41,15 @@ PRODUCT_SET = """mutation($input: ProductSetInput!) { productSet(input: $input, 
 PUBLICATIONS = "{ publications(first: 50) { nodes { id } } }"
 PUBLISH = """mutation($id: ID!, $input: [PublicationInput!]!) { publishablePublish(id: $id, input: $input) {
   userErrors { field message } } }"""
+CATEGORY_ATTRS = """query($id: ID!) { node(id: $id) { ... on TaxonomyCategory { attributes(first: 100) { nodes {
+  ... on TaxonomyChoiceListAttribute { name } ... on TaxonomyMeasurementAttribute { name } } } } } }"""
+METAFIELD_DEFS = """{ metafieldDefinitions(first: 100, ownerType: PRODUCT, namespace: "shopify") {
+  nodes { name key validations { name value } } } }"""
+DEF_VALUES = """query($ids: [ID!]!) { nodes(ids: $ids) { ... on MetaobjectDefinition { id
+  metaobjects(first: 100) { nodes { id displayName } } } } }"""
+GOOGLE_AGE = {"Adults": "adult", "Teens": "teen", "All ages": "adult", "Universal": "adult"}
+GOOGLE_CONDITION = {"new": "new", "new other (open box)": "new", "used": "used"}
+GOOGLE_GENDER = {"Unisex": "unisex", "Female": "female"}
 MEDIA_READY = """query($id: ID!) { product(id: $id) { media(first: 30) { nodes { status } } } }"""
 
 
@@ -115,6 +124,37 @@ class Publisher:
         if not hits:
             raise ValueError("eBay had no category suggestion; pick one in the eBay category column")
         return hits[0]["category_id"], False
+
+    def store_fields(self):
+        """{lowercase field name: {"key", "values": {display: gid}}} for every category field
+        already set up in the store (values Stephanie has used before)."""
+        if getattr(self, "_store_fields", None) is None:
+            defs = self.shop.graphql(METAFIELD_DEFS)["metafieldDefinitions"]["nodes"]
+            by_def = {}
+            for d in defs:
+                v = {x["name"]: x["value"] for x in d.get("validations", [])}.get("metaobject_definition_id")
+                if v:
+                    by_def[v] = d
+            fields = {}
+            ids = list(by_def)
+            for i in range(0, len(ids), 5):   # keeps each request under Shopify's cost limit
+                for n in self.shop.graphql(DEF_VALUES, {"ids": ids[i:i + 5]})["nodes"]:
+                    if not n:
+                        continue
+                    d = by_def[n["id"]]
+                    fields[d["name"].lower()] = {"name": d["name"], "key": d["key"], "values": {
+                        m["displayName"]: m["id"] for m in n["metaobjects"]["nodes"]}}
+            self._store_fields = fields
+        return self._store_fields
+
+    def category_fields(self, category_gid):
+        if not category_gid:
+            return []
+        cache = self.__dict__.setdefault("_cat_fields", {})
+        if category_gid not in cache:
+            node = self.shop.graphql(CATEGORY_ATTRS, {"id": category_gid})["node"] or {}
+            cache[category_gid] = [a["name"] for a in node.get("attributes", {}).get("nodes", []) if a.get("name")]
+        return cache[category_gid]
 
     def aspects(self, category_id):
         if category_id not in self._aspects:
@@ -195,6 +235,45 @@ class Publisher:
                     ns, key = m["key"].split(".", 1)
                     plan["metafields"].append({"namespace": ns, "key": key, "type": "list.metaobject_reference",
                                                "value": json.dumps(list(dict.fromkeys(gids)))})
+            plan["warnings"] = []
+            if row.get("Other category fields"):
+                taken = {m["key"] for m in plan["metafields"]}
+                try:
+                    fields = self.store_fields()
+                except Exception as e:
+                    fields = {}
+                    plan["warnings"].append(f"Couldn't read Shopify category fields: {e}"[:200])
+                for name, vals in parse_specifics(row["Other category fields"]).items():
+                    f = fields.get(name.lower())
+                    vals = vals if isinstance(vals, list) else [vals]
+                    if not f:
+                        plan["warnings"].append(f'Shopify field "{name}" isn\'t set up in your store yet (set it once by hand)')
+                        continue
+                    if f["key"] in taken:
+                        continue
+                    lower = {k.lower(): g for k, g in f["values"].items()}
+                    gids = [lower[v.lower()] for v in vals if v.lower() in lower]
+                    unknown = [v for v in vals if v.lower() not in lower]
+                    if unknown:
+                        plan["warnings"].append(f'{f["name"]}: {", ".join(unknown)} not in your store yet (add it once by hand)')
+                    if gids:
+                        plan["metafields"].append({"namespace": "shopify", "key": f["key"],
+                                                   "type": "list.metaobject_reference", "value": json.dumps(gids)})
+            google = {"custom_product": ("boolean", "false"),
+                      "condition": ("single_line_text_field",
+                                    GOOGLE_CONDITION.get((row.get("Condition") or "New").lower(), "new"))}
+            if GOOGLE_AGE.get(row.get("Age group")):
+                google["age_group"] = ("single_line_text_field", GOOGLE_AGE[row["Age group"]])
+            if GOOGLE_GENDER.get(row.get("Target gender")):
+                google["gender"] = ("single_line_text_field", GOOGLE_GENDER[row["Target gender"]])
+            if row.get("MPN"):
+                google["mpn"] = ("single_line_text_field", row["MPN"])
+            plan["metafields"] += [{"namespace": "mm-google-shopping", "key": k, "type": t, "value": v}
+                                   for k, (t, v) in google.items()]
+            try:
+                plan["weight"] = float(row["Weight (lb)"]) if row.get("Weight (lb)") else None
+            except ValueError:
+                problems.append(f'Weight "{row["Weight (lb)"]}" isn\'t a number')
         cond = (row.get("Condition") or "New").lower()
         plan["condition"] = EBAY_CONDITIONS.get(cond)
         if not plan["condition"]:
@@ -257,7 +336,8 @@ class Publisher:
             "variants": [{
                 "optionValues": [{"optionName": "Title", "name": "Default Title"}],
                 "price": plan["shopify_price"],
-                "inventoryItem": {"tracked": True},
+                "inventoryItem": {"tracked": True, **({"measurement": {"weight": {
+                    "value": plan["weight"], "unit": "POUNDS"}}} if plan.get("weight") else {})},
                 "inventoryQuantities": [{"locationId": self.cfg.shopify_location_id, "name": "available",
                                          "quantity": plan["qty"]}],
             }],
@@ -302,7 +382,7 @@ class Publisher:
     # --- Claude fills the blue columns -----------------------------------------
 
     FILL_COLUMNS = ("Brand", "Title", "eBay title", "SEO title", "SEO description", "Description",
-                    "Product type", "Tags", "eBay specifics")
+                    "Product type", "Tags", "eBay specifics", "Other category fields")
 
     def rows_to_fill(self, offset=0, limit=10):
         """Rows whose blue columns aren't filled yet, with what eBay needs for each."""
@@ -331,6 +411,16 @@ class Publisher:
                     and a["name"] not in auto]
             except Exception as e:
                 entry["ebay_problem"] = str(e)[:200]
+            try:
+                cat_gid = self.opts["shopify_categories"].get(r.get("Shopify category"))
+                in_sheet = {k.lower() for k in self.opts["metafields"]} | {"color", "material", "recommended age group",
+                                                                          "toy/game material"}
+                fields = self.store_fields()
+                entry["shopify_category_fields"] = [
+                    {"name": n, "values_in_store": list(fields[n.lower()]["values"])[:40] if n.lower() in fields else []}
+                    for n in self.category_fields(cat_gid) if n.lower() not in in_sheet]
+            except Exception as e:
+                entry["shopify_fields_problem"] = str(e)[:200]
             batch.append(entry)
         nxt = offset + limit
         return {"rows": batch, "remaining": max(0, len(rows) - nxt), "next_offset": nxt if nxt < len(rows) else None}
@@ -370,7 +460,8 @@ class Publisher:
                 updates[row["_row"]] = {"Status": "NOT READY", "Problem": "; ".join(problems)[:500]}
                 continue
             if not confirm:
-                results.append({**base, "result": "READY", "ebay_category_id": plan["ebay_category"],
+                results.append({**base, "result": "READY", "notes": plan.get("warnings") or [],
+                                "ebay_category_id": plan["ebay_category"],
                                 "shelf": plan["shelf"], "photos": len(plan.get("photos") or [])})
                 updates[row["_row"]] = {"Status": "READY", "Problem": ""}
                 continue
@@ -385,7 +476,8 @@ class Publisher:
                     self.wait_for_photos(pid)
                 ebay_link = self.create_ebay(row, plan, pid)
                 updates[row["_row"]] = {"Status": "DONE", "Shopify link": shop_link, "eBay link": ebay_link,
-                                        "Problem": ""}
+                                        "Problem": ("Note: " + "; ".join(plan.get("warnings") or []))[:500]
+                                        if plan.get("warnings") else ""}
                 results.append({**base, "result": "DONE", "shopify": shop_link, "ebay": ebay_link})
             except sheet_io.SheetOpenError:
                 raise

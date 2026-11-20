@@ -379,6 +379,9 @@ def listing_sheet_fill(fills: list, sheet_path: str = "") -> dict:
     notes support (Franchise, TV Show, Movie, Character, Animation Studio, Type, Features,
     Unit Quantity, Unit Type...), using only allowed values where only_these is true.
     ebay_specifics_from_sheet are added automatically from her dropdowns: don't repeat them.
+    "Other category fields": Shopify category fields for that row's Shopify category
+    (shopify_category_fields), as "Field: value; value | Field: value". Prefer values_in_store.
+    Only facts from her notes (e.g. Power source for a night light).
     Never fill dimensions, year, country or MPN unless she wrote them. Never set a Custom
     SKU: the tool always uses the Shopify product number. Tell her to close the sheet in
     Excel first.
