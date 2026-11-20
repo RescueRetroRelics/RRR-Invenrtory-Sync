@@ -386,11 +386,12 @@ class Publisher:
 
     def rows_to_fill(self, offset=0, limit=10):
         """Rows whose blue columns aren't filled yet, with what eBay needs for each."""
-        rows = [r for r in sheet_io.read(self.path)
-                if r.get("Status", "").upper() != "DONE"
-                and not all(r.get(c) for c in ("Title", "eBay title", "SEO title", "SEO description", "Description"))]
+        rows = [r for r in sheet_io.read(self.path) if r.get("Status", "").upper() != "DONE"]
+        needs = lambda r: not all(r.get(c) for c in ("Title", "eBay title", "SEO title", "SEO description", "Description"))
         batch = []
         for r in rows[offset:offset + limit]:
+            if not needs(r):
+                continue
             entry = {k: r.get(k, "") for k in sheet_io.YOURS + ("Condition", "eBay store category", "eBay category",
                      "Shopify category", "Toy figure theme", "Theme", "Color", "Color 2", "Material", "Brand")}
             entry["row"] = r["_row"]
@@ -423,7 +424,8 @@ class Publisher:
                 entry["shopify_fields_problem"] = str(e)[:200]
             batch.append(entry)
         nxt = offset + limit
-        return {"rows": batch, "remaining": max(0, len(rows) - nxt), "next_offset": nxt if nxt < len(rows) else None}
+        return {"rows": batch, "still_to_fill_after_this": sum(1 for r in rows[nxt:] if needs(r)),
+                "next_offset": nxt if nxt < len(rows) else None}
 
     def fill(self, fills):
         """fills: [{"row": 2, "Title": ..., "eBay title": ..., ...}]. Checks length limits."""
@@ -444,7 +446,10 @@ class Publisher:
 
     def run(self, confirm=False, limit=None, rows=None):
         all_rows = sheet_io.read(self.path)
-        todo = [r for r in all_rows if r.get("Status", "").upper() != "DONE"]
+        if confirm:   # only rows that passed the dry run (or need their eBay half retried)
+            todo = [r for r in all_rows if r.get("Status", "").upper() in ("READY", "SHOPIFY ONLY")]
+        else:
+            todo = [r for r in all_rows if r.get("Status", "").upper() != "DONE"]
         if rows:
             want = {int(x) for x in rows}
             todo = [r for r in todo if r["_row"] in want]
@@ -492,7 +497,9 @@ class Publisher:
         summary = {}
         for r in results:
             summary[r["result"]] = summary.get(r["result"], 0) + 1
-        return {"dry_run": not confirm, "summary": summary, "rows": results}
+        left = sum(1 for r in sheet_io.read(self.path) if r.get("Status", "").upper() in ("READY", "SHOPIFY ONLY"))
+        return {"dry_run": not confirm, "summary": summary, "rows": results,
+                "ready_rows_left": left if confirm else None}
 
 
 def _multipart(fields, path):

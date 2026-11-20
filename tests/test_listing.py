@@ -169,8 +169,24 @@ class RunTest(Base):
         p._shop.graphql.assert_not_called()
         self.assertEqual(sheet_io.read(self.path)[0]["Status"], "READY")
 
+    def test_confirm_only_lists_rows_that_passed_dry_run_and_batches_finish(self):
+        self.put(GOOD)
+        self.put({**GOOD, "eBay price": ""}, row=3)
+        p = pub.Publisher(self.cfg, self.path)
+        p._shop = self.fake_shop()
+        self.assertEqual(p.run(confirm=True)["summary"], {})   # nothing READY yet: dry run first
+        self.assertEqual(p.run(confirm=False)["summary"], {"READY": 1, "NOT READY": 1})
+        with mock.patch.object(http, "request", return_value=(204, "")), \
+             mock.patch.object(el, "create_draft", return_value={"offer_id": "O1"}), \
+             mock.patch.object(el, "publish", return_value={"url": "https://www.ebay.com/itm/1"}):
+            first = p.run(confirm=True, limit=1)
+            second = p.run(confirm=True, limit=1)
+        self.assertEqual((first["summary"], first["ready_rows_left"]), ({"DONE": 1}, 0))
+        self.assertEqual(second["summary"], {})   # the NOT READY row isn't retried forever
+
     def test_confirm_creates_shopify_then_ebay_and_marks_done(self):
         self.put(GOOD)
+        self.put({"Status": "READY"})
         p = pub.Publisher(self.cfg, self.path)
         p._shop = self.fake_shop()
         with mock.patch.object(http, "request", return_value=(204, "")) as up, \
@@ -198,7 +214,7 @@ class RunTest(Base):
         self.assertEqual(p.run(confirm=True)["summary"], {})
 
     def test_ebay_failure_keeps_shopify_and_retry_only_does_ebay(self):
-        self.put(GOOD)
+        self.put({**GOOD, "Status": "READY"})
         p = pub.Publisher(self.cfg, self.path)
         p._shop = self.fake_shop()
         with mock.patch.object(http, "request", return_value=(204, "")), \
@@ -225,6 +241,8 @@ class FillTest(Base):
         p = pub.Publisher(self.cfg, self.path)
         todo = p.rows_to_fill()
         self.assertEqual([r["row"] for r in todo["rows"]], [2, 3])
+        # batching is stable: filling row 2 doesn't make the next batch skip a row
+        self.assertEqual([r["row"] for r in p.rows_to_fill(offset=1, limit=1)["rows"]], [3])
         needed = {n["name"]: n["need"] for n in todo["rows"][0]["ebay_specifics_needed"]}
         self.assertEqual(needed["Brand"], "REQUIRED")
         self.assertEqual(needed["Franchise"], "Stephanie fills this")

@@ -44,7 +44,13 @@ RULES = """Rules for Stephanie's eBay listings. They are not optional.
 7. Before ebay_publish_offer: run ebay_listing_report on the offer, show her, and publish
    only after she says go. She can't edit API listings by hand, so they must be right.
 8. Bulk fixes (store categories, item specifics): build the sheet, she reviews it, dry run
-   (confirm=false), show the summary, and only then confirm=true when she says so."""
+   (confirm=false), show the summary, and only then confirm=true when she says so.
+9. Listing sheet: she hands you ONE sheet. Work through ALL of it on your own in batches
+   (listing_sheet_rows / listing_sheet_fill, following next_offset until it's null) without
+   stopping to ask between batches. Then one dry run of the whole sheet, one short summary
+   (how many READY, what's NOT READY and why). Her single "go" covers the whole sheet:
+   call listing_sheet_run(confirm=true, limit=5) again and again until ready_rows_left is 0,
+   with a one-line progress note each time. Report DONE/FAILED counts and links at the end."""
 
 try:
     mcp = _Server("rrr-ebay", instructions=RULES)
@@ -354,6 +360,9 @@ def _publisher(path):
 def listing_sheet_rows(sheet_path: str = "", offset: int = 0, limit: int = 10) -> dict:
     """LISTING SHEET step 1: rows still needing titles/SEO/description/specifics.
 
+    Call with offset=0, fill that batch, then call again with next_offset until next_offset
+    is null. Do the whole sheet without stopping to ask Stephanie between batches.
+
     Each row has Stephanie's notes, prices and dropdown picks, plus the eBay specifics
     that row's eBay category needs (with allowed values). Write from her notes and the
     photos folder name only: never invent details (sizes, years, materials) she didn't give.
@@ -402,6 +411,9 @@ def listing_sheet_run(confirm: bool = False, limit: int = 0, rows: Optional[list
     Shopify (photos, SEO, metafields, all sales channels) then eBay, writing DONE / FAILED
     and links into the sheet. Reruns skip DONE rows. limit: max rows this run (0 = all).
     rows: specific sheet row numbers. Only confirm=true after Stephanie says go.
+    confirm=true only lists rows the dry run marked READY (plus SHOPIFY ONLY retries).
+    For a big sheet use limit=5 and repeat until ready_rows_left is 0: one "go" from her
+    covers the whole sheet.
     """
     try:
         return {"ok": True, **_publisher(sheet_path).run(confirm=confirm, limit=limit or None, rows=rows)}
