@@ -265,3 +265,51 @@ class ReportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FastFixTest(unittest.TestCase):
+    SHELF = {"id": "11", "name": "Disney", "path": "/Funko/Disney", "leaf": True}
+
+    def _run(self, fixes, confirm, offer=None):
+        offer = offer or {"offerId": "9", "sku": "111111", "status": "PUBLISHED", "categoryId": "149372",
+                          "listing": {"listingId": "2001"}}
+        with mock.patch.object(inv, "offers_for_sku", return_value=[offer]), \
+             mock.patch.object(inv, "item_aspects", return_value=ASPECTS), \
+             mock.patch.object(store, "store_categories", return_value=[self.SHELF]), \
+             mock.patch.object(inv, "get_inventory_item", return_value={"product": {"title": "t", "aspects": {}}}), \
+             mock.patch.object(inv, "put_inventory_item") as put, \
+             mock.patch.object(inv, "update_offer") as upd, \
+             mock.patch.object(inv, "publish_offer") as pub:
+            result = spec.fix_listings(cfg(), fixes, confirm=confirm)
+        return result, put, upd, pub
+
+    def test_dry_run_touches_nothing(self):
+        result, put, upd, pub = self._run(
+            [{"sku": "111111", "specifics": {"Brand": "Funko"}, "store_category": "Disney"}], False)
+        self.assertEqual(result["summary"], {"WOULD FIX": 1})
+        put.assert_not_called(); upd.assert_not_called(); pub.assert_not_called()
+
+    def test_confirm_sets_specifics_and_shelf(self):
+        result, put, upd, pub = self._run([{"sku": "111111", "store_category": "Disney",
+                                            "specifics": {"Brand": "Funko", "Type": "vinyl figure",
+                                                          "Character": ["Mickey Mouse", "Minnie"]}}], True)
+        self.assertEqual(result["summary"], {"FIXED": 1})
+        self.assertEqual(put.call_args[0][2]["product"]["aspects"],
+                         {"Brand": ["Funko"], "Type": ["Vinyl Figure"], "Character": ["Mickey Mouse", "Minnie"]})
+        self.assertEqual(upd.call_args[0][2]["storeCategoryNames"], ["/Funko/Disney"])
+        pub.assert_called_once()
+
+    def test_bad_value_or_shelf_skips_listing(self):
+        result, put, upd, _ = self._run([{"sku": "111111", "specifics": {"Type": "Golf Club"}}], True)
+        self.assertEqual(result["summary"], {"BAD VALUES": 1})
+        put.assert_not_called()
+        result, put, upd, _ = self._run([{"sku": "111111", "specifics": {"Brand": "Funko"},
+                                          "store_category": "Golf"}], True)
+        self.assertEqual(result["summary"], {"BAD VALUES": 1})
+        put.assert_not_called(); upd.assert_not_called()
+
+    def test_no_live_listing_fails_cleanly(self):
+        result, put, *_ = self._run([{"sku": "111111", "specifics": {"Brand": "Funko"}}], True,
+                                    offer={"offerId": "9", "sku": "111111", "status": "UNPUBLISHED"})
+        self.assertEqual(result["summary"], {"FAILED": 1})
+        put.assert_not_called()

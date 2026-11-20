@@ -303,6 +303,39 @@ def ebay_apply_item_specifics(csv_path: str, confirm: bool = False) -> dict:
         return _fail("ebay_apply_item_specifics", e)
 
 
+@mcp.tool()
+def ebay_listings_to_fix(offset: int = 0, limit: int = 20) -> dict:
+    """FAST FIX step 1: next batch of live listings missing item specifics or a store shelf.
+
+    For each: title, eBay category, Shopify description, specifics it has, and the
+    required/recommended specifics it's missing (with eBay's allowed values).
+    Fill values ONLY from the title, the Shopify description, or what Stephanie told you.
+    Leave out anything you'd be guessing. Then call ebay_fix_listings. Use next_offset for
+    the next batch until it's null.
+    """
+    try:
+        return {"ok": True, **ebay_specifics.listings_to_fix(_cfg(), offset=offset, limit=limit)}
+    except Exception as e:
+        return _fail("ebay_listings_to_fix", e)
+
+
+@mcp.tool()
+def ebay_fix_listings(fixes: list, confirm: bool = False) -> dict:
+    """FAST FIX step 2: add item specifics and a store shelf to live listings, no relisting.
+
+    fixes: [{"sku": "...", "specifics": {"Brand": "Funko", "Character": ["Snoopy", "Lucy"]},
+             "store_category": "/Peanuts"}]
+    Every value is checked against eBay's rules; a listing with a bad value is skipped and
+    reported. confirm=false = dry run. Show Stephanie the dry run as a short table (sku,
+    title, what's being added); on her go, call again with confirm=true. Stephanie has said
+    she wants these done fast: after her first OK she may approve whole batches at once.
+    """
+    try:
+        return {"ok": True, **ebay_specifics.fix_listings(_cfg(), fixes, confirm=confirm)}
+    except Exception as e:
+        return _fail("ebay_fix_listings", e)
+
+
 def _self_check():
     """Terminal smoke test: real eBay calls, results on stderr."""
     auth = ebay_check_auth()
