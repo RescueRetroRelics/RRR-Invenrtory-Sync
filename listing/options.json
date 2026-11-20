@@ -168,5 +168,26 @@
     "Disneyana Pixar Figurines": "Collectibles > Disneyana > Contemporary (1968-Now) > Figurines > Pixar Characters",
     "Disneyana Toy Story Pins": "Collectibles > Disneyana > Contemporary (1968-Now) > Pins, Patches & Buttons > Disney Characters & Movies > Toy Story"
   },
-  "_ebay_category_note": "Picking a category from the dropdown counts as Stephanie approving it, so the eBay-suggestion check is skipped for those. Blank = Claude picks from eBay's suggestions (checked)."
+  "_ebay_category_note": "Picking a category from the dropdown counts as Stephanie approving it, so the eBay-suggestion check is skipped for those. Blank = Claude picks from eBay's suggestions (checked).",
+  "ebay_specifics_wanted": [
+    "Franchise",
+    "TV Show",
+    "Brand",
+    "Character",
+    "Material",
+    "Color",
+    "Country of Origin",
+    "Year Manufactured",
+    "Type",
+    "Theme",
+    "Animation Studio",
+    "Movie",
+    "Features",
+    "Item Height",
+    "Item Length",
+    "Item Width",
+    "MPN",
+    "Unit Quantity",
+    "Unit Type"
+  ]
 }

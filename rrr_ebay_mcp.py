@@ -19,6 +19,11 @@ except ImportError:  # mcp 2.x renamed it
 from rrr_sync import ebay, ebay_auth, ebay_inventory, ebay_listings, ebay_specifics, ebay_store
 from rrr_sync.config import Config
 
+try:   # needs: pip install openpyxl
+    from listing.publisher import Publisher
+except ImportError:
+    Publisher = None
+
 logging.basicConfig(stream=sys.stderr, level=logging.INFO, format="%(asctime)s rrr-ebay %(message)s")
 log = logging.getLogger("rrr-ebay")
 
@@ -334,6 +339,71 @@ def ebay_fix_listings(fixes: list, confirm: bool = False) -> dict:
         return {"ok": True, **ebay_specifics.fix_listings(_cfg(), fixes, confirm=confirm)}
     except Exception as e:
         return _fail("ebay_fix_listings", e)
+
+
+DEFAULT_SHEET = Path(__file__).resolve().parent / "RRR_Listing_Sheet.xlsx"
+
+
+def _publisher(path):
+    if Publisher is None:
+        raise RuntimeError("Run this once in a terminal: pip install openpyxl")
+    return Publisher(_cfg(), path or str(DEFAULT_SHEET))
+
+
+@mcp.tool()
+def listing_sheet_rows(sheet_path: str = "", offset: int = 0, limit: int = 10) -> dict:
+    """LISTING SHEET step 1: rows still needing titles/SEO/description/specifics.
+
+    Each row has Stephanie's notes, prices and dropdown picks, plus the eBay specifics
+    that row's eBay category needs (with allowed values). Write from her notes and the
+    photos folder name only: never invent details (sizes, years, materials) she didn't give.
+    sheet_path defaults to RRR_Listing_Sheet.xlsx next to this tool.
+    """
+    try:
+        return {"ok": True, **_publisher(sheet_path).rows_to_fill(offset, limit)}
+    except Exception as e:
+        return _fail("listing_sheet_rows", e)
+
+
+@mcp.tool()
+def listing_sheet_fill(fills: list, sheet_path: str = "") -> dict:
+    """LISTING SHEET step 2: write the blue columns for rows from listing_sheet_rows.
+
+    fills: [{"row": 2, "Brand": "Funko", "Title": "...", "eBay title": "... (max 80)",
+             "SEO title": "... (max 70)", "SEO description": "... (max 160)",
+             "Description": "...", "Product type": "...", "Tags": "tag, tag",
+             "eBay specifics": "Brand: Funko | Character: Snoopy; Woodstock | Type: Vinyl Figure"}]
+    Style: match Stephanie's existing Shopify listings (Peanuts/Miniso style titles, kawaii,
+    gift-for-fans SEO descriptions). Her standard RRR tags are added automatically.
+    Fill every REQUIRED eBay specific, and every one marked "Stephanie fills this" that her
+    notes support (Franchise, TV Show, Movie, Character, Animation Studio, Type, Features,
+    Unit Quantity, Unit Type...), using only allowed values where only_these is true.
+    ebay_specifics_from_sheet are added automatically from her dropdowns: don't repeat them.
+    Never fill dimensions, year, country or MPN unless she wrote them. Never set a Custom
+    SKU: the tool always uses the Shopify product number. Tell her to close the sheet in
+    Excel first.
+    """
+    try:
+        return {"ok": True, **_publisher(sheet_path).fill(fills)}
+    except Exception as e:
+        return _fail("listing_sheet_fill", e)
+
+
+@mcp.tool()
+def listing_sheet_run(confirm: bool = False, limit: int = 0, rows: Optional[list] = None,
+                      sheet_path: str = "") -> dict:
+    """LISTING SHEET step 3: list rows on Shopify AND eBay.
+
+    confirm=false (default): checks every row and marks it READY or NOT READY (with the
+    reasons) in the sheet. Nothing is created. confirm=true: creates each READY row on
+    Shopify (photos, SEO, metafields, all sales channels) then eBay, writing DONE / FAILED
+    and links into the sheet. Reruns skip DONE rows. limit: max rows this run (0 = all).
+    rows: specific sheet row numbers. Only confirm=true after Stephanie says go.
+    """
+    try:
+        return {"ok": True, **_publisher(sheet_path).run(confirm=confirm, limit=limit or None, rows=rows)}
+    except Exception as e:
+        return _fail("listing_sheet_run", e)
 
 
 def _self_check():

@@ -212,6 +212,27 @@ Add to `%APPDATA%\Claude\claude_desktop_config.json`, then restart Claude Deskto
 }
 ```
 
+## Listing sheet: new items on Shopify AND eBay
+
+No Shopify CSV import. The tool creates each product through Shopify's API, then lists it on eBay.
+
+One-time setup:
+1. `pip install openpyxl`
+2. Shopify Dev Dashboard → your RRR app → new version with these scopes **added** to the existing
+   ones: `write_products`, `write_files`, `read_publications`, `write_publications`. Release, then
+   approve the update in Shopify admin. (Delete `.secrets/shopify_token.json` so a fresh token is fetched.)
+3. Put `RRR_Listing_Sheet.xlsx` next to `rrr_ebay_mcp.py` (rebuild any time: `python -m listing.make_sheet`),
+   and a `listing_photos` folder next to it with one folder per item (`001`, `002`, ...).
+
+Then in Claude Desktop:
+- *"Fill in my listing sheet"*: Claude writes titles, SEO title/description, description, tags, eBay specifics.
+- *"Dry run my listing sheet"*: every row is marked READY or NOT READY (with the reason). Nothing is created.
+- *"List them"* (or *"list the first 20"*): each READY row goes to Shopify (photos, SEO, category
+  metafields, all sales channels) then eBay. DONE / SHOPIFY ONLY / FAILED and links are written in the sheet.
+  Rerunning skips DONE rows and retries just the eBay half of SHOPIFY ONLY rows.
+
+Dropdown values live in `listing/options.json` (pulled from the store's real Shopify values).
+
 ## Files
 
 ```
