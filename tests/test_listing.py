@@ -50,6 +50,7 @@ class Base(unittest.TestCase):
         (self.dir / "listing_photos" / "001").mkdir(parents=True)
         (self.dir / "listing_photos" / "001" / "b.jpg").write_bytes(b"jpgdata")
         (self.dir / "listing_photos" / "001" / "a.jpg").write_bytes(b"jpgdata")
+        (self.dir / "listing_photos" / "001" / "Barcode.jpg").write_bytes(b"jpgdata")
         self.cfg = mock.Mock(shopify_location_id="gid://shopify/Location/1", shopify_domain="x.myshopify.com")
         patches = [
             mock.patch.object(inv, "category_suggestions", return_value=[{"category_id": "13516", "path": GO_TO}]),

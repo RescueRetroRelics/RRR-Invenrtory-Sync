@@ -61,7 +61,9 @@ def photos_for(sheet_path, folder):
     d = Path(sheet_path).resolve().parent / "listing_photos" / str(folder).strip()
     if not folder or not d.is_dir():
         return []
-    return sorted(p for p in d.iterdir() if p.suffix.lower() in PHOTO_EXT)
+    # a photo named barcode*.jpg is Stephanie's reference shot, never a listing photo
+    return sorted(p for p in d.iterdir()
+                  if p.suffix.lower() in PHOTO_EXT and not p.name.lower().startswith("barcode"))
 
 
 def parse_specifics(text):
