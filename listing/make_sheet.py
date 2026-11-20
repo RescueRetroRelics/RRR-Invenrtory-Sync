@@ -48,6 +48,7 @@ COLUMNS = [
     ("Country of origin", YOU, 12, None, "Optional, e.g. China"),
     ("Year made", YOU, 9, None, "Optional, e.g. 2025"),
     ("MPN", YOU, 12, None, "Optional. Model/part number on the box"),
+    ("UPC / barcode", YOU, 15, None, "Optional but BIG for Google, AI shopping and eBay: the number under the barcode on the box"),
     ("Weight (lb)", YOU, 9, None, "Optional. Only matters if you add expedited shipping later"),
     ("Brand", CLAUDE, 16, None, "Claude fills from your notes (you can too)"),
     ("Title", CLAUDE, 45, None, "Shopify title"),

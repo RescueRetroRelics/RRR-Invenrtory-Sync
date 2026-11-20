@@ -152,6 +152,15 @@ class InventoryApiTest(unittest.TestCase):
         self.assertEqual(offer["pricingSummary"]["price"]["value"], "31.99")
         self.assertEqual(offer["availableQuantity"], 1)
 
+    def test_create_draft_sends_barcode_to_ebay(self):
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY), \
+             mock.patch.object(el, "merchant_location_key", return_value="RRR"):
+            el.create_draft(cfg(), "15420259402024", price="9.99", barcode="012345678905")
+            el.create_draft(cfg(), "15420259402024", price="9.99", barcode="4006381333931")
+        items = self.fake.bodies("PUT", "/inventory_item/")
+        self.assertEqual(items[0]["product"]["upc"], ["012345678905"])
+        self.assertEqual(items[1]["product"]["ean"], ["4006381333931"])
+
     def test_update_price_on_live_listing_republishes(self):
         self.fake.offers["308888822011"]["status"] = "PUBLISHED"
         result = el.update_price(cfg(), "308888822011", "19.99")

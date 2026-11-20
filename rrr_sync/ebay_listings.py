@@ -204,7 +204,7 @@ def check_category(cfg, category_id, titles, confirmed=False):
 
 def create_draft(cfg, shopify_product_id, price, category_id=None, quantity=None,
                  condition=DEFAULT_CONDITION, title=None, aspects=None, image_urls=None,
-                 category_confirmed=False, store_category=None):
+                 category_confirmed=False, store_category=None, barcode=None):
     """Build an eBay inventory item + unpublished offer from a Shopify product.
 
     price: the eBay price Stephanie gives. Required; nothing is worked out from Shopify.
@@ -238,6 +238,8 @@ def create_draft(cfg, shopify_product_id, price, category_id=None, quantity=None
     }
     if aspects:
         item["product"]["aspects"] = _aspects(aspects)
+    if barcode:   # catalog matching on eBay
+        item["product"]["ean" if len(barcode) == 13 else "upc"] = [barcode]
     inv.put_inventory_item(cfg, sku, item)
 
     offer = {

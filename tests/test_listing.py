@@ -84,6 +84,16 @@ class HelpersTest(unittest.TestCase):
             self.assertTrue(wb["Listings"].data_validations.dataValidation)
 
 
+class SeoHelpersTest(unittest.TestCase):
+    def test_barcode_and_description(self):
+        self.assertEqual(pub.clean_barcode("0 12345-67890 5"), "012345678905")
+        self.assertIsNone(pub.clean_barcode(""))
+        with self.assertRaises(ValueError):
+            pub.clean_barcode("12345")
+        self.assertEqual(pub.description_html("Snoopy figure.\n- Brand: Funko\n- Size: 3 in\nGreat gift."),
+                         "<p>Snoopy figure.</p><ul><li>Brand: Funko</li><li>Size: 3 in</li></ul><p>Great gift.</p>")
+
+
 class PreflightTest(Base):
     def test_good_row_is_ready_and_maps_metafields(self):
         self.put(GOOD)
@@ -185,7 +195,7 @@ class RunTest(Base):
         self.assertEqual(second["summary"], {})   # the NOT READY row isn't retried forever
 
     def test_confirm_creates_shopify_then_ebay_and_marks_done(self):
-        self.put(GOOD)
+        self.put({**GOOD, "UPC / barcode": "0 12345 67890 5"})
         self.put({"Status": "READY"})
         p = pub.Publisher(self.cfg, self.path)
         p._shop = self.fake_shop()
@@ -200,6 +210,9 @@ class RunTest(Base):
         self.assertEqual(inp["variants"][0]["price"], "15.99")
         self.assertEqual(inp["variants"][0]["inventoryQuantities"][0]["quantity"], 2)
         self.assertNotIn("measurement", inp["variants"][0]["inventoryItem"])   # no weight given
+        self.assertEqual(inp["variants"][0]["barcodes"], [{"type": "UPC", "value": "012345678905"}])
+        self.assertEqual([f["alt"] for f in inp["files"]], ["Funko Snoopy Figure", "Funko Snoopy Figure - photo 2"])
+        self.assertEqual(draft.call_args.kwargs["barcode"], "012345678905")
         self.assertIn("Bailee's Legacy", inp["tags"])
         self.assertEqual(inp["descriptionHtml"], "<p>Line one</p><p>Line two</p>")
         self.assertEqual(len(p._shop.published), 2)

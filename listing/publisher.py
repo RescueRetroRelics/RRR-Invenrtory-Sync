@@ -77,6 +77,34 @@ def parse_specifics(text):
     return out
 
 
+def clean_barcode(v):
+    """'0 12345 67890 5' -> '012345678905'. None if blank; ValueError if it can't be a barcode."""
+    digits = re.sub(r"[\s-]", "", str(v or ""))
+    if not digits:
+        return None
+    if not digits.isdigit() or len(digits) not in (8, 12, 13, 14):
+        raise ValueError(f'UPC/barcode "{v}" should be 8, 12, 13 or 14 digits')
+    return digits
+
+
+def description_html(text):
+    """Plain text -> HTML. Lines starting with '-' or '•' become a bullet list."""
+    if "<" in text:
+        return text
+    out, bullets = [], []
+    for line in [l.strip() for l in text.split("\n") if l.strip()]:
+        if line[0] in "-•*":
+            bullets.append(f"<li>{line.lstrip('-•* ').strip()}</li>")
+            continue
+        if bullets:
+            out.append("<ul>" + "".join(bullets) + "</ul>")
+            bullets = []
+        out.append(f"<p>{line}</p>")
+    if bullets:
+        out.append("<ul>" + "".join(bullets) + "</ul>")
+    return "".join(out)
+
+
 def _money(v):
     try:
         return el.ebay_price(v)
@@ -274,6 +302,13 @@ class Publisher:
                 plan["weight"] = float(row["Weight (lb)"]) if row.get("Weight (lb)") else None
             except ValueError:
                 problems.append(f'Weight "{row["Weight (lb)"]}" isn\'t a number')
+        try:
+            plan["barcode"] = clean_barcode(row.get("UPC / barcode"))
+        except ValueError as e:
+            problems.append(str(e))
+        if need_shopify and plan.get("barcode"):
+            plan["metafields"].append({"namespace": "mm-google-shopping", "key": "gtin",
+                                       "type": "single_line_text_field", "value": plan["barcode"]})
         cond = (row.get("Condition") or "New").lower()
         plan["condition"] = EBAY_CONDITIONS.get(cond)
         if not plan["condition"]:
@@ -314,7 +349,9 @@ class Publisher:
             fields = [(p["name"], p["value"]) for p in t["parameters"]]
             body, ctype = _multipart(fields, f)
             http.request("POST", t["url"], headers={"Content-Type": ctype}, body=body, timeout=120)
-            out.append({"originalSource": t["resourceUrl"], "contentType": "IMAGE", "alt": alt[:120]})
+            n = len(out) + 1
+            out.append({"originalSource": t["resourceUrl"], "contentType": "IMAGE",
+                        "alt": (alt if n == 1 else f"{alt} - photo {n}")[:120]})
         return out
 
     def create_shopify(self, row, plan):
@@ -323,8 +360,7 @@ class Publisher:
         tags = list(dict.fromkeys(tags + self.opts["standard_tags"]))
         product = {
             "title": row["Title"],
-            "descriptionHtml": row["Description"] if "<" in row["Description"]
-                               else "".join(f"<p>{p.strip()}</p>" for p in row["Description"].split("\n") if p.strip()),
+            "descriptionHtml": description_html(row["Description"]),
             "vendor": row.get("Brand") or None,
             "productType": row.get("Product type") or None,
             "tags": tags,
@@ -336,6 +372,8 @@ class Publisher:
             "variants": [{
                 "optionValues": [{"optionName": "Title", "name": "Default Title"}],
                 "price": plan["shopify_price"],
+                **({"barcodes": [{"type": {12: "UPC", 13: "EAN"}.get(len(plan["barcode"]), "GTIN"),
+                                  "value": plan["barcode"]}]} if plan.get("barcode") else {}),
                 "inventoryItem": {"tracked": True, **({"measurement": {"weight": {
                     "value": plan["weight"], "unit": "POUNDS"}}} if plan.get("weight") else {})},
                 "inventoryQuantities": [{"locationId": self.cfg.shopify_location_id, "name": "available",
@@ -375,6 +413,7 @@ class Publisher:
             self.cfg, pid, plan["ebay_price"], category_id=plan["ebay_category"], quantity=1,
             condition=plan["condition"], title=row["eBay title"], aspects=plan["specifics"],
             category_confirmed=plan["category_confirmed"], store_category=plan["shelf"],
+            barcode=plan.get("barcode"),
         )
         pub = el.publish(self.cfg, draft["offer_id"], category_confirmed=plan["category_confirmed"])
         return pub["url"]

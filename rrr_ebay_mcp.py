@@ -382,8 +382,21 @@ def listing_sheet_fill(fills: list, sheet_path: str = "") -> dict:
              "SEO title": "... (max 70)", "SEO description": "... (max 160)",
              "Description": "...", "Product type": "...", "Tags": "tag, tag",
              "eBay specifics": "Brand: Funko | Character: Snoopy; Woodstock | Type: Vinyl Figure"}]
-    Style: match Stephanie's existing Shopify listings (Peanuts/Miniso style titles, kawaii,
-    gift-for-fans SEO descriptions). Her standard RRR tags are added automatically.
+    WRITING RULES (Google, AI shopping like ChatGPT/Gemini, and eBay Cassini):
+    - eBay title: use as much of the 80 characters as the facts allow, keywords first:
+      Brand, Franchise, Character, item type, key details (size, set count, edition), NEW.
+      No filler (L@@K, WOW, rare, cute), no repeated words, no punctuation clutter.
+    - Title (Shopify): Brand + Franchise + Character + item type + key detail, readable.
+    - SEO title: 50-60 characters, Brand + Character + item type. No store name.
+    - SEO description: 140-160 characters: what it is, who it's a gift for, then
+      "Ships fast from Michigan. Free shipping $65+." if it fits.
+    - Description: FIRST sentence says plainly what it is (brand, character, item type, size):
+      AI tools quote it. Then a fact list, one per line starting with "- ": Brand, Franchise,
+      Character, Size (only if given), What's included, Condition. Then one line on who it's a
+      great gift for. Short. Match her voice: warm, kawaii, gift-focused. No made-up facts.
+    - Product type: short noun phrase like her existing ones ("Snoopy Plush Keychain").
+    - Tags: franchise, characters, item type, gift terms. Her standard RRR tags are added
+      automatically.
     Fill every REQUIRED eBay specific, and every one marked "Stephanie fills this" that her
     notes support (Franchise, TV Show, Movie, Character, Animation Studio, Type, Features,
     Unit Quantity, Unit Type...), using only allowed values where only_these is true.
