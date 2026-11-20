@@ -159,6 +159,29 @@ Needs Python 3.10+ and `pip install mcp` (1.x or 2.x both work).
 | `ebay_suggest_category`    | eBay's suggested leaf categories for a product (fixes "not a leaf category") |
 | `ebay_get_active_listings` | all live listings, including Seller Hub ones |
 | `ebay_get_orders`          | orders since a date |
+| `ebay_listing_report`      | **the** listing sheet: live eBay + Shopify data, saved to `reports/` as a CSV |
+| `ebay_store_categories`    | your eBay store's shelves |
+| `ebay_category_specifics`  | item specifics eBay requires/recommends for a category |
+| `ebay_store_category_sheet` / `ebay_apply_store_categories` | bulk fix: listings stuck in "Other" |
+| `ebay_item_specifics_sheet` / `ebay_apply_item_specifics`   | bulk fix: missing item specifics |
+
+Guards (API listings can't be edited by hand in Seller Hub, so they have to be right going in):
+- A category eBay doesn't suggest for the item is refused (no more toys listed as Golf Clubs).
+- No store category, no publish (nothing lands in "Other").
+- The server gives Claude standing rules: no invented IDs/titles/numbers, summaries only from
+  `ebay_listing_report`, and a preview + your OK before anything goes live.
+
+### Fixing listings already out there
+
+Both bulk fixes work the same way, and nothing changes until the last step:
+
+1. Ask Claude: *"run ebay_item_specifics_sheet"* (or `ebay_store_category_sheet`). A CSV lands in
+   `reports/`. Guesses taken from the title say **CHECK IT**.
+2. Open it in Excel, fill/fix the `new_value` (or `new_category`) column, save as CSV. Blank = skip.
+   Several values for one specific: `Mickey Mouse | Minnie Mouse`.
+3. *"dry run ebay_apply_item_specifics on <that csv>"*: checks every row against eBay, changes nothing.
+4. Happy with the summary: *"apply it with confirm=true"*. Live listings update; item numbers,
+   watchers and sales history stay.
 
 Built-in rules: **price is whatever you tell Claude**. Nothing is calculated from Shopify, and
 Claude asks if you haven't said. Quantity 1, Best Offer on (no floor), condition NEW, SKU = Shopify

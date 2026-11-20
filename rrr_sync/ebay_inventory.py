@@ -195,3 +195,31 @@ def category_name(cfg, category_id):
         raise EbayApiError(e.status, [{"message": e.body[:500]}], url) from None
     node = json.loads(text).get("categorySubtreeNode", {})
     return node.get("category", {}).get("categoryName")
+
+
+def item_aspects(cfg, category_id):
+    """Item specifics eBay wants for a category:
+    [{"name", "required", "usage" (RECOMMENDED/OPTIONAL), "mode" (FREE_TEXT/SELECTION_ONLY),
+      "multi" (bool), "values" [allowed/suggested values]}], required first, then recommended."""
+    url = TAXONOMY_API + "/get_item_aspects_for_category?" + urllib.parse.urlencode({"category_id": category_id})
+    try:
+        _, text = http.request("GET", url, headers=headers(get_access_token(cfg)))
+    except http.HttpError as e:
+        raise EbayApiError(e.status, [{"message": e.body[:500]}], url) from None
+    return parse_item_aspects(json.loads(text))
+
+
+def parse_item_aspects(data):
+    out = []
+    for a in data.get("aspects", []):
+        c = a.get("aspectConstraint", {})
+        out.append({
+            "name": a.get("localizedAspectName", ""),
+            "required": bool(c.get("aspectRequired")),
+            "usage": c.get("aspectUsage", "OPTIONAL"),
+            "mode": c.get("aspectMode", "FREE_TEXT"),
+            "multi": c.get("itemToAspectCardinality") == "MULTI",
+            "values": [v.get("localizedValue", "") for v in a.get("aspectValues", [])],
+        })
+    out.sort(key=lambda a: (not a["required"], a["usage"] != "RECOMMENDED"))
+    return out

@@ -8,6 +8,7 @@ stdout belongs to the MCP protocol. Never print() here: log to stderr instead.
 
 import logging
 import sys
+from pathlib import Path
 from typing import Optional
 
 try:  # mcp 1.x
@@ -15,13 +16,35 @@ try:  # mcp 1.x
 except ImportError:  # mcp 2.x renamed it
     from mcp.server.mcpserver import MCPServer as _Server
 
-from rrr_sync import ebay, ebay_auth, ebay_inventory, ebay_listings
+from rrr_sync import ebay, ebay_auth, ebay_inventory, ebay_listings, ebay_specifics, ebay_store
 from rrr_sync.config import Config
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO, format="%(asctime)s rrr-ebay %(message)s")
 log = logging.getLogger("rrr-ebay")
 
-mcp = _Server("rrr-ebay")
+REPORTS = Path(__file__).resolve().parent / "reports"   # CSVs Stephanie opens in Excel
+
+RULES = """Rules for Stephanie's eBay listings. They are not optional.
+1. Never invent or "fill in" an ID, SKU, item number, title, price, category or URL. Every one
+   you show her must come from a tool result in this conversation. If a tool failed, say it
+   FAILED and show the error. Never present a failure as a success.
+2. Never write a listing summary, sheet or table yourself. Call ebay_listing_report and show
+   its rows and CSV path exactly as returned.
+3. Price: only what Stephanie says. Never derive it from Shopify. Ask if she hasn't said.
+4. eBay category: only an ID from ebay_suggest_category for that item. Show her the category
+   NAME. category_confirmed=true only if she approved that exact name.
+5. Store category: every listing needs one (ebay_store_categories). Ask her if unsure.
+6. Item specifics: fill every REQUIRED and as many recommended ones as the item supports
+   (ebay_category_specifics). Only facts she gave you or that are in the Shopify listing.
+7. Before ebay_publish_offer: run ebay_listing_report on the offer, show her, and publish
+   only after she says go. She can't edit API listings by hand, so they must be right.
+8. Bulk fixes (store categories, item specifics): build the sheet, she reviews it, dry run
+   (confirm=false), show the summary, and only then confirm=true when she says so."""
+
+try:
+    mcp = _Server("rrr-ebay", instructions=RULES)
+except TypeError:   # older/newer mcp without instructions=
+    mcp = _Server("rrr-ebay")
 
 
 def _cfg():
@@ -75,6 +98,8 @@ def ebay_create_draft(
     title: str = "",
     aspects: Optional[dict] = None,
     image_urls: Optional[list] = None,
+    store_category: str = "",
+    category_confirmed: bool = False,
 ) -> dict:
     """Create (or refresh) an unpublished eBay offer from a Shopify product.
 
@@ -85,12 +110,16 @@ def ebay_create_draft(
     quantity: defaults to 1. eBay always shows 1; the inventory sync relists as Shopify sells down.
     aspects: item specifics, e.g. {"Brand": "Funko", "Character": "Mickey Mouse"}.
     image_urls: photo URLs; defaults to the Shopify product's photos.
-    Best Offer on, RRR's standard policies.
+    store_category: Stephanie's eBay store category (name or path from ebay_store_categories).
+    category_confirmed: true ONLY if Stephanie approved a category eBay doesn't suggest.
+    Refuses a category eBay doesn't suggest for the item. Best Offer on, RRR's standard policies.
+    Report the returned values exactly; never retype or invent IDs.
     """
     try:
         result = ebay_listings.create_draft(
             _cfg(), shopify_product_id, price, category_id=category_id or None, quantity=quantity,
             condition=condition or "NEW", title=title or None, aspects=aspects, image_urls=image_urls,
+            store_category=store_category or None, category_confirmed=category_confirmed,
         )
         return {"ok": True, **result}
     except Exception as e:
@@ -104,6 +133,8 @@ def ebay_publish_offer(
     aspects: Optional[dict] = None,
     category_id: str = "",
     price: str = "",
+    store_category: str = "",
+    category_confirmed: bool = False,
 ) -> dict:
     """Attach photos and RRR's standard listing policies to an offer, then publish it live.
 
@@ -114,7 +145,9 @@ def ebay_publish_offer(
     category_id: set/override the eBay category if the offer has none.
     price: optional new eBay price from Stephanie. Leave empty to keep the offer's price.
       Never work a price out from Shopify.
-    Also turns Best Offer on.
+    store_category: required unless the offer already has one (else it lands in "Other").
+    category_confirmed: true ONLY if Stephanie approved a category eBay doesn't suggest.
+    Also turns Best Offer on. Only call after Stephanie has seen ebay_listing_report and said go.
 
     If eBay rejects it, nothing goes live. Common fixes:
       "not a leaf category"           -> ebay_suggest_category, then retry with category_id
@@ -123,7 +156,8 @@ def ebay_publish_offer(
     try:
         result = ebay_listings.publish(
             _cfg(), offer_id, image_urls=image_urls, aspects=aspects, category_id=category_id or None,
-            price=price or None,
+            price=price or None, store_category=store_category or None,
+            category_confirmed=category_confirmed,
         )
         return {"ok": True, **result}
     except Exception as e:
@@ -185,6 +219,88 @@ def ebay_get_orders(since: str = "2026-01-01") -> dict:
         ]}
     except Exception as e:
         return _fail("ebay_get_orders", e)
+
+
+@mcp.tool()
+def ebay_listing_report(offer_ids: Optional[list] = None, skus: Optional[list] = None) -> dict:
+    """THE listing sheet: live data from eBay + Shopify, saved as a CSV for Excel.
+
+    offer_ids / skus: which listings (both empty = every offer). Show the rows exactly as
+    returned. This is the only allowed way to summarize listings for Stephanie.
+    """
+    try:
+        rows, path = ebay_listings.listing_report(_cfg(), offer_ids, skus, out_dir=REPORTS)
+        return {"ok": True, "count": len(rows), "csv": path, "rows": rows}
+    except Exception as e:
+        return _fail("ebay_listing_report", e)
+
+
+@mcp.tool()
+def ebay_store_categories() -> dict:
+    """Stephanie's eBay store categories (her store's shelves). Use a path for store_category."""
+    try:
+        cats = ebay_store.store_categories(_cfg())
+        return {"ok": True, "categories": [c for c in cats if c["leaf"]]}
+    except Exception as e:
+        return _fail("ebay_store_categories", e)
+
+
+@mcp.tool()
+def ebay_category_specifics(category_id: str) -> dict:
+    """Item specifics eBay requires/recommends for an eBay category, with allowed values."""
+    try:
+        return {"ok": True, "specifics": ebay_inventory.item_aspects(_cfg(), category_id)}
+    except Exception as e:
+        return _fail("ebay_category_specifics", e)
+
+
+@mcp.tool()
+def ebay_store_category_sheet(only_other: bool = True) -> dict:
+    """Bulk fix step 1: CSV of live listings in the store's "Other" shelf, with a suggested
+    shelf where the title makes it obvious. Stephanie reviews/fills new_category in Excel."""
+    try:
+        path, counts = ebay_store.build_sheet(_cfg(), REPORTS, only_other=only_other)
+        return {"ok": True, "csv": path, **counts}
+    except Exception as e:
+        return _fail("ebay_store_category_sheet", e)
+
+
+@mcp.tool()
+def ebay_apply_store_categories(csv_path: str, confirm: bool = False) -> dict:
+    """Bulk fix step 2: move listings to the new_category in a reviewed sheet.
+
+    confirm=false (default) is a dry run that changes nothing. confirm=true only after
+    Stephanie has seen the dry-run summary and said go.
+    """
+    try:
+        return {"ok": True, **ebay_store.apply_sheet(_cfg(), csv_path, confirm=confirm)}
+    except Exception as e:
+        return _fail("ebay_apply_store_categories", e)
+
+
+@mcp.tool()
+def ebay_item_specifics_sheet(include_optional: bool = False) -> dict:
+    """Bulk fix step 1: CSV of every live API listing's missing required/recommended item
+    specifics, with eBay's allowed values and a title-based guess where obvious.
+    Stephanie (or you, with her checking) fills new_value. Use | between multiple values."""
+    try:
+        path, stats = ebay_specifics.build_sheet(_cfg(), REPORTS, include_optional=include_optional)
+        return {"ok": True, "csv": path, **stats}
+    except Exception as e:
+        return _fail("ebay_item_specifics_sheet", e)
+
+
+@mcp.tool()
+def ebay_apply_item_specifics(csv_path: str, confirm: bool = False) -> dict:
+    """Bulk fix step 2: write the filled-in specifics to the live listings.
+
+    Checks every value against eBay's rules first; a listing with any bad value is skipped
+    whole. confirm=false (default) is a dry run. confirm=true only after Stephanie says go.
+    """
+    try:
+        return {"ok": True, **ebay_specifics.apply_sheet(_cfg(), csv_path, confirm=confirm)}
+    except Exception as e:
+        return _fail("ebay_apply_item_specifics", e)
 
 
 def _self_check():

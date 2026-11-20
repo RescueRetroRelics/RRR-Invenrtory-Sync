@@ -12,3 +12,4 @@ __pycache__/
 
 # Simulated shopper reports (screenshots of the site)
 shopper_reports/
+reports/
