@@ -182,3 +182,16 @@ def category_suggestions(cfg, query, limit=5):
             "path": " > ".join(ancestors + [s["category"]["categoryName"]]),
         })
     return out
+
+
+def category_name(cfg, category_id):
+    """eBay's name for a category ID, e.g. '115280' -> 'Golf Clubs'. None if eBay doesn't know it."""
+    url = TAXONOMY_API + "/get_category_subtree?" + urllib.parse.urlencode({"category_id": category_id})
+    try:
+        _, text = http.request("GET", url, headers=headers(get_access_token(cfg)))
+    except http.HttpError as e:
+        if e.status in (400, 404):
+            return None
+        raise EbayApiError(e.status, [{"message": e.body[:500]}], url) from None
+    node = json.loads(text).get("categorySubtreeNode", {})
+    return node.get("category", {}).get("categoryName")

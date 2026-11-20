@@ -28,7 +28,8 @@ class FakeEbay:
                              "marketplaceId": "EBAY_US", "format": "FIXED_PRICE", "categoryId": "149372",
                              "merchantLocationKey": "RRR", "availableQuantity": 1,
                              "pricingSummary": {"price": {"value": "9.99", "currency": "USD"}},
-                             "listingPolicies": {"eBayPlusIfEligible": False}},
+                             "listingPolicies": {"eBayPlusIfEligible": False},
+                             "storeCategoryNames": ["/Funko"]},
         }
 
     def __call__(self, method, url, headers=None, body=None, **kw):
@@ -69,8 +70,15 @@ SHOPIFY = {
 class InventoryApiTest(unittest.TestCase):
     def setUp(self):
         self.fake = FakeEbay()
+        shelf = {"id": "5", "name": "Funko", "path": "/Funko", "leaf": True}
         patches = [mock.patch.object(http, "request", self.fake),
-                   mock.patch.object(inv, "get_access_token", lambda c: "TOKEN")]
+                   mock.patch.object(inv, "get_access_token", lambda c: "TOKEN"),
+                   # New guards (category + store shelf) are stubbed here; these tests
+                   # cover the offer/item plumbing, not the guards.
+                   mock.patch.object(el, "check_category", lambda c, cid, t, ok=False: {
+                       "category_id": str(cid), "category_name": "Stub", "in_ebay_suggestions": True}),
+                   mock.patch.object(el.ebay_store, "resolve_store_category", lambda c, w, cats=None: shelf),
+                   mock.patch.object(el.ebay_store, "store_categories", lambda c: [shelf])]
         for p in patches:
             p.start()
             self.addCleanup(p.stop)
@@ -162,6 +170,22 @@ class InventoryApiTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "No photos"):
                 el.publish(cfg(), "308888822011")
         self.assertFalse(self.fake.bodies("PUT", "/offer/"))
+
+
+    def test_publish_refuses_without_store_category(self):
+        del self.fake.offers["308888822011"]["storeCategoryNames"]
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            with self.assertRaisesRegex(RuntimeError, "land in 'Other'"):
+                el.publish(cfg(), "308888822011")
+        self.assertFalse(self.fake.bodies("PUT", "/"))
+        self.assertFalse([c for c in self.fake.calls if c[0] == "POST"])
+
+    def test_publish_keeps_store_category_on_offer(self):
+        with mock.patch.object(el, "shopify_product", return_value=SHOPIFY):
+            result = el.publish(cfg(), "308888822011")
+        offer = self.fake.bodies("PUT", "/offer/308888822011")[0]
+        self.assertEqual(offer["storeCategoryNames"], ["/Funko"])
+        self.assertEqual(result["store_category"], "/Funko")
 
 
 class CategoryAndConfigTest(unittest.TestCase):
