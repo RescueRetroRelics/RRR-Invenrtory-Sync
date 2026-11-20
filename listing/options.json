@@ -23,51 +23,150 @@
     "Camping Tools (Headlamps)": "gid://shopify/TaxonomyCategory/sg-4-2-4"
   },
   "metafields": {
-    "Age group": {"key": "shopify.age-group", "values": {
-      "Adults": "gid://shopify/Metaobject/227424174376", "All ages": "gid://shopify/Metaobject/231292502312",
-      "Teens": "gid://shopify/Metaobject/235079565608", "Universal": "gid://shopify/Metaobject/223946998056"}},
-    "Recommended age": {"key": "shopify.recommended-age-group", "values": {
-      "Adults": "gid://shopify/Metaobject/222024630568", "18 years or older": "gid://shopify/Metaobject/222024597800",
-      "13-18 years": "gid://shopify/Metaobject/222024565032", "10 years or older": "gid://shopify/Metaobject/225516978472",
-      "8 years or older": "gid://shopify/Metaobject/235058266408", "6 years or older": "gid://shopify/Metaobject/223966003496",
-      "4 years or older": "gid://shopify/Metaobject/235061870888", "3 years or older": "gid://shopify/Metaobject/225516945704",
-      "All ages": "gid://shopify/Metaobject/235062460712"}},
-    "Target gender": {"key": "shopify.target-gender", "values": {
-      "Unisex": "gid://shopify/Metaobject/222724096296", "Female": "gid://shopify/Metaobject/233987801384"}},
-    "Theme": {"key": "shopify.theme", "values": {
-      "Cartoons": "gid://shopify/Metaobject/223966036264", "Movies & TV": "gid://shopify/Metaobject/227806642472",
-      "Retro/Vintage": "gid://shopify/Metaobject/227806675240", "Anime": "gid://shopify/Metaobject/650223157544",
-      "Christmas": "gid://shopify/Metaobject/653499662632", "Comics": "gid://shopify/Metaobject/235061903656",
-      "Superheroes": "gid://shopify/Metaobject/235061838120", "Sci-fi": "gid://shopify/Metaobject/235061346600",
-      "Winter": "gid://shopify/Metaobject/654892957992", "Travel": "gid://shopify/Metaobject/653504479528"}},
-    "Toy figure theme": {"key": "shopify.toy-figure-theme", "values": {
-      "Snoopy": "gid://shopify/Metaobject/222024663336", "Sanrio": "gid://shopify/Metaobject/227412574504",
-      "Disney": "gid://shopify/Metaobject/234584015144", "Pokémon": "gid://shopify/Metaobject/232723874088",
-      "Pop culture": "gid://shopify/Metaobject/222024696104"}},
-    "Color": {"key": "shopify.color-pattern", "multi_columns": ["Color", "Color 2"], "values": {
-      "Multicolor": "gid://shopify/Metaobject/223987269928", "Black": "gid://shopify/Metaobject/222192828712",
-      "White": "gid://shopify/Metaobject/222192795944", "Pink": "gid://shopify/Metaobject/222195548456",
-      "Red": "gid://shopify/Metaobject/223921471784", "Orange": "gid://shopify/Metaobject/223927370024",
-      "Yellow": "gid://shopify/Metaobject/222195908904", "Green": "gid://shopify/Metaobject/222192763176",
-      "Teal": "gid://shopify/Metaobject/223946965288", "Blue": "gid://shopify/Metaobject/223930712360",
-      "Metallic Blue": "gid://shopify/Metaobject/222193811752", "Purple": "gid://shopify/Metaobject/223929467176",
-      "Brown": "gid://shopify/Metaobject/230295208232", "Beige": "gid://shopify/Metaobject/222724030760",
-      "Gray": "gid://shopify/Metaobject/653495796008", "Silver": "gid://shopify/Metaobject/228077469992",
-      "Gold": "gid://shopify/Metaobject/222193844520", "Bronze": "gid://shopify/Metaobject/230295175464",
-      "Clear": "gid://shopify/Metaobject/223816810792", "Dots": "gid://shopify/Metaobject/228077437224"}},
-    "Material": {"key": "shopify.material", "multi_columns": ["Material", "Material 2"], "values": {
-      "Plastic": "gid://shopify/Metaobject/223918129448", "Vinyl": "gid://shopify/Metaobject/650234822952",
-      "Plush": "gid://shopify/Metaobject/655557198120", "Metal": "gid://shopify/Metaobject/222724063528",
-      "Acrylic": "gid://shopify/Metaobject/230228230440", "Silicone": "gid://shopify/Metaobject/654606958888",
-      "Fabric": "gid://shopify/Metaobject/230295666984", "Polyester": "gid://shopify/Metaobject/234581328168",
-      "Mesh": "gid://shopify/Metaobject/230296191272", "Eraser": "gid://shopify/Metaobject/223918096680"}},
-    "Toy material": {"key": "shopify.toy-game-material", "values": {
-      "Plastic": "gid://shopify/Metaobject/222024958248", "Plush": "gid://shopify/Metaobject/653497270568",
-      "Cardboard": "gid://shopify/Metaobject/235058233640"}}
+    "Age group": {
+      "key": "shopify.age-group",
+      "values": {
+        "Adults": "gid://shopify/Metaobject/227424174376",
+        "All ages": "gid://shopify/Metaobject/231292502312",
+        "Teens": "gid://shopify/Metaobject/235079565608",
+        "Universal": "gid://shopify/Metaobject/223946998056"
+      }
+    },
+    "Recommended age": {
+      "key": "shopify.recommended-age-group",
+      "values": {
+        "Adults": "gid://shopify/Metaobject/222024630568",
+        "18 years or older": "gid://shopify/Metaobject/222024597800",
+        "13-18 years": "gid://shopify/Metaobject/222024565032",
+        "10 years or older": "gid://shopify/Metaobject/225516978472",
+        "8 years or older": "gid://shopify/Metaobject/235058266408",
+        "6 years or older": "gid://shopify/Metaobject/223966003496",
+        "4 years or older": "gid://shopify/Metaobject/235061870888",
+        "3 years or older": "gid://shopify/Metaobject/225516945704",
+        "All ages": "gid://shopify/Metaobject/235062460712"
+      }
+    },
+    "Target gender": {
+      "key": "shopify.target-gender",
+      "values": {
+        "Unisex": "gid://shopify/Metaobject/222724096296",
+        "Female": "gid://shopify/Metaobject/233987801384"
+      }
+    },
+    "Theme": {
+      "key": "shopify.theme",
+      "values": {
+        "Cartoons": "gid://shopify/Metaobject/223966036264",
+        "Movies & TV": "gid://shopify/Metaobject/227806642472",
+        "Retro/Vintage": "gid://shopify/Metaobject/227806675240",
+        "Anime": "gid://shopify/Metaobject/650223157544",
+        "Christmas": "gid://shopify/Metaobject/653499662632",
+        "Comics": "gid://shopify/Metaobject/235061903656",
+        "Superheroes": "gid://shopify/Metaobject/235061838120",
+        "Sci-fi": "gid://shopify/Metaobject/235061346600",
+        "Winter": "gid://shopify/Metaobject/654892957992",
+        "Travel": "gid://shopify/Metaobject/653504479528"
+      }
+    },
+    "Toy figure theme": {
+      "key": "shopify.toy-figure-theme",
+      "values": {
+        "Snoopy": "gid://shopify/Metaobject/222024663336",
+        "Sanrio": "gid://shopify/Metaobject/227412574504",
+        "Disney": "gid://shopify/Metaobject/234584015144",
+        "Pokémon": "gid://shopify/Metaobject/232723874088",
+        "Pop culture": "gid://shopify/Metaobject/222024696104"
+      }
+    },
+    "Color": {
+      "key": "shopify.color-pattern",
+      "multi_columns": [
+        "Color",
+        "Color 2"
+      ],
+      "values": {
+        "Multicolor": "gid://shopify/Metaobject/223987269928",
+        "Black": "gid://shopify/Metaobject/222192828712",
+        "White": "gid://shopify/Metaobject/222192795944",
+        "Pink": "gid://shopify/Metaobject/222195548456",
+        "Red": "gid://shopify/Metaobject/223921471784",
+        "Orange": "gid://shopify/Metaobject/223927370024",
+        "Yellow": "gid://shopify/Metaobject/222195908904",
+        "Green": "gid://shopify/Metaobject/222192763176",
+        "Teal": "gid://shopify/Metaobject/223946965288",
+        "Blue": "gid://shopify/Metaobject/223930712360",
+        "Metallic Blue": "gid://shopify/Metaobject/222193811752",
+        "Purple": "gid://shopify/Metaobject/223929467176",
+        "Brown": "gid://shopify/Metaobject/230295208232",
+        "Beige": "gid://shopify/Metaobject/222724030760",
+        "Gray": "gid://shopify/Metaobject/653495796008",
+        "Silver": "gid://shopify/Metaobject/228077469992",
+        "Gold": "gid://shopify/Metaobject/222193844520",
+        "Bronze": "gid://shopify/Metaobject/230295175464",
+        "Clear": "gid://shopify/Metaobject/223816810792",
+        "Dots": "gid://shopify/Metaobject/228077437224"
+      }
+    },
+    "Material": {
+      "key": "shopify.material",
+      "multi_columns": [
+        "Material",
+        "Material 2"
+      ],
+      "values": {
+        "Plastic": "gid://shopify/Metaobject/223918129448",
+        "Vinyl": "gid://shopify/Metaobject/650234822952",
+        "Plush": "gid://shopify/Metaobject/655557198120",
+        "Metal": "gid://shopify/Metaobject/222724063528",
+        "Acrylic": "gid://shopify/Metaobject/230228230440",
+        "Silicone": "gid://shopify/Metaobject/654606958888",
+        "Fabric": "gid://shopify/Metaobject/230295666984",
+        "Polyester": "gid://shopify/Metaobject/234581328168",
+        "Mesh": "gid://shopify/Metaobject/230296191272",
+        "Eraser": "gid://shopify/Metaobject/223918096680"
+      }
+    },
+    "Toy material": {
+      "key": "shopify.toy-game-material",
+      "values": {
+        "Plastic": "gid://shopify/Metaobject/222024958248",
+        "Plush": "gid://shopify/Metaobject/653497270568",
+        "Cardboard": "gid://shopify/Metaobject/235058233640"
+      }
+    }
   },
-  "standard_tags": ["Bailee", "Bailee's Legacy", "Casey & Savannah", "Collectible", "Dog rescue fundraiser",
-                    "Gift Idea", "Rescue Retro Relics", "Retro", "Shop RRR for Dogs", "Shop Small Business", "new item"],
-  "conditions": ["New", "New other (open box)", "Used"],
-  "ebay_store_categories": [],
-  "ebay_categories": {}
+  "standard_tags": [
+    "Bailee",
+    "Bailee's Legacy",
+    "Casey & Savannah",
+    "Collectible",
+    "Dog rescue fundraiser",
+    "Gift Idea",
+    "Rescue Retro Relics",
+    "Retro",
+    "Shop RRR for Dogs",
+    "Shop Small Business",
+    "new item"
+  ],
+  "conditions": [
+    "New",
+    "New other (open box)",
+    "Used"
+  ],
+  "ebay_store_categories": [
+    "Snoopy",
+    "Sanrio",
+    "Anime",
+    "Pop Culture",
+    "Retro Cartoons",
+    "I <3 Dogs"
+  ],
+  "ebay_categories": {
+    "Other Animation Merchandise (go-to)": "Collectibles > Animation Art & Merchandise > Animation Merchandise > Other Animation Merchandise",
+    "Action Figures": "Toys & Hobbies > Action Figures & Accessories > Action Figures",
+    "Keychains Modern (1970-Now)": "Collectibles > Pez, Keychains, Promo Glasses > Keychains > Modern (1970-Now)",
+    "Disneyana Pixar Figurines": "Collectibles > Disneyana > Contemporary (1968-Now) > Figurines > Pixar Characters",
+    "Disneyana Toy Story Pins": "Collectibles > Disneyana > Contemporary (1968-Now) > Pins, Patches & Buttons > Disney Characters & Movies > Toy Story"
+  },
+  "_ebay_category_note": "Picking a category from the dropdown counts as Stephanie approving it, so the eBay-suggestion check is skipped for those. Blank = Claude picks from eBay's suggestions (checked)."
 }
