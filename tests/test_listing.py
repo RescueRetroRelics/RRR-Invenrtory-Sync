@@ -133,6 +133,18 @@ class PreflightTest(Base):
         self.assertTrue(any("could not be found" in x for x in problems))
 
 
+class BundleTest(Base):
+    def test_bundle_is_custom_product_and_refuses_barcode(self):
+        self.put({**GOOD, "Bundle / gift set": "Yes"})
+        plan, problems = pub.Publisher(self.cfg, self.path).preflight(sheet_io.read(self.path)[0])
+        self.assertEqual(problems, [])
+        google = {m["key"]: m["value"] for m in plan["metafields"] if m["namespace"] == "mm-google-shopping"}
+        self.assertEqual(google["custom_product"], "true")
+        self.put({**GOOD, "Bundle / gift set": "Yes", "UPC / barcode": "012345678905"})
+        _, problems = pub.Publisher(self.cfg, self.path).preflight(sheet_io.read(self.path)[0])
+        self.assertTrue(any("don't get a barcode" in x for x in problems))
+
+
 class CategoryFieldsTest(Base):
     def test_other_fields_map_to_store_values_and_unknowns_only_warn(self):
         self.put({**GOOD, "Other category fields": "Power source: Battery-powered; Solar | Mystery field: x",

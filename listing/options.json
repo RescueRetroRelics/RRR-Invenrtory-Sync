@@ -189,5 +189,9 @@
     "MPN",
     "Unit Quantity",
     "Unit Type"
+  ],
+  "yes_no": [
+    "No",
+    "Yes"
   ]
 }

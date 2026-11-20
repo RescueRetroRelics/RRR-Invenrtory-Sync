@@ -29,6 +29,7 @@ COLUMNS = [
     ("eBay price", YOU, 11, None, "e.g. 19.99"),
     ("Qty", YOU, 6, None, "How many you have"),
     ("Condition", YOU, 14, "conditions", None),
+    ("Bundle / gift set", YOU, 10, "yes_no", "Yes for sets you put together yourself. They never get a barcode."),
     ("eBay store category", YOU, 24, "ebay_store_categories", "Your eBay store shelf"),
     ("eBay category", YOU, 30, "ebay_categories", "Leave blank and Claude picks one eBay suggests"),
     ("Shopify category", YOU, 28, "shopify_categories", None),
@@ -48,7 +49,7 @@ COLUMNS = [
     ("Country of origin", YOU, 12, None, "Optional, e.g. China"),
     ("Year made", YOU, 9, None, "Optional, e.g. 2025"),
     ("MPN", YOU, 12, None, "Optional. Model/part number on the box"),
-    ("UPC / barcode", YOU, 15, None, "Optional but BIG for Google, AI shopping and eBay: the number under the barcode on the box"),
+    ("UPC / barcode", YOU, 15, None, "Optional but BIG for Google, AI shopping and eBay: the number under the barcode on the box. Never on your own bundles."),
     ("Weight (lb)", YOU, 9, None, "Optional. Only matters if you add expedited shipping later"),
     ("Brand", CLAUDE, 16, None, "Claude fills from your notes (you can too)"),
     ("Title", CLAUDE, 45, None, "Shopify title"),
@@ -71,6 +72,7 @@ COLUMNS = [
 def lists_from_options(opts):
     lists = {
         "conditions": opts["conditions"],
+        "yes_no": opts.get("yes_no", ["No", "Yes"]),
         "shopify_categories": list(opts["shopify_categories"]),
         "ebay_store_categories": opts.get("ebay_store_categories") or ["(send Claude your store categories)"],
         "ebay_categories": list(opts.get("ebay_categories") or {}) or ["(Claude picks)"],

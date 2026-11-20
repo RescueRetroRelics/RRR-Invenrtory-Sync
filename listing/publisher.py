@@ -304,10 +304,18 @@ class Publisher:
                 plan["weight"] = float(row["Weight (lb)"]) if row.get("Weight (lb)") else None
             except ValueError:
                 problems.append(f'Weight "{row["Weight (lb)"]}" isn\'t a number')
+        plan["bundle"] = (row.get("Bundle / gift set") or "").lower() == "yes"
         try:
             plan["barcode"] = clean_barcode(row.get("UPC / barcode"))
         except ValueError as e:
             problems.append(str(e))
+        if plan["bundle"] and plan.get("barcode"):
+            problems.append("Bundles/gift sets you make don't get a barcode: clear the UPC column")
+            plan["barcode"] = None
+        if need_shopify and plan["bundle"]:
+            for m in plan["metafields"]:
+                if m["namespace"] == "mm-google-shopping" and m["key"] == "custom_product":
+                    m["value"] = "true"   # Google: unique product, no GTIN exists
         if need_shopify and plan.get("barcode"):
             plan["metafields"].append({"namespace": "mm-google-shopping", "key": "gtin",
                                        "type": "single_line_text_field", "value": plan["barcode"]})
@@ -327,6 +335,8 @@ class Publisher:
             rules = self.aspects(plan["ebay_category"])
             specifics = parse_specifics(row.get("eBay specifics"))
             specifics = {**self.sheet_specifics(row, rules), **specifics}
+            if (row.get("Bundle / gift set") or "").lower() == "yes" and "bundle listing" in rules:
+                specifics.setdefault(rules["bundle listing"]["name"], "Yes")
             clean, bad = spec.validate(rules, specifics)
             problems += bad
             have = {k.lower() for k in clean}
@@ -433,7 +443,7 @@ class Publisher:
         for r in rows[offset:offset + limit]:
             if not needs(r):
                 continue
-            entry = {k: r.get(k, "") for k in sheet_io.YOURS + ("Condition", "eBay store category", "eBay category",
+            entry = {k: r.get(k, "") for k in sheet_io.YOURS + ("Condition", "Bundle / gift set", "eBay store category", "eBay category",
                      "Shopify category", "Toy figure theme", "Theme", "Color", "Color 2", "Material", "Brand")}
             entry["row"] = r["_row"]
             try:

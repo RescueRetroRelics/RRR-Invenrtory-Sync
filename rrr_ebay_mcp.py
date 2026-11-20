@@ -394,6 +394,9 @@ def listing_sheet_fill(fills: list, sheet_path: str = "") -> dict:
       AI tools quote it. Then a fact list, one per line starting with "- ": Brand, Franchise,
       Character, Size (only if given), What's included, Condition. Then one line on who it's a
       great gift for. Short. Match her voice: warm, kawaii, gift-focused. No made-up facts.
+    - Bundle / gift set = Yes: say it's a curated gift set in the title and first sentence, and
+      list every item under "Includes:" as "- " lines. Put every character and franchise in
+      the eBay specifics (multiple values with ;). Never give a bundle a barcode/MPN.
     - Product type: short noun phrase like her existing ones ("Snoopy Plush Keychain").
     - Tags: franchise, characters, item type, gift terms. Her standard RRR tags are added
       automatically.
